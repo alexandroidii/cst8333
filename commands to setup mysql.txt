@@ -1,0 +1,60 @@
+-- Here are the steps to setup the time zone in mysql:
+
+I used to face the same issue as you and I resolved it by following these quick steps.
+
+Please follow below:
+
+Environment:
+
+MySQL Version: 5.7
+
+OS: Windows 10 (64 bit)
+
+Steps:
+
+Download the package that contains the data files of pre-built time zone tables. You can download here https://dev.mysql.com/downloads/timezones.html
+timezone_2018e_posix_sql.zip - POSIX standard for MySQL version 5.7
+Extract the downloaded package, you will then have a file named timezone_posix.sql
+Open a command line in the root directory of MySQL. Ex: On my computer this is "C:\Program Files\MySQL\MySQL Server 5.7\bin"
+Run the command mysql -u root -p to login to MySQL with root access and then enter password.
+Run the command show databases; to view all database. You will see a database named mysql. You need to insert data into the mysql database
+Run the command use mysql;
+Finally, you can insert data by issuing the command source *path timezone_posix.sql*.
+After inserting the timezone data, you can test by issuing the following query:
+
+ SELECT CONVERT_TZ('2018-07-02 14:46:46','utc','America/Los_Angeles')
+If the result is not null, you're successful!!!
+
+---------------------------------------
+-- end of time zone configuration
+---------------------------------------
+
+
+-- Run the time zone setup first just so it's out of the way.  
+
+-- Connect to mysql with -u(user) root and -p(prompt for password)
+mysql -u root -p
+
+-- Create the database called rlcis
+Create database rlcis;
+
+-- switch to use the rlcis database
+use rlcis;
+
+-- create a new user 'rlcisadm' with password '12345678'
+create user 'rlcisadm'@'localhost' identified with mysql_native_password by '12345678';
+
+-- Grant all privileges to the rlcisadm user
+grant all privileges on * . * to 'rlcisadm'@'localhost';
+
+-- Flush privileges when you are done to refresh them
+flush privileges;
+
+-- migrate the blank application entities to the database to initialize it.  This should be run from the folder that contains manage.py
+python manage.py migrate
+
+-- After you add or modify an Model, run this to make a migration to migrate
+python manage.py makemigrations rlcis
+
+-- Then run this again to migrate the changes
+python manage.py sqlmigrate rlcis 0001
