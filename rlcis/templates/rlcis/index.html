@@ -1,0 +1,15 @@
+{% if incident_list %}
+<ul>
+    {% for incident in incident_list %}
+    <li>
+        <a href="/rlcis/{{ incident.id}}/">
+            {{incident.incident_summary}}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>
+    No Incidents Available
+</p>
+{% endif %}

@@ -1,12 +1,13 @@
 import datetime
 
 from django.db import models
+from django.db.models import Model
 from django.utils import timezone
 
 # Create your models here.
 
 
-class Reviewer(models.Model):
+class Reviewer(Model):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
     employee_id = models.IntegerField()
@@ -15,7 +16,7 @@ class Reviewer(models.Model):
         return self.first_name + ' ' + self.last_name
 
 
-class Incident(models.Model):
+class Incident(Model):
     CASH = 'CA'
     FAVORS = 'FA'
     GRATUITY = 'GR'
@@ -41,6 +42,15 @@ class Incident(models.Model):
         (OTHER, 'Bribed by Other'),
     ]
 
+    incident_summary = models.CharField(
+        max_length=200,
+        null=True,
+        default='not filled in',
+    )
+    incident_details = models.TextField(
+        null=True,
+        default='not filled in',
+    )
     country = models.CharField(max_length=60)
     region = models.CharField(max_length=60)
     bribed_by = models.CharField(
