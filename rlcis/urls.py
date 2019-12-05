@@ -9,7 +9,7 @@ urlpatterns = [
         IncidentList.as_view(),
         name="incident-list"),
     path(
-        '<pk>/',
+        '<int:pk>/',
         IncidentDetails.as_view(),
         name='incident-details'),
     path(

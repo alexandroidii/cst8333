@@ -1,15 +1,14 @@
-<h1>{{ incident.incident_summary}}</h1>
+{% block content %}
+<h1>Incident Summary: {{ pk.incident_summary }}</h1>
 
-{% if error_message %}
-<p>
-    <strong>
-        {{ error_message }}
-    </strong>
-</p>
-{% endif %}
+<p><strong>Incident Details:</strong> {{ incindent.incident_details }}</p>
+<p><strong>Country:</strong> <a href="">{{ incindent.country }}</a></p> <!-- author detail link not yet defined -->
+<p><strong>Region:</strong> {{ incindent.region }}</p>
+<p><strong>Bribed by:</strong> {{ incindent.bribed_by }}</p>
+<p><strong>Bribe type:</strong> {{ incindent.bribe_type }}</p>
+<p><strong>Location:</strong> {{ incindent.location }}</p>
+<p><strong>First occurence:</strong> {{ incindent.first_occurence }}</p>
+<p><strong>Resolution date:</strong> {{ incindent.resolution_date }}</p>
+<p><strong>Reviewer:</strong> {{ incindent.reviewer }}</p>
 
-<form action="{% url 'incident-update' incident.id %}" method="post">
-    {% csrf_token %}
-    {{ IncidentForm }}
-    <input type="submit" value="submit">
-</form>
+{% endblock %}

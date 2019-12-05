@@ -13,12 +13,13 @@ class IncidentList(ListView):
     model = Incident
     context_object_name = 'incidents'
     queryset = Incident.objects.all()
-    template_name = 'rlcis/incident_list'
+    template_name = 'rlcis/incident_list.html'
 
 
 class IncidentDetails(DetailView):
     model = Incident
-    template_name = 'rlcis/incident_details'
+    context_object_name = 'incidents'
+    template_name = 'rlcis/incident_details.html'
 
 
 class IncidentCreate(CreateView):
@@ -57,4 +58,3 @@ def incident(request):
         'incident_list': incident_list
     }
     return render(request, 'rlcis/index.html', context)
-
