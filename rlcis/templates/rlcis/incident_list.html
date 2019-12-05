@@ -1,8 +1,8 @@
-{% if incident_list %}
+{% if incidents %}
 <ul>
-    {% for incident in incident_list %}
+    {% for incident in incidents %}
     <li>
-        <a href="{% url 'incident-update' incident.id %}">
+        <a href="{% url 'incident-details' incident.id %}">
             {{incident.incident_summary}}
         </a>
     </li>

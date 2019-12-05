@@ -1,8 +1,50 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
+from django.urls import reverse_lazy
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.list import ListView
 
 from .models import Incident
+
+
+class IncidentList(ListView):
+    model = Incident
+    context_object_name = 'incidents'
+    queryset = Incident.objects.all()
+    template_name = 'rlcis/incident_list'
+
+
+class IncidentDetails(DetailView):
+    model = Incident
+    template_name = 'rlcis/incident_details'
+
+
+class IncidentCreate(CreateView):
+    model = Incident
+    fields = ['incident_summary']
+
+
+class IncidentUpdate(UpdateView):
+    model = Incident
+    fields = [
+        'country',
+        'region',
+        'bribed_by',
+        'bribed_by_other',
+        'bribe_type',
+        'bribe_type_other',
+        'location',
+        'first_occurence',
+        'resolution_date',
+        'reviewer', ]
+
+
+class IncidentDelete(DeleteView):
+    model = Incident
+
+    success_url = reverse_lazy('incident-list')
 
 
 def index(request):
@@ -16,8 +58,3 @@ def incident(request):
     }
     return render(request, 'rlcis/index.html', context)
 
-
-def scenerio(request, incident_id):
-    try:
-        incident = get_object_or_404(Incident, pk=incident_id)
-        return render(request, 'rlcis/incident.html', {'incident': incident})

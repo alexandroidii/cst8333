@@ -2,6 +2,8 @@ import datetime
 
 from django.db import models
 from django.db.models import Model
+from django.forms import ModelForm
+from django.urls import reverse
 from django.utils import timezone
 
 # Create your models here.
@@ -77,7 +79,24 @@ class Incident(Model):
     resolution_date = models.DateTimeField('resolution date')
     reviewer = models.ForeignKey(Reviewer, on_delete=models.CASCADE)
 
-    # def was_published_recently(self):
-    #	return self.resolution_date >= timezone.now() - datetime.timedelta(days=1)
     def __str__(self):
-        return self.first_occurence.strftime("%Y/%m/%d, %H:%M:%S") + ' ' + self.bribed_by if not self.bribe_type_other else self.bribe_type_other + ' ' + self.bribe_type if not self.bribe_type_other else self.bribe_type_other
+        return self.incident_summary
+
+    def get_absolute_url(self):
+        return reverse('incident-detail', kwargs={'pk': self.pk})
+
+
+# class IncidentForm(ModelForm):
+#     class Meta:
+#         model = Incident
+#         fields = [
+#             'country',
+#             'region',
+#             'bribed_by',
+#             'bribed_by_other',
+#             'bribe_type',
+#             'bribe_type_other',
+#             'location',
+#             'first_occurence',
+#             'resolution_date',
+#             'reviewer', ]
