@@ -31,14 +31,24 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-	'rlcis.apps.RlcisConfig',
+    'rlcis.apps.RlcisConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4',
+    'bootstrap_datepicker_plus',
+    'crispy_forms',
+
 ]
+
+BOOTSTRAP4 = {
+    'include_jquery': True,
+}
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,10 +88,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-			'read_default_file': 'C:\dev\projectvm\cst8333\mysql.cnf',
-			'sql_mode':'STRICT_TRANS_TABLES',
-			'init_command': 'SET default_storage_engine=INNODB',
-			},
+            'read_default_file': 'C:\dev\projectvm\cst8333\mysql.cnf',
+            'sql_mode': 'STRICT_TRANS_TABLES',
+                        'init_command': 'SET default_storage_engine=INNODB',
+        },
     }
 }
 

@@ -1,27 +1,22 @@
-from django.urls import path
+from django.urls import include, path
 
-from rlcis.views import (IncidentCreate, IncidentDelete, IncidentDetails,
-                         IncidentList, IncidentUpdate)
+from . import views
 
 urlpatterns = [
     path(
         '',
-        IncidentList.as_view(),
-        name="incident-list"),
+        views.incident_form,
+        name="incident_insert"),
     path(
-        '<int:pk>/',
-        IncidentDetails.as_view(),
-        name='incident-details'),
+        '<int:id>/',
+        views.incident_form,
+        name='incident_update'),
     path(
-        'incident/add/',
-        IncidentCreate.as_view(),
-        name='incident-add'),
+        'delete/<int:id>/',
+        views.incident_delete,
+        name='incident_delete'),
     path(
-        'incident/<int:pk>/',
-        IncidentUpdate.as_view(),
-        name='incident-update'),
-    path(
-        'incident/<int:pk>/delete/',
-        IncidentDelete.as_view(),
-        name='incident-delete'),
+        'list/',
+        views.incident_list,
+        name='incident_list'),
 ]

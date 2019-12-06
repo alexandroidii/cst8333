@@ -47,11 +47,9 @@ class Incident(Model):
     incident_summary = models.CharField(
         max_length=200,
         null=True,
-        default='not filled in',
     )
     incident_details = models.TextField(
         null=True,
-        default='not filled in',
     )
     country = models.CharField(max_length=60)
     region = models.CharField(max_length=60)
@@ -75,9 +73,20 @@ class Incident(Model):
         blank=True,
     )
     location = models.CharField(max_length=60)
-    first_occurence = models.DateTimeField('first occurence')
-    resolution_date = models.DateTimeField('resolution date')
-    reviewer = models.ForeignKey(Reviewer, on_delete=models.CASCADE)
+    first_occurence = models.DateField(
+        null=True,
+        blank=True,
+    )
+    resolution_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+    reviewer = models.ForeignKey(
+        Reviewer,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return self.incident_summary
