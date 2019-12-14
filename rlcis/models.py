@@ -93,19 +93,3 @@ class Incident(Model):
 
     def get_absolute_url(self):
         return reverse('incident-detail', kwargs={'pk': self.pk})
-
-
-# class IncidentForm(ModelForm):
-#     class Meta:
-#         model = Incident
-#         fields = [
-#             'country',
-#             'region',
-#             'bribed_by',
-#             'bribed_by_other',
-#             'bribe_type',
-#             'bribe_type_other',
-#             'location',
-#             'first_occurence',
-#             'resolution_date',
-#             'reviewer', ]

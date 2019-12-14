@@ -3,46 +3,11 @@ from django.shortcuts import redirect, render
 from .forms import IncidentForm
 from .models import Incident
 
-# class IncidentList(ListView):
-#     context_object_name = 'incidents'
-#     queryset = Incident.objects.all()
-#     template_name = 'rlcis/incident_list.html'
-
-
-# class IncidentDetails(DetailView):
-#     context_object_name = 'incidents'
-#     queryset = Incident.objects.all()
-#     template_name = 'rlcis/incident_details.html'
-
-
-# class IncidentCreate(CreateView):
-#     model = Incident
-#     fields = ['incident_summary']
-
-
-# class IncidentUpdate(UpdateView):
-#     model = Incident
-#     fields = [
-#         'country',
-#         'region',
-#         'bribed_by',
-#         'bribed_by_other',
-#         'bribe_type',
-#         'bribe_type_other',
-#         'location',
-#         'first_occurence',
-#         'resolution_date',
-#         'reviewer', ]
-
-
-# class IncidentDelete(DeleteView):
-#     model = Incident
-
-#     success_url = reverse_lazy('incident-list')
 
 def incident_list(request):
     context = {
-        'incident_list': Incident.objects.all()
+        'incident_list': Incident.objects.all(),
+        'activePage': 'incidents'
     }
     return render(request, 'rlcis/incident_list.html', context)
 
@@ -57,7 +22,7 @@ def incident_form(request, id=0):
             print("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
-        return render(request, 'rlcis/incident_form.html', {'form': form})
+        return render(request, 'rlcis/incident_form.html', {'form': form,'activePage': 'incidents'})
     else:
         if id == 0:
             print("starting incident_form - id = 0 POST")
@@ -81,3 +46,13 @@ def incident_delete(request, id):
     print(incident)
     incident.delete()
     return redirect('/rlcis/list/')
+
+def index(request):
+    return render(request, 'rlcis/index.html', {'activePage': 'home'})
+
+def scenarios(request):
+    return render(request, 'rlcis/scenarios.html', {'activePage': 'scenarios'})
+
+def searchIncidents(request):
+    return render(request, 'rlcis/searchIncidents.html', {'activePage': 'incidents'})
+ 

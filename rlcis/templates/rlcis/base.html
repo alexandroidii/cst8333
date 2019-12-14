@@ -35,15 +35,48 @@
     <div class="container">
         <div class="col-md-16 mt-5">
             <div class="jumbotron">
-                <h1 class="display-4">Real Life Corruption Incidents & Scenarios</h1>
-                <p class="lead font-italic">Welcome to the RLCIS</p>
+                <h1 class="display-6">Real Life Corruption Incidents & Scenarios</h1>
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <a class="navbar-brand {% if activePage == 'home' %} active {% endif %}"
+                        href="{% url 'rlcis:home' %}">
+                        RLCIS
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                        <ul class="nav nav-tabs mr-auto mt-2 mt-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link {% if activePage == 'incidents' %} active {% endif %}"
+                                    href="{% url 'rlcis:incident_list' %}">
+                                    Incidents
+                                    <span class="sr-only">
+                                        (current)
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if activePage == 'scenarios' %} active {% endif %}"
+                                    href="{% url 'rlcis:scenarios' %}">
+                                    Scenarios
+                                </a>
+                            </li>
+                        </ul>
+                        <form class="form-inline my-2 my-lg-0" action="{% url 'rlcis:search_incidents' %}">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                    </div>
+                </nav>
                 <hr class="md-4">
                 {% block content %}
                 {% endblock content %}
             </div>
         </div>
     </div>
-
 </body>
-
 </html>

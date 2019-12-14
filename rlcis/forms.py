@@ -39,16 +39,9 @@ class IncidentForm(forms.ModelForm):
             'resolution_date': 'Resolution Date',
             'reviewer': 'Reviewer',
         }
-        widget = {
-            'first_occurence': DatePickerInput(format='%Y-%m-%d'),
-            'resolution_date': DatePickerInput(format='%Y-%m-%d'),
-            # 'first_occurence': DatePickerInput(
-            #     options={
-            #         'format': 'yyyy/mm/dd',
-            #         'autoclose': True
-            #     }
-            # ),
-            # 'resolution_date': DateInput()
+        widgets = {
+            'first_occurence': DateInput(),
+            'resolution_date': DateInput(),
         }
 
         def __init__(self, *args, **kwargs):

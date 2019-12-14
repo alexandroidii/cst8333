@@ -16,7 +16,7 @@
             <td>Resolution Date</td>
             <td>Reviewer</td>
             <td>
-                <a href="{% url 'incident_insert' %}" class="btn btn-outline-success">
+                <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
                     <i class="fas fa-plus">Add New Incident</i>
                 </a>
             </td>
@@ -30,26 +30,26 @@
             <td>{{incident.country}}<br>{{incident.region}}<br>{{incident.location}}</td>
 
             <td>{% if incident.bribed_by_other %}
-                    {{incident.bribed_by_other}}
+                {{incident.bribed_by_other}}
                 {% else %}
-                    {{ incident.get_bribed_by_display}}
+                {{ incident.get_bribed_by_display}}
                 {% endif %}
             </td>
-            
+
             <td>{% if incident.bribe_type_other %}
-                    {{incident.bribe_type_other}}
+                {{incident.bribe_type_other}}
                 {% else %}
-                    {{ incident.get_bribe_type_display}}
+                {{ incident.get_bribe_type_display}}
                 {% endif %}
             </td>
             <td>{{incident.first_occurence}}</td>
             <td>{{incident.resolution_date}}</td>
             <td>{{incident.reviewer}}</td>
             <td>
-                <a href="{% url 'incident_update' incident.id %}" class="btn text-secondary px-0">
+                <a href="{% url 'rlcis:incident_update' incident.id %}" class="btn text-secondary px-0">
                     <i class="far fa-edit fa"></i>
                 </a>
-                <form action="{% url 'incident_delete' incident.id%}" method="POST" class="d-inline">
+                <form action="{% url 'rlcis:incident_delete' incident.id%}" method="POST" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn">
                         <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>

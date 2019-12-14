@@ -1,8 +1,5 @@
 {% extends "rlcis/base.html" %}
 {% load crispy_forms_tags %}
-{% block extrahead %}
-{{ form.media }}
-{% endblock %}
 
 {% block content %}
 
@@ -70,7 +67,7 @@
             </button>
         </div>
         <div class="col-sm-4 col-md-4">
-            <a href="{% url 'incident_list' %}" class="btn btn-secondary btn-block btn-sm">
+            <a href="{% url 'rlcis:incident_list' %}" class="btn btn-secondary btn-block btn-sm">
                 <i class="fas fa-stream"></i> Back to list
             </a>
         </div>
