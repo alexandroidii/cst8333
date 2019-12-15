@@ -1,64 +1,80 @@
 {% extends "rlcis/base.html" %}
 
 {% block content %}
+<div class="row">
+    <table class="table table-borderless">
+        <thead class="border-bottom font-weight-bold">
+            <tr>
+                <td>ID</td>
+                <td>Summary</td>
+                <td>Country<br>Region<br>Location</td>
+                <!-- <td>Region</td> -->
+                <!-- <td>Location</td> -->
+                <td>Bribed By</td>
+                <td>Bribe Type</td>
+                <td>First Occurence</td>
+                <td>Resolution Date</td>
+                <td>Reviewer</td>
+                <td>
+                    <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
+                        <i class="fas fa-plus">Add New Incident</i>
+                    </a>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for incident in incident_list %}
+            {{ incident.full_name|upper }}<br>
+            <tr>
+                <td>{{incident.id}}</td>
+                <td>{{incident.incident_summary}}</td>
+                <td>{{incident.country}}<br>{{incident.region}}<br>{{incident.location}}</td>
 
-<table class="table table-borderless">
-    <thead class="border-bottom font-weight-bold">
-        <tr>
-            <td>ID</td>
-            <td>Summary</td>
-            <td>Country<br>Region<br>Location</td>
-            <!-- <td>Region</td> -->
-            <!-- <td>Location</td> -->
-            <td>Bribed By</td>
-            <td>Bribe Type</td>
-            <td>First Occurence</td>
-            <td>Resolution Date</td>
-            <td>Reviewer</td>
-            <td>
-                <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
-                    <i class="fas fa-plus">Add New Incident</i>
-                </a>
-            </td>
-        </tr>
-    </thead>
-    <tbody>
-        {% for incident in incident_list %}
-        <tr>
-            <td>{{incident.id}}</td>
-            <td>{{incident.incident_summary}}</td>
-            <td>{{incident.country}}<br>{{incident.region}}<br>{{incident.location}}</td>
+                <td>{% if incident.bribed_by_other %}
+                    {{incident.bribed_by_other}}
+                    {% else %}
+                    {{ incident.get_bribed_by_display}}
+                    {% endif %}
+                </td>
 
-            <td>{% if incident.bribed_by_other %}
-                {{incident.bribed_by_other}}
-                {% else %}
-                {{ incident.get_bribed_by_display}}
-                {% endif %}
-            </td>
-
-            <td>{% if incident.bribe_type_other %}
-                {{incident.bribe_type_other}}
-                {% else %}
-                {{ incident.get_bribe_type_display}}
-                {% endif %}
-            </td>
-            <td>{{incident.first_occurence}}</td>
-            <td>{{incident.resolution_date}}</td>
-            <td>{{incident.reviewer}}</td>
-            <td>
-                <a href="{% url 'rlcis:incident_update' incident.id %}" class="btn text-secondary px-0">
-                    <i class="far fa-edit fa"></i>
-                </a>
-                <form action="{% url 'rlcis:incident_delete' incident.id%}" method="POST" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn">
-                        <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
-                    </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <td>{% if incident.bribe_type_other %}
+                    {{incident.bribe_type_other}}
+                    {% else %}
+                    {{ incident.get_bribe_type_display}}
+                    {% endif %}
+                </td>
+                <td>{{incident.first_occurence}}</td>
+                <td>{{incident.resolution_date}}</td>
+                <td>{{incident.reviewer}}</td>
+                <td>
+                    <a href="{% url 'rlcis:incident_update' incident.id %}" class="btn text-secondary px-0">
+                        <i class="far fa-edit fa"></i>
+                    </a>
+                    <form action="{% url 'rlcis:incident_delete' incident.id%}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">
+                            <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<hr class="md-4">
+<ul class="pagination">
+    {% for p in incident_list.paginator.page_range %}
+        {% if incident_list.number == p %}
+             <li class="page-item active">
+                 <a ref="?page={{ p }}" class="page-link">{{ p }}</a>
+            </li>
+        {% else %}
+        <li class="page-item" >
+            <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+       </li>
+        {% endif %}
+    {% endfor %}
+</ul>
 
 {% endblock content %}

@@ -38,15 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap4',
-    'bootstrap_datepicker_plus',
     'crispy_forms',
 
 ]
 
-BOOTSTRAP4 = {
-    'include_jquery': True,
-}
+
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -86,12 +82,12 @@ WSGI_APPLICATION = 'cst8333.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': 'C:\dev\projectvm\cst8333\mysql.cnf',
-            'sql_mode': 'STRICT_TRANS_TABLES',
-                        'init_command': 'SET default_storage_engine=INNODB',
-        },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'RlcisDB',
+        'USER': 'rlcisadm',
+        'PASSWORD': '12345678',
+        'HOST': 'localhost'      
+        
     }
 }
 
@@ -133,3 +129,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_URL = '/images/'
+
+STATICFILES_DIRS =[
+    os.path.join(BASE_DIR,'static')
+]

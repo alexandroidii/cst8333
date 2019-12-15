@@ -1,3 +1,4 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import redirect, render
 
 from .forms import IncidentForm
@@ -5,9 +6,18 @@ from .models import Incident
 
 
 def incident_list(request):
+    incident_list = Incident.objects.all().order_by('-id')
+    paginator = Paginator(incident_list, 2)
+    page = request.GET.get('page')
+    try:
+        incidents = paginator.page(page)
+    except PageNotAnInteger:
+        incidents = paginator.page(1)
+    except EmptyPage:
+        incidents = paginator.page(paginator.num_pages)
+
     context = {
-        'incident_list': Incident.objects.all(),
-        'activePage': 'incidents'
+        'incident_list': incidents,
     }
     return render(request, 'rlcis/incident_list.html', context)
 
@@ -54,5 +64,6 @@ def scenarios(request):
     return render(request, 'rlcis/scenarios.html', {'activePage': 'scenarios'})
 
 def searchIncidents(request):
+    incident_list = Incident.objects.all(),
+    
     return render(request, 'rlcis/searchIncidents.html', {'activePage': 'incidents'})
- 

@@ -2,6 +2,21 @@
 
 {% block content %}
 
+{% for incident in result %}
+<div> 
+    <strong>
+
+        {% incident.summary %}
+    </strong>
+    <em>
+        description:
+    </em>
+    bribe type / bribed by
+</div>
+
+{% endfor %}
+
 Searching for Incidents
+
 
 {% endblock content %}
