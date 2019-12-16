@@ -21,6 +21,10 @@
                     </a>
                 </td>
             </tr>
+            <form class="form-inline my-2 my-lg-0" action="{% url 'rlcis:search_incidents' %}">
+                <input class="form-control mr-sm-2 col-md-3" type="search" placeholder="Search Country">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
         </thead>
         <tbody>
             {% for incident in incident_list %}
@@ -62,6 +66,7 @@
         </tbody>
     </table>
 </div>
+
 <hr class="md-4">
 <ul class="pagination">
     {% for p in incident_list.paginator.page_range %}
