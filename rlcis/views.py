@@ -7,12 +7,17 @@ from .models import Incident
 
 
 def incident_list(request):
-    incident_list = Incident.objects.all().order_by('-id')
+    query = request.GET.get('query')
+    if not query:
+        incident_list = Incident.objects.all().order_by('-id')
+    else:
+        incident_list = search(query)
+
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
     try:
-        incidents = paginator.page(page)
+        incidents = paginator.get_page(page)
     except PageNotAnInteger:
         incidents = paginator.page(1)
     except EmptyPage:
@@ -21,9 +26,26 @@ def incident_list(request):
     context = {
         'incident_list': incidents,
         'activePage': 'incident',
-        'searchForm':searchForm,
+        'searchForm': searchForm,
     }
     return render(request, 'rlcis/incident_list.html', context)
+
+
+def search(query):
+
+    print(query)
+    incident_list = Incident.objects.annotate(
+        search=SearchVector(
+            'incident_summary',
+            'incident_details',
+            'country',
+            'region',
+            'location',
+            # 'first_occurence',
+            # 'resolution_date'
+        ),
+    ).filter(search=query).order_by('-id')
+    return incident_list
 
 
 def incident_form(request, id=0):
@@ -68,29 +90,3 @@ def index(request):
 
 def scenarios(request):
     return render(request, 'rlcis/scenarios.html', {'activePage': 'scenarios'})
-
-
-def searchIncidents(request):
-
-    # form = SearchForm(request.POST)
-
-    # if form.is_valid():
-    query = request.GET.get('query')
-    print(query)
-    incident_list = Incident.objects.annotate(
-        search=SearchVector(
-            # 'incident_summary',
-            # 'incident_details',
-            'country',
-            # 'region',
-            # 'location',
-            # 'first_occurence',
-            # 'resolution_date'
-        ),
-    ).filter(search=query)
-
-    context = {
-        'activePage': 'incidents',
-        'incident_list': incident_list,
-    }
-    return render(request, 'rlcis/incident_list.html', context)

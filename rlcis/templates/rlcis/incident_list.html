@@ -21,7 +21,7 @@
                     </a>
                 </td>
             </tr>
-            <form method="GET" class="form-inline my-2 my-lg-0" action="{% url 'rlcis:incident_search' %}">
+            <form method="GET" class="form-inline my-2 my-lg-0" action="{% url 'rlcis:incident_list' %}">
                 {% csrf_token %}
                 <!-- <input class="form-control mr-sm-2 col-md-10" type="search" placeholder="Search Country"> -->
                 {{ searchForm.query }}

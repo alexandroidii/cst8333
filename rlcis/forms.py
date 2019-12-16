@@ -8,10 +8,9 @@ class DateInput(forms.DateInput):
 
 
 class SearchForm(forms.Form):
-    class Meta:
-        fields = [
-            'query',
-        ]
+    query = forms.CharField(
+        label = 'Search',
+        max_length = 200 )
 
 
 class IncidentForm(forms.ModelForm):
