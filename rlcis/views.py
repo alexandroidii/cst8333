@@ -1,12 +1,14 @@
+from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import redirect, render
 
-from .forms import IncidentForm
+from .forms import IncidentForm, SearchForm
 from .models import Incident
 
 
 def incident_list(request):
     incident_list = Incident.objects.all().order_by('-id')
+    searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
     try:
@@ -18,6 +20,8 @@ def incident_list(request):
 
     context = {
         'incident_list': incidents,
+        'activePage': 'incident',
+        'searchForm':searchForm,
     }
     return render(request, 'rlcis/incident_list.html', context)
 
@@ -32,7 +36,7 @@ def incident_form(request, id=0):
             print("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
-        return render(request, 'rlcis/incident_form.html', {'form': form,'activePage': 'incidents'})
+        return render(request, 'rlcis/incident_form.html', {'form': form, 'activePage': 'incidents'})
     else:
         if id == 0:
             print("starting incident_form - id = 0 POST")
@@ -57,13 +61,36 @@ def incident_delete(request, id):
     incident.delete()
     return redirect('/rlcis/list/')
 
+
 def index(request):
     return render(request, 'rlcis/index.html', {'activePage': 'home'})
+
 
 def scenarios(request):
     return render(request, 'rlcis/scenarios.html', {'activePage': 'scenarios'})
 
+
 def searchIncidents(request):
-    incident_list = Incident.objects.all(),
-    
-    return render(request, 'rlcis/searchIncidents.html', {'activePage': 'incidents'})
+
+    # form = SearchForm(request.POST)
+
+    # if form.is_valid():
+    query = request.GET.get('query')
+    print(query)
+    incident_list = Incident.objects.annotate(
+        search=SearchVector(
+            # 'incident_summary',
+            # 'incident_details',
+            'country',
+            # 'region',
+            # 'location',
+            # 'first_occurence',
+            # 'resolution_date'
+        ),
+    ).filter(search=query)
+
+    context = {
+        'activePage': 'incidents',
+        'incident_list': incident_list,
+    }
+    return render(request, 'rlcis/incident_list.html', context)

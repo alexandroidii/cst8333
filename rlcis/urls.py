@@ -31,5 +31,5 @@ urlpatterns = [
     path(
         'searchIncidents/',
         views.searchIncidents,
-        name='search_incidents'),
+        name='incident_search'),
 ]

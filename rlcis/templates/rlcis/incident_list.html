@@ -21,8 +21,10 @@
                     </a>
                 </td>
             </tr>
-            <form class="form-inline my-2 my-lg-0" action="{% url 'rlcis:search_incidents' %}">
-                <input class="form-control mr-sm-2 col-md-3" type="search" placeholder="Search Country">
+            <form method="GET" class="form-inline my-2 my-lg-0" action="{% url 'rlcis:incident_search' %}">
+                {% csrf_token %}
+                <!-- <input class="form-control mr-sm-2 col-md-10" type="search" placeholder="Search Country"> -->
+                {{ searchForm.query }}
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </thead>
@@ -40,7 +42,7 @@
                     {{ incident.get_bribed_by_display}}
                     {% endif %}
                 </td>
-
+                
                 <td>{% if incident.bribe_type_other %}
                     {{incident.bribe_type_other}}
                     {% else %}

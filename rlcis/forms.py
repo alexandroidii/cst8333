@@ -7,6 +7,13 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
+class SearchForm(forms.Form):
+    class Meta:
+        fields = [
+            'query',
+        ]
+
+
 class IncidentForm(forms.ModelForm):
     class Meta:
         model = Incident
