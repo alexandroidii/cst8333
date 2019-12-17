@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 
 
 class SearchForm(forms.Form):
-    query = forms.CharField(
+    q = forms.CharField(
         label = 'Search',
         max_length = 200 )
 

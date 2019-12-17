@@ -17,7 +17,7 @@ def incident_list(request):
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
     try:
-        incidents = paginator.get_page(page)
+        incidents = paginator.page(page)
     except PageNotAnInteger:
         incidents = paginator.page(1)
     except EmptyPage:
@@ -30,6 +30,33 @@ def incident_list(request):
     }
     return render(request, 'rlcis/incident_list.html', context)
 
+
+def incident_search(request):
+    template = 'rlcis/incident_list.html'
+    query = request.GET.get('q')
+
+    if not query:
+        incident_list = Incident.objects.all().order_by('-id')
+    else:
+        incident_list = search(query)
+
+    searchForm = SearchForm()
+    paginator = Paginator(incident_list, 2)
+    page = request.GET.get('page')
+    try:
+        incidents = paginator.page(page)
+    except PageNotAnInteger:
+        incidents = paginator.page(1)
+    except EmptyPage:
+        incidents = paginator.page(paginator.num_pages)
+
+    context = {
+        'incident_list': incidents,
+        'activePage': 'incident',
+        'searchForm': searchForm,
+        'query':query,
+    }
+    return render(request, template, context)
 
 def search(query):
 

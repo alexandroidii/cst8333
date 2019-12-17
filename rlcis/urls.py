@@ -28,4 +28,8 @@ urlpatterns = [
         'scenarios/',
         views.scenarios,
         name='scenarios'),
+    path(
+        'search/',
+        views.incident_search,
+        name='incident_search'),
 ]
