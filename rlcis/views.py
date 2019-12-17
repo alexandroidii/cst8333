@@ -85,7 +85,7 @@ def incident_form(request, id=0):
             print("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
-        return render(request, 'rlcis/incident_form.html', {'form': form, 'activePage': 'incidents'})
+        return render(request, 'rlcis/incident_form.html', {'form': form, 'activePage': 'incident'})
     else:
         if id == 0:
             print("starting incident_form - id = 0 POST")

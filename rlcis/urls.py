@@ -1,4 +1,5 @@
-from django.urls import include, path
+from django.contrib import admin
+from django.urls import include, path, reverse
 
 from . import views
 
@@ -8,6 +9,10 @@ urlpatterns = [
         '',
         views.index,
         name='home'),
+    # path(
+    #     'admin/'
+    #     admin.site.urls,
+    #     name='admin'),
     path(
         'add/',
         views.incident_form,

@@ -1,6 +1,20 @@
 {% extends "rlcis/base.html" %}
+{% load crispy_forms_tags %}
+
 
 {% block content %}
+<form method="GET" action="{% url 'rlcis:incident_search' %}">
+    <div class="row">
+        {% csrf_token %}
+        <!-- <input class="form-control mr-sm-2 col-md-10" type="search" placeholder="Search Country"> -->
+        <div class="col-sm-4 col-md-11">
+            {{ searchForm.q|as_crispy_field }}
+        </div>
+        <div class="col-sm-4 col-md-1">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </div>
+    </div>
+</form>
 <div class="row">
     <table class="table table-borderless">
         <thead class="border-bottom font-weight-bold">
@@ -17,23 +31,11 @@
                 <td>Reviewer</td>
                 <td>
                     <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
-                        <i class="fas fa-plus">Add New Incident</i>
+                        <i class="fas fa-plus"> New Incident</i>
                     </a>
                 </td>
             </tr>
-            
-            <form method="GET" class="form-inline my-2 my-lg-0" action="{% url 'rlcis:incident_search' %}">
-                {% csrf_token %}
-                <!-- <input class="form-control mr-sm-2 col-md-10" type="search" placeholder="Search Country"> -->
-                <div class="row">
-                    <div class="col-sm-4 col-md-8">
-                        {{ searchForm.q }}
-                    </div>
-                    <div class="col-sm-4 col-md-4">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
+
         </thead>
         <tbody>
             {% for incident in incident_list %}
@@ -49,7 +51,7 @@
                     {{ incident.get_bribed_by_display}}
                     {% endif %}
                 </td>
-                
+
                 <td>{% if incident.bribe_type_other %}
                     {{incident.bribe_type_other}}
                     {% else %}
@@ -77,17 +79,19 @@
 </div>
 
 <hr class="md-4">
+
+
 <ul class="pagination">
     {% for p in incident_list.paginator.page_range %}
-        {% if incident_list.number == p %}
-             <li class="page-item active">
-                 <a ref="?page={{ p }}{% if query %}&q={{query}}{% endif %}" class="page-link">{{ p }}</a>
-            </li>
-        {% else %}
-        <li class="page-item" >
-            <a href="?page={{ p }}{% if query %}&q={{query}}{% endif %}" class="page-link">{{ p }}</a>
-       </li>
-        {% endif %}
+    {% if incident_list.number == p %}
+    <li class="page-item active">
+        <a ref="?page={{ p }}{% if query %}&q={{query}}{% endif %}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{ p }}{% if query %}&q={{query}}{% endif %}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
     {% endfor %}
 </ul>
 

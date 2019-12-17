@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +22,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- <link rel="stylesheet" href="{% static '/css/style.css' %}"> -->
     <title>Real Life Corruption Incidents & Scenarios</title>
 
 </head>
@@ -27,41 +30,44 @@
 <body>
     {{ form.errors }}
     {{ form.non_field_errors }}
-    <div class="container">
+    <div class="container-fluid">
         <div class="col-md-16 mt-5">
             <div class="jumbotron">
                 <h1 class="display-6">Real Life Corruption Incidents & Scenarios</h1>
-
-                <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <a class="navbar-brand {% if activePage == 'home' %} active {% endif %}"
-                        href="{% url 'rlcis:home' %}">
-                        RLCIS
-                    </a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse"
-                        data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                        <ul class="nav nav-tabs mr-auto mt-2 mt-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link {% if activePage == 'incidents' %} active {% endif %}"
-                                    href="{% url 'rlcis:incident_list' %}">
+                <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2 text-left">
+                        <a class="navbar-brand {% if activePage == 'home' %} active {% endif %}"
+                            href="{% url 'rlcis:home' %}">
+                            RLCIS
+                        </a>
+                    </div>
+                    <div class="mx-auto order-0">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target=".dual-collapse2">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item {% if activePage == 'incident' %} active {% endif %}">
+                                <a class="nav-link" href="{% url 'rlcis:incident_list' %}">
                                     Incidents
-                                    <span class="sr-only">
-                                        (current)
-                                    </span>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if activePage == 'scenarios' %} active {% endif %}"
-                                    href="{% url 'rlcis:scenarios' %}">
+                            <li class="nav-item {% if activePage == 'scenarios' %} active {% endif %}">
+                                <a class="nav-link" href="{% url 'rlcis:scenarios' %}">
                                     Scenarios
                                 </a>
                             </li>
                         </ul>
-                   
+                    </div>
+                    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a href="{% url 'admin:login' %}" class="btn btn-info btn-md">
+                                    <span class="glyphicon glyphicon-user"></span> Admin
+                                </a>
+                            </li>
+
+                        </ul>
                     </div>
                 </nav>
                 <hr class="md-4">
@@ -71,4 +77,5 @@
         </div>
     </div>
 </body>
+
 </html>

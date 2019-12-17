@@ -1,5 +1,5 @@
 from django import forms
-
+from crispy_forms.helper import FormHelper
 from .models import Incident
 
 
@@ -11,6 +11,10 @@ class SearchForm(forms.Form):
     q = forms.CharField(
         label = 'Search',
         max_length = 200 )
+    def __init__(self, *args, **kwargs):
+        super(SearchForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
 
 
 class IncidentForm(forms.ModelForm):

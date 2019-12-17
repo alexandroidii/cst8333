@@ -9,3 +9,4 @@ admin.site.index_title = "Welcome to the RLCIS Admin area"
 
 admin.site.register(Incident)
 admin.site.register(Reviewer)
+admin.site.site_url= "/rlcis"
