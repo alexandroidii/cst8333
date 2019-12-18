@@ -1,5 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field
 from .models import Incident
 
 
@@ -10,12 +11,23 @@ class DateInput(forms.DateInput):
 class SearchForm(forms.Form):
     q = forms.CharField(
         label = 'Search',
-        max_length = 200 )
+        max_length = 200,
+        help_text="Search for Summary, Details, or Location" ,
+        )
     def __init__(self, *args, **kwargs):
         super(SearchForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_show_labels = False
+        helper = self.helper = FormHelper()
+        helper.form_show_labels = False
+        # self.helper.widgets = forms.TextInput(attrs={'placeholder':'Search for Summary, Details, or Location'})
+        # self.helper.attrs = {
+        #     'placeholder':'Search for Summary, Details, or Location',
+        # }
 
+        #     # Moving field labels into placeholders
+        # layout = helper.layout = Layout()
+        # for field_name, field in self.fields.items():
+        #     layout.append(Field(field_name, placeholder='Search for Summary, Details, or Location'))
+        #     helper.form_show_labels = False
 
 class IncidentForm(forms.ModelForm):
     class Meta:
