@@ -1,6 +1,9 @@
-from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field
+from crispy_forms.layout import (
+    Field, Layout,
+)
+from django import forms
+
 from .models import Incident
 
 
@@ -37,11 +40,11 @@ class IncidentForm(forms.ModelForm):
             'incident_details',
             'country',
             'region',
+            'location',
             'bribed_by',
             'bribed_by_other',
             'bribe_type',
             'bribe_type_other',
-            'location',
             'first_occurence',
             'resolution_date',
             'reviewer',

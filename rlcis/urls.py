@@ -1,18 +1,16 @@
 from django.contrib import admin
-from django.urls import include, path, reverse
-
+from django.urls import (
+    include, path, reverse,
+)
 from . import views
 
 app_name = 'rlcis'
 urlpatterns = [
+    
     path(
         '',
         views.index,
         name='home'),
-    # path(
-    #     'admin/'
-    #     admin.site.urls,
-    #     name='admin'),
     path(
         'add/',
         views.incident_form,
