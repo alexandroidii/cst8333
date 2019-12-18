@@ -12,27 +12,39 @@ urlpatterns = [
         views.index,
         name='home'),
     path(
-        'add/',
+        'add_incident/',
         views.incident_form,
         name="incident_insert"),
     path(
-        '<int:id>/',
+        'incident<int:id>/',
         views.incident_form,
         name='incident_update'),
     path(
-        'delete/<int:id>/',
+        'delete_incident/<int:id>/',
         views.incident_delete,
         name='incident_delete'),
     path(
-        'list/',
+        'incidents/',
         views.incident_list,
         name='incident_list'),
     path(
-        'scenarios/',
-        views.scenarios,
-        name='scenarios'),
-    path(
-        'search/',
+        'search_incidents/',
         views.incident_search,
         name='incident_search'),
+    path(
+        'scenarios/',
+        views.scenario_list,
+        name='scenario_list'),
+    path(
+        'add_scenario/',
+        views.scenario_form,
+        name='scenario_insert'),
+    path(
+        'scenario<int:id>/',
+        views.scenario_form,
+        name='scenario_update'),
+    path(
+        'delete_scenario/<int:id>',
+        views.scenario_delete,
+        name='scenario_delete'),
 ]

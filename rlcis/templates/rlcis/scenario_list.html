@@ -1,0 +1,80 @@
+{% extends "rlcis/base.html" %}
+
+
+{% block content %}
+<div class="row">
+
+    <div class="col-md-10 float-centre">
+        <h3>Scenarios</h3>
+    </div>
+    <div class="col-md-2 float-right">
+        <a href="{% url 'rlcis:scenario_insert' %}" class="btn btn-outline-success float-right">
+            <i class="fas fa-plus"> New Scenario</i>
+        </a>
+    </div>
+
+</div>
+<div class="row">
+    {% for incident in incident_list %}
+
+    <p>
+
+        <a href="{% url 'rlcis:scenario_update' incident.id %}" style="text-align:left !Important;" class="btn">
+            <div class="card w-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ incident.incident_summary }}</h5>
+                    <p class="card-text">{{ incident.incident_details|truncatechars:255 }}</p>
+                    <p class="card-text">
+                        Bribed by
+                        {% if incident.bribed_by_other %}
+                        {{ incident.bribed_by_other }}
+                        {% else %}
+                        {{ incident.get_bribed_by_display }}
+                        {% endif %}
+                        of type
+                        {% if incident.bribe_type_other %}
+                        {{ incident.bribe_type_other }}
+                        {% else %}
+                        {{ incident.get_bribe_type_display }}
+                        {% endif %}
+                    </p>
+                    <p class="card-text">
+                        Incident began on {{ incident.first_occurence }}
+                        {% if incident.resolution_date %}
+                        and was resolved on
+                        {{ incident.resolution_date }}
+                        {% endif %}
+                    </p>
+                    <p class="card-text">
+                        <small class="text-mutes">
+                            {{ incident.country }} {{ incident.region }} {{ incident.location }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+
+        </a>
+    </p>
+
+    {% endfor %}
+
+</div>
+
+<hr class="md-4">
+
+
+<ul class="pagination">
+    {% for p in incident_list.paginator.page_range %}
+    {% if incident_list.number == p %}
+    <li class="page-item active">
+        <a ref="?page={{ p }}{% if query %}&q={{query}}{% endif %}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{ p }}{% if query %}&q={{query}}{% endif %}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+</ul>
+
+{% endblock content %}

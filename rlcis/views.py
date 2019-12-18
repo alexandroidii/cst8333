@@ -1,8 +1,13 @@
+import logging
+
 from django.contrib.postgres.search import SearchVector
+from django.http import HttpResponse
+from django.shortcuts import(
+    redirect, render,
+)
 from django.core.paginator import(
     EmptyPage, PageNotAnInteger, Paginator,
 )
-from django.shortcuts import redirect, render
 
 from .forms import IncidentForm, SearchForm
 from .models import Incident
@@ -23,11 +28,14 @@ Authors: Robert Lange and Alexander Riccio
 Course: CST8333
 Date: 2019-12-19
 """
+logger = logging.getLogger(__name__)
 
 """
 Verify if a query is being passed, and return either 
 the full list of Incidents of a QuerySet based on the query.
  """
+
+
 def incident_list(request):
     query = request.GET.get('query')
     if not query:
@@ -52,6 +60,7 @@ def incident_list(request):
     }
     return render(request, 'rlcis/incident_list.html', context)
 
+
 """
 Search Incidents based on the returned Query.
 
@@ -59,12 +68,14 @@ fields:
 
 q -- Query returned from the user
 """
+
+
 def incident_search(request):
     template = 'rlcis/incident_list.html'
     query = request.GET.get('q')
 
     if not query:
-        incident_list = Incident.objects.all().order_by('-id')
+        incident_list = Incident.objects.filter(scenario=False).order_by('-id')
     else:
         incident_list = __search(query)
 
@@ -86,6 +97,7 @@ def incident_search(request):
     }
     return render(request, template, context)
 
+
 """
 private method used to search multiple Incident columns.
 
@@ -93,9 +105,11 @@ fields:
 
 query -- contains the query to search Incidents against
 """
+
+
 def __search(query):
 
-    print(query)
+    logger.debug("Query = " + query)
     incident_list = Incident.objects.annotate(
         search=SearchVector(
             'incident_summary',
@@ -109,44 +123,47 @@ def __search(query):
     ).filter(search=query).order_by('-id')
     return incident_list
 
+
 """
 Incident Form used to create and update and Incident
 
 If id=0, this is a new Incident to be added to the database
 If id>0, this incident is being updated
 """
+
+
 def incident_form(request, id=0):
-    print("starting incident_form")
+    logger.debug("starting incident_form")
     if request.method == "GET":
         if id == 0:
-            print("starting incident_form - id = 0")
+            logger.debug("starting incident_form - id = 0")
             form = IncidentForm()
         else:
-            print("starting incident_form - id exists")
+            logger.debug("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
         return render(request, 'rlcis/incident_form.html', {'form': form, 'activePage': 'incident'})
     else:
         if id == 0:
-            print("starting incident_form - id = 0 POST")
+            logger.debug("starting incident_form - id = 0 POST")
             form = IncidentForm(request.POST)
         else:
-            print("starting incident_form - id exist POST")
+            logger.debug("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
         if form.is_valid():
-            print("starting incident_form - is valid save() POST")
+            logger.debug("starting incident_form - is valid save() POST")
             form.save()
         else:
-            print(form.errors)
-            print("form.is_valid() failed")
+            logger.debug(form.errors)
+            logger.debug("form.is_valid() failed")
         return redirect('/rlcis/list/')
 
 
 def incident_delete(request, id):
-    print("trying to delete ")
+    logger.debug("trying to delete ")
     incident = Incident.objects.get(pk=id)
-    print(incident)
+    logger.debug(incident)
     incident.delete()
     return redirect('/rlcis/list/')
 
@@ -155,5 +172,92 @@ def index(request):
     return render(request, 'rlcis/index.html', {'activePage': 'home'})
 
 
-def scenarios(request):
-    return render(request, 'rlcis/scenarios.html', {'activePage': 'scenarios'})
+def scenario_list(request):
+
+    query = request.GET.get('query')
+    if not query:
+        incident_list = Incident.objects.filter(scenario=True).order_by('-id')
+    else:
+        incident_list = __search(query)
+
+    searchForm = SearchForm()
+    paginator = Paginator(incident_list, 2)
+    page = request.GET.get('page')
+    try:
+        incidents = paginator.page(page)
+    except PageNotAnInteger:
+        incidents = paginator.page(1)
+    except EmptyPage:
+        incidents = paginator.page(paginator.num_pages)
+
+    context = {
+        'incident_list': incidents,
+        'activePage': 'scenarios',
+        'searchForm': searchForm,
+    }
+
+    return render(request, 'rlcis/scenario_list.html', context)
+
+def scnario_search(request):
+    template = 'rlcis/scenario_list.html'
+    query = request.GET.get('q')
+
+    if not query:
+        incident_list = Incident.objects.all().order_by('-id')
+    else:
+        incident_list = __search(query).filter(scenario=True)
+
+    searchForm = SearchForm()
+    paginator = Paginator(incident_list, 2)
+    page = request.GET.get('page')
+    try:
+        incidents = paginator.page(page)
+    except PageNotAnInteger:
+        incidents = paginator.page(1)
+    except EmptyPage:
+        incidents = paginator.page(paginator.num_pages)
+
+    context = {
+        'incident_list': incidents,
+        'activePage': 'scenarios',
+        'searchForm': searchForm,
+        'query': query,
+    }
+    return render(request, template, context)
+
+
+def scenario_form(request, id=0):
+    logger.debug("starting scenario_form")
+    if request.method == "GET":
+        if id == 0:
+            logger.debug("starting scenario_form - id = 0")
+            form = IncidentForm()
+        else:
+            logger.debug("starting scenario_form - id exists")
+            incident = Incident.objects.get(pk=id)
+            form = IncidentForm(instance=incident)
+        return render(request, 'rlcis/scenario_form.html', {'form': form, 'activePage': 'scenarios'})
+    else:
+        if id == 0:
+            logger.debug("starting scenario_form - id = 0 POST")
+            form = IncidentForm(request.POST)
+        else:
+            logger.debug("starting scenario_form - id exist POST")
+            incident = Incident.objects.get(pk=id)
+            form = IncidentForm(request.POST, instance=incident)
+        if form.is_valid():
+            logger.debug("starting scenario_form - is valid save() POST")
+            form.scenario = True
+            print(form.scenario)
+            form.save()
+        else:
+            logger.debug(form.errors)
+            logger.debug("form.is_valid() failed")
+        return redirect('/rlcis/scenarios/')
+
+def scenario_delete(request, id):
+    logger.debug("trying to delete scenario")
+    incident = Incident.objects.get(pk=id)
+    logger.debug(incident)
+    incident.delete()
+    return redirect('scenarios/')
