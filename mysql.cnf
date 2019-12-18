@@ -1,6 +1,0 @@
-#mysql.cnf
-[client]
-database = rlcis
-user = rlcisadm
-password = 12345678
-default-character-set = utf8
