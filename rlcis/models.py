@@ -6,9 +6,21 @@ from django.forms import ModelForm
 from django.urls import reverse
 from django.utils import timezone
 
-# Create your models here.
 
-"""
+""" 
+RLCIS models.py define the structure to the underlying database.
+Using python manage.py makemigrations followed by python manage.py migrate
+defines the noted attributes below for the application within the specified database. 
+It uses the settings.py file DATABASES dicitonary for database schema/credential/connection 
+
+App Namespace: 'rlcis'
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+
+
+
 Class Reviewer: Attributes describing the Reviewer model.
 
 The reviewer will be used to review the incidents.

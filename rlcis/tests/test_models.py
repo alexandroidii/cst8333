@@ -2,6 +2,16 @@ from django.test import TestCase
 
 from rlcis.models import Reviewer
 
+""" 
+RLCIS test_models defines the unittests for the Reviewer model.
+Following the setUpTestData, 6 defined tests are  used to valiadate
+the Reviewer model.
+
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+"""
 # Create your tests here.
 
 class Test_Reviewer_Model(TestCase):
