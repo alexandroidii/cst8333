@@ -4,9 +4,21 @@ from django.urls import (
 )
 from . import views
 
+""" 
+RLCIS Urls to direct navigation through the app 
+
+App Namespace: 'rlcis'
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+"""
+
+
 app_name = 'rlcis'
 urlpatterns = [
     
+    # root path for the home page
     path(
         '',
         views.index,
@@ -23,6 +35,7 @@ urlpatterns = [
         'delete_incident/<int:id>/',
         views.incident_delete,
         name='incident_delete'),
+    #return a list of incidents
     path(
         'incidents/',
         views.incidents,
@@ -39,6 +52,7 @@ urlpatterns = [
         'delete_scenario/<int:id>/',
         views.scenario_delete,
         name='scenario_delete'),
+    # return a list of Scenarios
     path(
         'scenarios/',
         views.scenarios,

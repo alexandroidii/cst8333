@@ -4,32 +4,70 @@ from django import forms
 
 from .models import Incident
 
+""" 
+RLCIS forms used when populating the template fields.  
+
+Functions:
+DateInput -- Used to set the input type of a field to 'date'
+SearchForm -- form used for the search function of both Incidents and Scenarios
+IncidentForm -- form used for both incidents and scenarios when populating templates
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+"""
+
 
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+"""
+The Search Form uses the 'q' field to take in a users query
+which is used to search through the incident objects.  
+Both Incidents and Scenarios go through this search
+    
+Fields:
 
+q -- CharField used to store the users query
+"""
 class SearchForm(forms.Form):
     q = forms.CharField(
         label = 'Search',
         max_length = 200,
-        help_text="Search for Summary, Details, or Location" ,
+        help_text="Search on any of the text fields below." ,
         )
     def __init__(self, *args, **kwargs):
         super(SearchForm, self).__init__(*args, **kwargs)
         helper = self.helper = FormHelper()
-        helper.form_show_labels = False
-        # self.helper.widgets = forms.TextInput(attrs={'placeholder':'Search for Summary, Details, or Location'})
-        # self.helper.attrs = {
-        #     'placeholder':'Search for Summary, Details, or Location',
-        # }
+        helper.form_show_labels = False #removes the label for the query field when it is initialized
 
-        #     # Moving field labels into placeholders
-        # layout = helper.layout = Layout()
-        # for field_name, field in self.fields.items():
-        #     layout.append(Field(field_name, placeholder='Search for Summary, Details, or Location'))
-        #     helper.form_show_labels = False
+"""
+The Incident form is used to populate the templates for CrUD operations
+on the Incident Object.  Both Incidents and Scenarios use this form.  
+The different is when the 'scenario' Boolean is set to true, then 
+then object is considered to be a Scenario instead of an Incident.
+    
+Fields:
 
+anonymous           -- Boolean field to set the submission as anonymous.  This 
+                        disables the country, region, location and company name fields
+company_name        -- Optional field 
+incident_summary    -- Required
+incident_details    -- Required
+country             -- Optional
+region              -- Optional
+location            -- Optional
+bribed_by           -- Required 
+bribed_by_other     -- Optional field only if bribed_by is set to Other
+bribe_type          -- Required
+bribe_type_other    -- Optional field only if bribe_type is set to Other
+first_occurence     -- Optional
+resolution_date     -- Optional
+reviewer            -- Optional
+scenario            -- Required but hidden.  This determines if the Incident is actually a Scenario
+industry_type       -- Required
+industry_type_other -- Optional field only if industry_type is set to Other
+"""
 class IncidentForm(forms.ModelForm):
     anonymous = forms.BooleanField(
         required=False, 
@@ -59,7 +97,7 @@ class IncidentForm(forms.ModelForm):
             'industry_type_other',
 
         ]
-        labels = {
+        labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
             'incident_summary': 'Incident Summary',
             'incident_details': 'Incident Details',
@@ -77,17 +115,15 @@ class IncidentForm(forms.ModelForm):
             'industry_type_other': 'Industry Type Other',
         }
         widgets = {
-            'first_occurence': DateInput(),
-            'resolution_date': DateInput(),
-            'incident_details': forms.Textarea(attrs={'rows':2}),
+            'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
+            'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
+            'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
 
         }
 
         def __init__(self, *args, **kwargs):
             super(IncidentForm, self).__init__(*args, **kwargs)
-            self.fields['bribed_by'].empty_label = "select"
-            self.fields['bribe_type'].empty_label = "select"
-            self.fields['industry_type'].empty_label = "select"
+            # set which fields are not required.
             self.fields['bribed_by_other'].required = False
             self.fields['bribe_type_other'].required = False
             self.fields['industry_type_other'].required = False

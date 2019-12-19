@@ -1,6 +1,13 @@
 {% extends "rlcis/base.html" %}
 {% load crispy_forms_tags %}
 
+{% comment %}
+RLCIS Template used to display a list of Incidents in a Table
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+{% endcomment %}
 
 {% block content %}
 <div class="row">
@@ -43,7 +50,6 @@
         </thead>
         <tbody>
             {% for incident in incident_list %}
-            <!-- {{ incident.full_name|upper }}<br> -->
             <tr class='clickable-row' data-href="{% url 'rlcis:incident_update' incident.id %}">
                 <td>
                     {{incident.id}}
@@ -96,11 +102,13 @@
     {% endif %}
     {% endfor %}
 </ul>
+
 <script type='text/javascript'>
-jQuery(document).ready(function($) {
-    $(".clickable-row").click(function() {
-        window.location = $(this).data("href");
+    // jquery used to make each row of the table clickable
+    $(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
     });
-});
 </script>
 {% endblock content %}
