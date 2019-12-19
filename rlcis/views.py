@@ -9,8 +9,8 @@ from django.db.models import Case, CharField, Value, When
 from .forms import IncidentForm, SearchForm
 from .models import Incident
 
-""" 
-RLCIS Views that control the flow of information 
+"""
+RLCIS Views that control the flow of information
 from the page to the database and back.
 
 Functions:
@@ -28,7 +28,7 @@ Date: 2019-12-19
 logger = logging.getLogger(__name__)
 
 """
-Verify if a query is being passed, and return either 
+Verify if a query is being passed, and return either
 the full list of Incidents of a QuerySet based on the query.
  """
 
@@ -36,9 +36,9 @@ the full list of Incidents of a QuerySet based on the query.
 def incident_list(request):
     query = request.GET.get('query')
     if not query:
-        incident_list = Incident.objects.all().order_by('-id')
+        incident_list = Incident.objects.filter(scenario=False).order_by('-id')
     else:
-        incident_list = __search(query)
+        incident_list = __search(query).filter(scenario=False)
 
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
@@ -108,18 +108,21 @@ def __search(query):
 
     logger.debug("Query = " + query)
     incident_list = Incident.objects.annotate(
-        industry_type_text = Case( #used to search on the text values instead of the 2 character code stored in the database.
-            *[When(industry_type = i, then = Value(v)) for i, v in Incident.INDUSTRY_TYPE_CHOICES],
+        industry_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
+            *[When(industry_type=i, then=Value(v))
+                   for i, v in Incident.INDUSTRY_TYPE_CHOICES],
             default=Value(''),
             output_field=CharField()
         ),
-        bribed_by_text = Case( #used to search on the text values instead of the 2 character code stored in the database.
-            *[When(bribed_by = bb, then = Value(v)) for bb, v in Incident.BRIBED_BY_CHOICES],
+        bribed_by_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
+            *[When(bribed_by=bb, then=Value(v))
+                   for bb, v in Incident.BRIBED_BY_CHOICES],
             default=Value(''),
             output_field=CharField()
         ),
-        bribe_type_text = Case( #used to search on the text values instead of the 2 character code stored in the database.
-            *[When(bribe_type = bt, then = Value(v)) for bt, v in Incident.BRIBE_TYPE_CHOICES],
+        bribe_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
+            *[When(bribe_type=bt, then=Value(v))
+                   for bt, v in Incident.BRIBE_TYPE_CHOICES],
             default=Value(''),
             output_field=CharField()
         ),
@@ -158,11 +161,11 @@ def incident_form(request, id=0):
             print("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
-            context = {
-                'form': form, 
-                'activePage': 'incidents',
-                'id': id,
-            }
+        context = {
+            'form': form,
+            'activePage': 'incidents',
+            'id': id,
+        }
         return render(request, 'rlcis/incident_form.html', context)
     else:
         if id == 0:
@@ -198,10 +201,11 @@ def scenario_list(request):
 
     query = request.GET.get('query')
     if not query:
-        incident_list = Incident.objects.all().order_by('-id') #TODO filter this by scenario boolean
+        incident_list = Incident.objects.filter(scenario=True).order_by('-id') #TODO filter this by scenario boolean
     else:
-        incident_list = __search(query)
+        incident_list = __search(query).filter(scenario=True)
 
+    print(incident_list)
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
@@ -220,7 +224,7 @@ def scenario_list(request):
 
     return render(request, 'rlcis/scenario_list.html', context)
 
-def scnario_search(request):
+def scenario_search(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
 
@@ -228,7 +232,9 @@ def scnario_search(request):
         incident_list = Incident.objects.all().order_by('-id')
     else:
         incident_list = __search(query).filter(scenario=True)
-
+    
+    print(incident_list)
+    print(incident_list.filter(scenario=True))
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
@@ -269,10 +275,13 @@ def scenario_form(request, id=0):
             form = IncidentForm(request.POST, instance=incident)
         print(form.errors)
         print('before form is valid = ' + str(form.is_valid()))
-        request.POST._mutable = True
-        form.data['scenario'] = True
+        # request.POST._mutable = True
+        # form.data['scenario'] = True
         print('after form is valid = ' + str(form.is_valid()))
         if form.is_valid():
+            tempObj = form.save(commit=False)
+            tempObj.scenario = True
+            tempObj.save()
             logger.debug("starting scenario_form - is valid save() POST")
             # form.cleaned_data['scenario'] = True #TODO The value is not being saved to the database
             print(form.cleaned_data['scenario'])

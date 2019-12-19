@@ -3,6 +3,11 @@
 
 
 {% block content %}
+<div class="row">
+    <div class="col-md-12 text-center ">
+        <h3>Incidents</h3>
+    </div>
+</div>
 <form method="GET" action="{% url 'rlcis:incident_search' %}">
     <div class="row">
         {% csrf_token %}
@@ -28,8 +33,6 @@
                 <td>Industry Type</td>
                 <td>Summary</td>
                 <td>Country<br>Region<br>Location</td>
-                <!-- <td>Region</td> -->
-                <!-- <td>Location</td> -->
                 <td>Bribed By</td>
                 <td>Bribe Type</td>
                 <td>First Occurence</td>
@@ -43,7 +46,7 @@
             <!-- {{ incident.full_name|upper }}<br> -->
             <tr class='clickable-row' data-href="{% url 'rlcis:incident_update' incident.id %}">
                 <td>
-                        {{incident.id}}
+                    {{incident.id}}
                 </td>
                 <td>{{incident.company_name}}</td>
                 <td>{% if incident.industry_type_other %}
@@ -94,7 +97,6 @@
     {% endfor %}
 </ul>
 <script type='text/javascript'>
-
 jQuery(document).ready(function($) {
     $(".clickable-row").click(function() {
         window.location = $(this).data("href");

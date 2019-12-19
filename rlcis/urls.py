@@ -47,4 +47,8 @@ urlpatterns = [
         'delete_scenario/<int:id>/',
         views.scenario_delete,
         name='scenario_delete'),
+    path(
+        'search_scenario/',
+        views.scenario_search,
+        name='scenario_search'),
 ]

@@ -92,8 +92,21 @@ class Incident(Model):
     incident_details = models.TextField(
         null=True,
     )
-    country = models.CharField(max_length=60)
-    region = models.CharField(max_length=60)
+    country = models.CharField(
+        max_length=60,
+        null=True,
+        blank=True,
+)
+    region = models.CharField(
+        max_length=60,
+        null=True,
+        blank=True,
+    )
+    location = models.CharField(
+        max_length=60,
+        null=True,
+        blank=True,
+    )
     bribed_by = models.CharField(
         max_length=2,
         choices=BRIBED_BY_CHOICES,
@@ -125,11 +138,6 @@ class Incident(Model):
         null=True,
         blank=True,
     )
-
-    location = models.CharField(
-        max_length=60,
-        null=True,
-    )
     first_occurence = models.DateField(
         null=True,
         blank=True,
@@ -155,7 +163,7 @@ class Incident(Model):
     )
 
     def __str__(self):
-        return self.incident_summary
+        return self.incident_summary + " " + str(self.scenario)
 
     def get_absolute_url(self):
         return reverse('incident-detail', kwargs={'pk': self.pk})

@@ -9,6 +9,8 @@
     {% csrf_token %}
     {{ form.errors }}
     {{ form.non_field_errors }}
+
+    <!-- <input type="hidden" name="scenario" value='True'/> -->
     <div class="row">
         <div class="col-sm-4 col-md-5">
             {{ form.industry_type|as_crispy_field }}
@@ -47,22 +49,6 @@
         </div>
         <div class="col-sm-4 col-md-6">
             {{ form.resolution_date|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-4">
-            {{ form.country|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-4">
-            {{ form.region|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-4">
-            {{ form.location|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-8">
-
         </div>
     </div>
     <div class="row">
