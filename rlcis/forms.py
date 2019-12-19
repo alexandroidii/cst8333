@@ -35,7 +35,7 @@ class IncidentForm(forms.ModelForm):
         required=False, 
         label="Submit Anonymously?",
         widget=forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
-    ) #TODO disable company_name, Country, Region, Location
+    )
 
     class Meta:
         model = Incident

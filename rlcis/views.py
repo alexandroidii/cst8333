@@ -25,35 +25,8 @@ Authors: Robert Lange and Alexander Riccio
 Course: CST8333
 Date: 2019-12-19
 """
+
 logger = logging.getLogger(__name__)
-
-"""
-Verify if a query is being passed, and return either
-the full list of Incidents of a QuerySet based on the query.
- """
-def incident_list(request):
-    query = request.GET.get('query')
-    if not query:
-        incident_list = Incident.objects.filter(scenario=False).order_by('-id')
-    else:
-        incident_list = __search(query).filter(scenario=False)
-
-    searchForm = SearchForm()
-    paginator = Paginator(incident_list, 2)
-    page = request.GET.get('page')
-    try:
-        incidents = paginator.page(page)
-    except PageNotAnInteger:
-        incidents = paginator.page(1)
-    except EmptyPage:
-        incidents = paginator.page(paginator.num_pages)
-
-    context = {
-        'incident_list': incidents,
-        'activePage': 'incident',
-        'searchForm': searchForm,
-    }
-    return render(request, 'rlcis/incident_list.html', context)
 
 
 """
@@ -63,14 +36,14 @@ fields:
 
 q -- Query returned from the user
 """
-def incident_search(request):
+def incidents(request):
     template = 'rlcis/incident_list.html'
     query = request.GET.get('q')
 
     if not query:
         incident_list = Incident.objects.filter(scenario=False).order_by('-id')
     else:
-        incident_list = __search(query)
+        incident_list = __search(query).filter(scenario=False)
 
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
@@ -91,48 +64,6 @@ def incident_search(request):
     return render(request, template, context)
 
 
-"""
-private method used to search multiple Incident columns.
-
-fields:
-
-query -- contains the query to search Incidents against
-"""
-def __search(query):
-
-    logger.debug("Query = " + query)
-    incident_list = Incident.objects.annotate(
-        industry_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
-            *[When(industry_type=i, then=Value(v))
-                   for i, v in Incident.INDUSTRY_TYPE_CHOICES],
-            default=Value(''),
-            output_field=CharField()
-        ),
-        bribed_by_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
-            *[When(bribed_by=bb, then=Value(v))
-                   for bb, v in Incident.BRIBED_BY_CHOICES],
-            default=Value(''),
-            output_field=CharField()
-        ),
-        bribe_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
-            *[When(bribe_type=bt, then=Value(v))
-                   for bt, v in Incident.BRIBE_TYPE_CHOICES],
-            default=Value(''),
-            output_field=CharField()
-        ),
-        search=SearchVector(
-            'incident_summary',
-            'incident_details',
-            'country',
-            'region',
-            'location',
-            'company_name',
-            'industry_type_text',
-            'bribed_by_text',
-            'bribe_type_text',
-        ),
-    ).filter(search=query).order_by('-id')
-    return incident_list
 
 
 """
@@ -183,40 +114,13 @@ def incident_delete(request, id):
     return redirect('/rlcis/incidents/')
 
 
-def index(request):
-    return render(request, 'rlcis/index.html', {'activePage': 'home'})
 
-
-def scenario_list(request):
-
-    query = request.GET.get('query')
-    if not query:
-        incident_list = Incident.objects.filter(scenario=True).order_by('-id') 
-    else:
-        incident_list = __search(query).filter(scenario=True)
-    searchForm = SearchForm()
-    paginator = Paginator(incident_list, 2)
-    page = request.GET.get('page')
-    try:
-        incidents = paginator.page(page)
-    except PageNotAnInteger:
-        incidents = paginator.page(1)
-    except EmptyPage:
-        incidents = paginator.page(paginator.num_pages)
-
-    context = {
-        'incident_list': incidents,
-        'activePage': 'scenarios',
-        'searchForm': searchForm,
-    }
-    return render(request, 'rlcis/scenario_list.html', context)
-
-def scenario_search(request):
+def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
 
     if not query:
-        incident_list = Incident.objects.all().order_by('-id')
+        incident_list = Incident.objects.filter(scenario=True).order_by('-id')
     else:
         incident_list = __search(query).filter(scenario=True)
     searchForm = SearchForm()
@@ -274,3 +178,49 @@ def scenario_delete(request, id):
     logger.debug(incident)
     incident.delete()
     return redirect('scenarios/')
+
+"""
+private method used to search multiple Incident columns.
+
+fields:
+
+query -- contains the query to search Incidents against
+"""
+def __search(query):
+
+    logger.debug("Query = " + query)
+    incident_list = Incident.objects.annotate(
+        industry_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
+            *[When(industry_type=i, then=Value(v))
+                   for i, v in Incident.INDUSTRY_TYPE_CHOICES],
+            default=Value(''),
+            output_field=CharField()
+        ),
+        bribed_by_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
+            *[When(bribed_by=bb, then=Value(v))
+                   for bb, v in Incident.BRIBED_BY_CHOICES],
+            default=Value(''),
+            output_field=CharField()
+        ),
+        bribe_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
+            *[When(bribe_type=bt, then=Value(v))
+                   for bt, v in Incident.BRIBE_TYPE_CHOICES],
+            default=Value(''),
+            output_field=CharField()
+        ),
+        search=SearchVector(
+            'incident_summary',
+            'incident_details',
+            'country',
+            'region',
+            'location',
+            'company_name',
+            'industry_type_text',
+            'bribed_by_text',
+            'bribe_type_text',
+        ),
+    ).filter(search=query).order_by('-id')
+    return incident_list
+
+def index(request):
+    return render(request, 'rlcis/index.html', {'activePage': 'home'})

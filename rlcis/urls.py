@@ -25,16 +25,8 @@ urlpatterns = [
         name='incident_delete'),
     path(
         'incidents/',
-        views.incident_list,
-        name='incident_list'),
-    path(
-        'search_incidents/',
-        views.incident_search,
-        name='incident_search'),
-    path(
-        'scenarios/',
-        views.scenario_list,
-        name='scenario_list'),
+        views.incidents,
+        name='incidents'),
     path(
         'add_scenario/',
         views.scenario_form,
@@ -48,7 +40,7 @@ urlpatterns = [
         views.scenario_delete,
         name='scenario_delete'),
     path(
-        'search_scenario/',
-        views.scenario_search,
-        name='scenario_search'),
+        'scenarios/',
+        views.scenarios,
+        name='scenarios'),
 ]
