@@ -102,7 +102,7 @@ class Incident(Model):
 
     bribed_by_other = models.CharField(
         max_length=100,
-        # null=True,
+        null=True,
         blank=True,
     )
     bribe_type = models.CharField(
@@ -112,7 +112,7 @@ class Incident(Model):
     )
     bribe_type_other = models.CharField(
         max_length=60,
-        # null=True,
+        null=True,
         blank=True,
     )
     industry_type = models.CharField(
@@ -122,7 +122,7 @@ class Incident(Model):
     )
     industry_type_other = models.CharField(
         max_length=100,
-        # null=True,
+        null=True,
         blank=True,
     )
 

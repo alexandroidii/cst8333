@@ -51,8 +51,12 @@ class IncidentForm(forms.ModelForm):
             'resolution_date',
             'reviewer',
             'scenario',
+            'industry_type',
+            'industry_type_other',
+
         ]
         labels = {
+            'company_name': 'Company Name',
             'incident_summary': 'Incident Summary',
             'incident_details': 'Incident Details',
             'country': 'Country',
@@ -65,6 +69,8 @@ class IncidentForm(forms.ModelForm):
             'location': 'Location',
             'resolution_date': 'Resolution Date',
             'reviewer': 'Reviewer',
+            'industry_type': 'Industry Type',
+            'industry_type_other': 'Industry Type Other',
         }
         widgets = {
             'first_occurence': DateInput(),
@@ -76,8 +82,12 @@ class IncidentForm(forms.ModelForm):
             super(IncidentForm, self).__init__(*args, **kwargs)
             self.fields['bribed_by'].empty_label = "select"
             self.fields['bribe_type'].empty_label = "select"
+            self.fields['industry_type'].empty_label = "select"
             self.fields['bribed_by_other'].required = False
             self.fields['bribe_type_other'].required = False
+            self.fields['industry_type_other'].required = False
+            self.fields['company_name'].required = False
+            self.fields['anonymous'].required = False
             self.fields['first_occurence'].required = False
             self.fields['resolution_date'].required = False
             self.fields['reviewer'].required = False

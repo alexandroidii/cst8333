@@ -20,7 +20,7 @@ urlpatterns = [
         views.incident_form,
         name='incident_update'),
     path(
-        'delete_incident/<int:id>/',
+        'delete_incident/<int:id>',
         views.incident_delete,
         name='incident_delete'),
     path(

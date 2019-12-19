@@ -16,10 +16,15 @@
     </div>
 </form>
 <div class="row">
+    <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
+        <i class="fas fa-plus"> New Incident</i>
+    </a>
     <table class="table table-borderless">
         <thead class="border-bottom font-weight-bold">
             <tr>
                 <td>ID</td>
+                <td>Company</td>
+                <td>Industry Type</td>
                 <td>Summary</td>
                 <td>Country<br>Region<br>Location</td>
                 <!-- <td>Region</td> -->
@@ -29,19 +34,25 @@
                 <td>First Occurence</td>
                 <td>Resolution Date</td>
                 <td>Reviewer</td>
-                <td>
-                    <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
-                        <i class="fas fa-plus"> New Incident</i>
-                    </a>
-                </td>
             </tr>
 
         </thead>
         <tbody>
             {% for incident in incident_list %}
-            {{ incident.full_name|upper }}<br>
+            <!-- {{ incident.full_name|upper }}<br> -->
             <tr>
-                <td>{{incident.id}}</td>
+                <td>
+                    <a href="{% url 'rlcis:incident_update' incident.id %}" class="btn text-secondary px-0">
+                        {{incident.id}}
+                    </a>
+                </td>
+                <td>{{incident.company_name}}</td>
+                <td>{% if incident.industry_type_other %}
+                    {{incident.industry_type_other}}
+                    {% else %}
+                    {{ incident.get_industry_type_display}}
+                    {% endif %}
+                </td>
                 <td>{{incident.incident_summary}}</td>
                 <td>{{incident.country}}<br>{{incident.region}}<br>{{incident.location}}</td>
 
@@ -61,17 +72,6 @@
                 <td>{{incident.first_occurence}}</td>
                 <td>{{incident.resolution_date}}</td>
                 <td>{{incident.reviewer}}</td>
-                <td>
-                    <a href="{% url 'rlcis:incident_update' incident.id %}" class="btn text-secondary px-0">
-                        <i class="far fa-edit fa"></i>
-                    </a>
-                    <form action="{% url 'rlcis:incident_delete' incident.id%}" method="POST" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn">
-                            <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
-                        </button>
-                    </form>
-                </td>
             </tr>
             {% endfor %}
         </tbody>

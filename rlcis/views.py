@@ -113,6 +113,7 @@ def __search(query):
             'country',
             'region',
             'location',
+            'company',
             # 'first_occurence',
             # 'resolution_date'
         ),
@@ -147,6 +148,7 @@ def incident_form(request, id=0):
             logger.debug("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
+        print(form.errors)
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
             form.save()
@@ -241,9 +243,14 @@ def scenario_form(request, id=0):
             logger.debug("starting scenario_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
+        print(form.errors)
+        print('before form is valid = ' + str(form.is_valid()))
+        request.POST._mutable = True
+        form.data['scenario'] = True
+        print('after form is valid = ' + str(form.is_valid()))
         if form.is_valid():
             logger.debug("starting scenario_form - is valid save() POST")
-            form.cleaned_data['scenario'] = True #TODO The value is not being saved to the database
+            # form.cleaned_data['scenario'] = True #TODO The value is not being saved to the database
             print(form.cleaned_data['scenario'])
             form.save()
         else:
