@@ -1,7 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (
-    Field, Layout,
-)
+from crispy_forms.layout import Field, Layout
 from django import forms
 
 from .models import Incident
@@ -33,9 +31,13 @@ class SearchForm(forms.Form):
         #     helper.form_show_labels = False
 
 class IncidentForm(forms.ModelForm):
+    anonymous = forms.BooleanField(required=False, label="Submit Anonymously?") #TODO disable company_name, Country, Region, Location
+
     class Meta:
         model = Incident
         fields = [
+            'company_name',
+            'anonymous',
             'incident_summary',
             'incident_details',
             'country',
@@ -48,6 +50,7 @@ class IncidentForm(forms.ModelForm):
             'first_occurence',
             'resolution_date',
             'reviewer',
+            'scenario',
         ]
         labels = {
             'incident_summary': 'Incident Summary',
@@ -66,6 +69,7 @@ class IncidentForm(forms.ModelForm):
         widgets = {
             'first_occurence': DateInput(),
             'resolution_date': DateInput(),
+            'incident_details': forms.Textarea(attrs={'rows':2}),
         }
 
         def __init__(self, *args, **kwargs):

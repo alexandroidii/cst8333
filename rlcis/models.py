@@ -102,6 +102,7 @@ class Incident(Model):
 
     bribed_by_other = models.CharField(
         max_length=100,
+        # null=True,
         blank=True,
     )
     bribe_type = models.CharField(
@@ -111,6 +112,7 @@ class Incident(Model):
     )
     bribe_type_other = models.CharField(
         max_length=60,
+        # null=True,
         blank=True,
     )
     industry_type = models.CharField(
@@ -118,12 +120,16 @@ class Incident(Model):
         choices=INDUSTRY_TYPE_CHOICES,
         default=OTHER,
     )
-    transportation_type_other = models.CharField(
+    industry_type_other = models.CharField(
         max_length=100,
+        # null=True,
         blank=True,
     )
 
-    location = models.CharField(max_length=60)
+    location = models.CharField(
+        max_length=60,
+        null=True,
+    )
     first_occurence = models.DateField(
         null=True,
         blank=True,

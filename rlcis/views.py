@@ -1,13 +1,9 @@
 import logging
 
 from django.contrib.postgres.search import SearchVector
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
-from django.shortcuts import(
-    redirect, render,
-)
-from django.core.paginator import(
-    EmptyPage, PageNotAnInteger, Paginator,
-)
+from django.shortcuts import redirect, render
 
 from .forms import IncidentForm, SearchForm
 from .models import Incident
@@ -157,7 +153,7 @@ def incident_form(request, id=0):
         else:
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
-        return redirect('/rlcis/list/')
+        return redirect('/rlcis/incidents/')
 
 
 def incident_delete(request, id):
@@ -165,7 +161,7 @@ def incident_delete(request, id):
     incident = Incident.objects.get(pk=id)
     logger.debug(incident)
     incident.delete()
-    return redirect('/rlcis/list/')
+    return redirect('/rlcis/incidents/')
 
 
 def index(request):
@@ -176,7 +172,7 @@ def scenario_list(request):
 
     query = request.GET.get('query')
     if not query:
-        incident_list = Incident.objects.filter(scenario=True).order_by('-id')
+        incident_list = Incident.objects.all().order_by('-id') #TODO filter this by scenario boolean
     else:
         incident_list = __search(query)
 
@@ -247,8 +243,8 @@ def scenario_form(request, id=0):
             form = IncidentForm(request.POST, instance=incident)
         if form.is_valid():
             logger.debug("starting scenario_form - is valid save() POST")
-            form.scenario = True
-            print(form.scenario)
+            form.cleaned_data['scenario'] = True #TODO The value is not being saved to the database
+            print(form.cleaned_data['scenario'])
             form.save()
         else:
             logger.debug(form.errors)

@@ -9,6 +9,15 @@
     {% csrf_token %}
     {{ form.errors }}
     {{ form.non_field_errors }}
+
+    <div class="row">
+        <div class="col-sm-4 col-md-1">
+            {{ form.anonymous|as_crispy_field }}
+        </div>
+        <div class="col-sm-4 col-md-11">
+            {{ form.company_name|as_crispy_field }}
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-4 col-md-12">
             {{ form.incident_summary|as_crispy_field }}
