@@ -4,6 +4,7 @@ from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.db.models import Case, CharField, Value, When
 
 from .forms import IncidentForm, SearchForm
 from .models import Incident
@@ -107,13 +108,31 @@ def __search(query):
 
     logger.debug("Query = " + query)
     incident_list = Incident.objects.annotate(
+        industry_type_text = Case( #used to search on the text values instead of the 2 character code stored in the database.
+            *[When(industry_type = i, then = Value(v)) for i, v in Incident.INDUSTRY_TYPE_CHOICES],
+            default=Value(''),
+            output_field=CharField()
+        ),
+        bribed_by_text = Case( #used to search on the text values instead of the 2 character code stored in the database.
+            *[When(bribed_by = bb, then = Value(v)) for bb, v in Incident.BRIBED_BY_CHOICES],
+            default=Value(''),
+            output_field=CharField()
+        ),
+        bribe_type_text = Case( #used to search on the text values instead of the 2 character code stored in the database.
+            *[When(bribe_type = bt, then = Value(v)) for bt, v in Incident.BRIBE_TYPE_CHOICES],
+            default=Value(''),
+            output_field=CharField()
+        ),
         search=SearchVector(
             'incident_summary',
             'incident_details',
             'country',
             'region',
             'location',
-            'company',
+            'company_name',
+            'industry_type_text',
+            'bribed_by_text',
+            'bribe_type_text',
             # 'first_occurence',
             # 'resolution_date'
         ),
@@ -130,31 +149,36 @@ If id>0, this incident is being updated
 
 
 def incident_form(request, id=0):
-    logger.debug("starting incident_form")
+    print("starting incident_form")
     if request.method == "GET":
         if id == 0:
-            logger.debug("starting incident_form - id = 0")
+            print("starting incident_form - id = 0")
             form = IncidentForm()
         else:
-            logger.debug("starting incident_form - id exists")
+            print("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
-        return render(request, 'rlcis/incident_form.html', {'form': form, 'activePage': 'incident'})
+            context = {
+                'form': form, 
+                'activePage': 'incidents',
+                'id': id,
+            }
+        return render(request, 'rlcis/incident_form.html', context)
     else:
         if id == 0:
-            logger.debug("starting incident_form - id = 0 POST")
+            print("starting incident_form - id = 0 POST")
             form = IncidentForm(request.POST)
         else:
-            logger.debug("starting incident_form - id exist POST")
+            print("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
         print(form.errors)
         if form.is_valid():
-            logger.debug("starting incident_form - is valid save() POST")
+            print("starting incident_form - is valid save() POST")
             form.save()
         else:
-            logger.debug(form.errors)
-            logger.debug("form.is_valid() failed")
+            print(form.errors)
+            print("form.is_valid() failed")
         return redirect('/rlcis/incidents/')
 
 

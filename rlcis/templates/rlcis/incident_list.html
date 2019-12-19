@@ -6,19 +6,20 @@
 <form method="GET" action="{% url 'rlcis:incident_search' %}">
     <div class="row">
         {% csrf_token %}
-        <!-- <input class="form-control mr-sm-2 col-md-10" type="search" placeholder="Search Country"> -->
-        <div class="col-sm-4 col-md-11">
+        <div class="col-sm-1 col-md-3">
+            <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
+                <i class="fas fa-plus"> New Incident</i>
+            </a>
+        </div>
+        <div class="col-sm-4 col-md-7">
             {{ searchForm.q|as_crispy_field }}
         </div>
-        <div class="col-sm-4 col-md-1">
+        <div class="col-sm-1 col-md-1">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </div>
     </div>
 </form>
 <div class="row">
-    <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
-        <i class="fas fa-plus"> New Incident</i>
-    </a>
     <table class="table table-borderless">
         <thead class="border-bottom font-weight-bold">
             <tr>
@@ -40,11 +41,9 @@
         <tbody>
             {% for incident in incident_list %}
             <!-- {{ incident.full_name|upper }}<br> -->
-            <tr>
+            <tr class='clickable-row' data-href="{% url 'rlcis:incident_update' incident.id %}">
                 <td>
-                    <a href="{% url 'rlcis:incident_update' incident.id %}" class="btn text-secondary px-0">
                         {{incident.id}}
-                    </a>
                 </td>
                 <td>{{incident.company_name}}</td>
                 <td>{% if incident.industry_type_other %}
@@ -94,5 +93,12 @@
     {% endif %}
     {% endfor %}
 </ul>
+<script type='text/javascript'>
 
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+});
+</script>
 {% endblock content %}

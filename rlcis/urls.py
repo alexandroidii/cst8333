@@ -20,7 +20,7 @@ urlpatterns = [
         views.incident_form,
         name='incident_update'),
     path(
-        'delete_incident/<int:id>',
+        'delete_incident/<int:id>/',
         views.incident_delete,
         name='incident_delete'),
     path(
@@ -44,7 +44,7 @@ urlpatterns = [
         views.scenario_form,
         name='scenario_update'),
     path(
-        'delete_scenario/<int:id>',
+        'delete_scenario/<int:id>/',
         views.scenario_delete,
         name='scenario_delete'),
 ]
