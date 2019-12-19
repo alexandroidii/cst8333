@@ -31,8 +31,6 @@ logger = logging.getLogger(__name__)
 Verify if a query is being passed, and return either
 the full list of Incidents of a QuerySet based on the query.
  """
-
-
 def incident_list(request):
     query = request.GET.get('query')
     if not query:
@@ -65,8 +63,6 @@ fields:
 
 q -- Query returned from the user
 """
-
-
 def incident_search(request):
     template = 'rlcis/incident_list.html'
     query = request.GET.get('q')
@@ -102,8 +98,6 @@ fields:
 
 query -- contains the query to search Incidents against
 """
-
-
 def __search(query):
 
     logger.debug("Query = " + query)
@@ -136,8 +130,6 @@ def __search(query):
             'industry_type_text',
             'bribed_by_text',
             'bribe_type_text',
-            # 'first_occurence',
-            # 'resolution_date'
         ),
     ).filter(search=query).order_by('-id')
     return incident_list
@@ -149,16 +141,14 @@ Incident Form used to create and update and Incident
 If id=0, this is a new Incident to be added to the database
 If id>0, this incident is being updated
 """
-
-
 def incident_form(request, id=0):
-    print("starting incident_form")
+    logger.debug("starting incident_form")
     if request.method == "GET":
         if id == 0:
-            print("starting incident_form - id = 0")
+            logger.debug("starting incident_form - id = 0")
             form = IncidentForm()
         else:
-            print("starting incident_form - id exists")
+            logger.debug("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
         context = {
@@ -169,19 +159,19 @@ def incident_form(request, id=0):
         return render(request, 'rlcis/incident_form.html', context)
     else:
         if id == 0:
-            print("starting incident_form - id = 0 POST")
+            logger.debug("starting incident_form - id = 0 POST")
             form = IncidentForm(request.POST)
         else:
-            print("starting incident_form - id exist POST")
+            logger.debug("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
-        print(form.errors)
+        logger.debug(form.errors)
         if form.is_valid():
-            print("starting incident_form - is valid save() POST")
+            logger.debug("starting incident_form - is valid save() POST")
             form.save()
         else:
-            print(form.errors)
-            print("form.is_valid() failed")
+            logger.debug(form.errors)
+            logger.debug("form.is_valid() failed")
         return redirect('/rlcis/incidents/')
 
 
@@ -201,11 +191,9 @@ def scenario_list(request):
 
     query = request.GET.get('query')
     if not query:
-        incident_list = Incident.objects.filter(scenario=True).order_by('-id') #TODO filter this by scenario boolean
+        incident_list = Incident.objects.filter(scenario=True).order_by('-id') 
     else:
         incident_list = __search(query).filter(scenario=True)
-
-    print(incident_list)
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
@@ -221,7 +209,6 @@ def scenario_list(request):
         'activePage': 'scenarios',
         'searchForm': searchForm,
     }
-
     return render(request, 'rlcis/scenario_list.html', context)
 
 def scenario_search(request):
@@ -232,9 +219,6 @@ def scenario_search(request):
         incident_list = Incident.objects.all().order_by('-id')
     else:
         incident_list = __search(query).filter(scenario=True)
-    
-    print(incident_list)
-    print(incident_list.filter(scenario=True))
     searchForm = SearchForm()
     paginator = Paginator(incident_list, 2)
     page = request.GET.get('page')
@@ -273,18 +257,11 @@ def scenario_form(request, id=0):
             logger.debug("starting scenario_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
-        print(form.errors)
-        print('before form is valid = ' + str(form.is_valid()))
-        # request.POST._mutable = True
-        # form.data['scenario'] = True
-        print('after form is valid = ' + str(form.is_valid()))
         if form.is_valid():
             tempObj = form.save(commit=False)
             tempObj.scenario = True
             tempObj.save()
             logger.debug("starting scenario_form - is valid save() POST")
-            # form.cleaned_data['scenario'] = True #TODO The value is not being saved to the database
-            print(form.cleaned_data['scenario'])
             form.save()
         else:
             logger.debug(form.errors)
