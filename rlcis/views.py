@@ -2,9 +2,9 @@ import logging
 
 from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.db.models import Case, CharField, Value, When
 
 from .forms import IncidentForm, SearchForm
 from .models import Incident
@@ -30,11 +30,11 @@ logger = logging.getLogger(__name__)
 
 
 """
-Search Incidents based on the returned Query.
+Return all Incidents or search based on the returned Query from persistance.
 
-fields:
-
+Fields:
 q -- Query returned from the user
+
 """
 def incidents(request):
     template = 'rlcis/incident_list.html'
@@ -67,10 +67,12 @@ def incidents(request):
 
 
 """
-Incident Form used to create and update and Incident
+Incident Form used to create and update and Incident and persist.
 
+Fields:
 If id=0, this is a new Incident to be added to the database
 If id>0, this incident is being updated
+
 """
 def incident_form(request, id=0):
     logger.debug("starting incident_form")
@@ -106,6 +108,12 @@ def incident_form(request, id=0):
         return redirect('/rlcis/incidents/')
 
 
+"""
+Incident delete method used to remove an Incident from persisted store.
+
+Fields:
+id = incident id,  pk of incident to delete
+"""
 def incident_delete(request, id):
     logger.debug("trying to delete ")
     incident = Incident.objects.get(pk=id)
@@ -114,6 +122,13 @@ def incident_delete(request, id):
     return redirect('/rlcis/incidents/')
 
 
+"""
+Return all scenarios or search based on the returned Query from persistance.
+
+Fields:
+
+q -- Query returned from the user
+"""
 
 def scenarios(request):
     template = 'rlcis/scenario_list.html'
@@ -142,6 +157,13 @@ def scenarios(request):
     return render(request, template, context)
 
 
+"""
+Scenario method used to display specified scenario from persisted store
+
+Fields:
+id = scenario id,  pk of scenario to display
+
+"""
 def scenario_form(request, id=0):
     logger.debug("starting scenario_form")
     if request.method == "GET":
@@ -172,6 +194,12 @@ def scenario_form(request, id=0):
             logger.debug("form.is_valid() failed")
         return redirect('/rlcis/scenarios/')
 
+"""
+Scenario delete method used to remove a scenario from persisted store.
+
+Fields:
+id = incident id,  pk of incident to delete
+"""
 def scenario_delete(request, id):
     logger.debug("trying to delete scenario")
     incident = Incident.objects.get(pk=id)
@@ -180,11 +208,12 @@ def scenario_delete(request, id):
     return redirect('scenarios/')
 
 """
-private method used to search multiple Incident columns.
+private method used to search multiple Incident columns utilizing postgres SearchVector.
 
 fields:
 
 query -- contains the query to search Incidents against
+
 """
 def __search(query):
 
@@ -222,5 +251,9 @@ def __search(query):
     ).filter(search=query).order_by('-id')
     return incident_list
 
+"""
+Index method used to render index.html (home page)
+
+"""
 def index(request):
     return render(request, 'rlcis/index.html', {'activePage': 'home'})
