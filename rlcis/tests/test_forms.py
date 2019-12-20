@@ -2,7 +2,16 @@ from django.test import TestCase
 
 from rlcis.forms import IncidentForm
 
+""" 
+RLCIS test_forms defines the unittests for the Incident form.
+Following the setUpTestData, 12 defined tests are used to valiadate
+the Incident form.
 
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+"""
 class IncidentFormTest(TestCase):
     
     def test_incident_form_incident_summary_field_label(self):
