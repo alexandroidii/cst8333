@@ -5,7 +5,8 @@ from django.urls import (
 from . import views
 
 """ 
-RLCIS Urls to direct navigation through the app 
+RLCIS Urls to direct navigation through the app - all application views 
+are imported.
 
 App Namespace: 'rlcis'
 

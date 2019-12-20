@@ -19,7 +19,6 @@ incident_search -- a QuerySet list of Incidents
 incident_form -- create and update Incident form
 incident_delete -- deletes an Incident
 index -- Home page for RLCIS
-scenarios -- TODO create a model and pages for Scenarios
 
 Authors: Robert Lange and Alexander Riccio
 Course: CST8333
