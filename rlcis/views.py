@@ -101,6 +101,7 @@ def incident_form(request, id=0):
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
             form.save()
+            print('form submitted - RL')
         else:
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
@@ -256,3 +257,14 @@ Index method used to render index.html (home page)
 """
 def index(request):
     return render(request, 'rlcis/index.html', {'activePage': 'home'})
+
+
+def registerPage(request):
+    context = {}
+    return render(request, 'rlcis/accounts/register.html', {'activePage': 'home'})
+
+def loginPage(request):
+ #   context = {}
+     return render(request, 'rlcis/accounts/login.html', {'activePage': 'home'})
+
+    
