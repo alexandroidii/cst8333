@@ -6,6 +6,7 @@ from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.forms import UserCreationForm
 
 from .forms import IncidentForm, SearchForm
 from .models import Incident
@@ -278,7 +279,8 @@ def index(request):
 
 
 def registerPage(request):
-    context = {}
+    form = UserCreationForm()
+    context = {'form':form}
     return render(request, 'rlcis/accounts/register.html', {'activePage': 'home'})
 
 def loginPage(request):
