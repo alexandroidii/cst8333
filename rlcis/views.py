@@ -5,6 +5,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.core.files.storage import FileSystemStorage
 
 from .forms import IncidentForm, SearchForm
 from .models import Incident
@@ -27,6 +28,23 @@ Date: 2019-12-19
 
 logger = logging.getLogger(__name__)
 
+
+"""
+Example found at https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
+
+Currently it's uploading the file to the root directory instead of in the /media folder.
+
+The next video to watch is https://www.youtube.com/watch?v=KQJRwWpP8hs
+"""
+def upload(request):
+    template = 'rlcis/upload.html'
+    context = {}
+    if request.method == 'POST':
+        uploaded_file = request.FILES['document']
+        fs = FileSystemStorage()
+        name = fs.save(uploaded_file.name, uploaded_file)
+        context['url'] = fs.url(name)
+    return render(request, template, context)
 
 """
 Return all Incidents or search based on the returned Query from persistance.
