@@ -65,6 +65,16 @@ urlpatterns = [
         'scenarios/',
         views.scenarios,
         name='scenarios'),
+
+    path(
+        'register/',
+        views.registerPage, 
+        name='registerPage'),
+
+    path(
+        'login/',
+        views.loginPage, 
+        name='loginPage'),
 ]
 
 if settings.DEBUG:
