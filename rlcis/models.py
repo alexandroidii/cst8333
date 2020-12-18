@@ -7,6 +7,13 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+class Document(models.Model):
+    name = models.CharField(max_length=100)
+    file = models.FileField(upload_to='incidents/uploads/')
+
+    def __str__(self):
+        return self.name
+
 """ 
 RLCIS models.py define the structure to the underlying database.
 Using python manage.py makemigrations followed by python manage.py migrate

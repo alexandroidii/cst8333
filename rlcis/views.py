@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.core.files.storage import FileSystemStorage
 
-from .forms import IncidentForm, SearchForm
+from .forms import IncidentForm, SearchForm, UploadForm
 from .models import Incident
 
 """
@@ -45,6 +45,23 @@ def upload(request):
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
     return render(request, template, context)
+
+def upload_list(request):
+    return render(request,'rlcis/upload_list.html')
+
+
+def uploads(request):
+    if request.method == 'POST':
+        form = UploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('upload_list')
+    else:
+            form = UploadForm()
+    form = UploadForm()
+    return render(request,'rlcis/uploads.html', {
+        'form': form
+    })
 
 """
 Return all Incidents or search based on the returned Query from persistance.

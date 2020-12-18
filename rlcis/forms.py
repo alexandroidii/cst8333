@@ -2,7 +2,13 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout
 from django import forms
 
-from .models import Incident
+from .models import Incident, Document
+
+class UploadForm(forms.ModelForm):
+        class Meta:
+            model = Document
+            fields = ('name','file')
+
 
 """ 
 RLCIS forms used when populating the template fields.  

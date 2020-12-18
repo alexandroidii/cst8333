@@ -32,6 +32,14 @@ urlpatterns = [
         views.upload, 
         name='upload'),
     path(
+        'upload_list/',
+        views.upload_list,
+        name='upload_list'),
+    path(
+        'uploads/',
+        views.uploads,
+        name='uploads'),
+   path(
         'add_incident/',
         views.incident_form,
         name="incident_insert"),
