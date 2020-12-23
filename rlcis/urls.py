@@ -27,18 +27,18 @@ urlpatterns = [
         '',
         views.index,
         name='home'),
+    # path(
+    #     'upload/',
+    #     views.upload, 
+    #     name='upload'),
     path(
-        'upload/',
-        views.upload, 
-        name='upload'),
+        'documents/',
+        views.document_list,
+        name='document_list'),
     path(
-        'upload_list/',
-        views.upload_list,
-        name='upload_list'),
-    path(
-        'uploads/',
-        views.uploads,
-        name='uploads'),
+        'documents/upload/',
+        views.upload_document,
+        name='upload_document'),
    path(
         'add_incident/',
         views.incident_form,

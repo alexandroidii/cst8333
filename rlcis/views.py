@@ -7,8 +7,8 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.core.files.storage import FileSystemStorage
 
-from .forms import IncidentForm, SearchForm, UploadForm
-from .models import Incident
+from .forms import IncidentForm, SearchForm, DocumentForm
+from .models import Incident, Document
 
 """
 RLCIS Views that control the flow of information
@@ -36,30 +36,33 @@ Currently it's uploading the file to the root directory instead of in the /media
 
 The next video to watch is https://www.youtube.com/watch?v=KQJRwWpP8hs
 """
-def upload(request):
-    template = 'rlcis/upload.html'
-    context = {}
+# def upload(request):
+#     template = 'rlcis/upload.html'
+#     context = {}
+#     if request.method == 'POST':
+#         uploaded_file = request.FILES['document']
+#         fs = FileSystemStorage()
+#         name = fs.save(uploaded_file.name, uploaded_file)
+#         context['url'] = fs.url(name)
+#     return render(request, template, context)
+
+def document_list(request):
+    documents = Document.objects.all()
+    return render(request,'rlcis/document_list.html', {
+        'documents': documents
+    })
+
+
+def upload_document(request):
     if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
-        context['url'] = fs.url(name)
-    return render(request, template, context)
-
-def upload_list(request):
-    return render(request,'rlcis/upload_list.html')
-
-
-def uploads(request):
-    if request.method == 'POST':
-        form = UploadForm(request.POST, request.FILES)
+        form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('upload_list')
+            return redirect('rlcis:document_list')
     else:
-            form = UploadForm()
-    form = UploadForm()
-    return render(request,'rlcis/uploads.html', {
+            form = DocumentForm()
+    form = DocumentForm()
+    return render(request,'rlcis/upload_document.html', {
         'form': form
     })
 

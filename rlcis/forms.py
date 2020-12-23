@@ -4,7 +4,7 @@ from django import forms
 
 from .models import Incident, Document
 
-class UploadForm(forms.ModelForm):
+class DocumentForm(forms.ModelForm):
         class Meta:
             model = Document
             fields = ('name','file')

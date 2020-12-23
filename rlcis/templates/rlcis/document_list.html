@@ -1,0 +1,22 @@
+{% extends 'rlcis/base.html' %}
+
+{% block content %}
+    <h2>Upload List</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+                <tr>
+                    <td>{{ document.name }}</td>
+                    <td>{{ document.file }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
