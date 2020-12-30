@@ -6,6 +6,7 @@ from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.core.files.storage import FileSystemStorage
+from django.views.generic import ListView
 
 from .forms import IncidentForm, SearchForm, DocumentForm
 from .models import Incident, Document
@@ -34,7 +35,8 @@ Example found at https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-t
 
 Currently it's uploading the file to the root directory instead of in the /media folder.
 
-The next video to watch is https://www.youtube.com/watch?v=KQJRwWpP8hs
+implement model file: https://www.youtube.com/watch?v=KQJRwWpP8hs
+Implement Class View to display documents: https://www.youtube.com/watch?v=HSn-e2snNc8
 """
 # def upload(request):
 #     template = 'rlcis/upload.html'
@@ -45,6 +47,8 @@ The next video to watch is https://www.youtube.com/watch?v=KQJRwWpP8hs
 #         name = fs.save(uploaded_file.name, uploaded_file)
 #         context['url'] = fs.url(name)
 #     return render(request, template, context)
+
+
 
 def document_list(request):
     documents = Document.objects.all()
@@ -65,6 +69,12 @@ def upload_document(request):
     return render(request,'rlcis/upload_document.html', {
         'form': form
     })
+    
+
+class DocumentListView(ListView):
+    model = Document
+    template_name = 'class_document_list.html'
+    context_object_name = 'documents'
 
 """
 Return all Incidents or search based on the returned Query from persistance.

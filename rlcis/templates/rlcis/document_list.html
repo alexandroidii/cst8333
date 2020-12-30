@@ -1,39 +1,41 @@
 {% extends 'rlcis/base.html' %}
 
 {% block content %}
-    <h2>Upload List</h2>
 
-<p>
-    <a href="{% url 'rlcis:upload_document' %}" class="btn btn-primary">Upload Document</a>
-</p>
+    {% block content_header %}
+    <h2>test</h2>
+    <p>
+        <a href="{% url 'rlcis:upload_document' %}" class="btn btn-primary">Upload Document</a>
+    </p>
+    {% endblock %}
 
-    <table class="table mb-0">
-        <thead>
-            <tr>
-                <th>File Name</th>
-                <th>image</th>
-                <th>Download</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for document in documents %}
-                <tr>
-                    <td>{{ document.name }}</td>
-                    <td>
-                        {% if document.image %}
-                            <img src="{{ document.image.url }}" alt="{{ document.name }}" style="width:100px;">
-                        {% else %}
-                            <span class="text-muted">No Image</span>
-                        {% endif %}
-                    </td>
-                    
-                    <td>
-                        <a href="{{ document.file.url }}" class="btn btn-primary btn-sm">
-                            Download File
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="table mb-0">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>image</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for document in documents %}
+        <tr>
+            <td>{{ document.name }}</td>
+            <td>
+                {% if document.image %}
+                <img src="{{ document.image.url }}" alt="{{ document.name }}" style="width:100px;">
+                {% else %}
+                <span class="text-muted">No Image</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{{ document.file.url }}" class="btn btn-primary btn-sm">
+                    Download File
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
