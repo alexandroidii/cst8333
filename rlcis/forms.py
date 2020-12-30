@@ -7,7 +7,7 @@ from .models import Incident, Document
 class DocumentForm(forms.ModelForm):
         class Meta:
             model = Document
-            fields = ('name','file')
+            fields = ('name','file','image')
 
 
 """ 
