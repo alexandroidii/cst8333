@@ -5,10 +5,11 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 
-from .forms import IncidentForm, SearchForm
+from .forms import IncidentForm, SearchForm, CreateUserForm
 from .models import Incident
 
 """
@@ -32,9 +33,7 @@ logger = logging.getLogger(__name__)
 
 """
 Example found at https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
-
 Currently it's uploading the file to the root directory instead of in the /media folder.
-
 The next video to watch is https://www.youtube.com/watch?v=KQJRwWpP8hs
 """
 def upload(request):
@@ -48,6 +47,7 @@ def upload(request):
     return render(request, template, context)
 
 """
+
 Return all Incidents or search based on the returned Query from persistance.
 
 Fields:
@@ -279,12 +279,39 @@ def index(request):
 
 
 def registerPage(request):
-    form = UserCreationForm()
-    context = {'form':form}
-    return render(request, 'rlcis/accounts/register.html', {'activePage': 'home'})
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account was created for ' + user)
+            return redirect('rlcis:loginPage')
+
+    context = {'form':form,
+    'activePage': 'register'
+    }
+
+
+    return render(request, 'rlcis/accounts/register.html', context)
 
 def loginPage(request):
- #   context = {}
-     return render(request, 'rlcis/accounts/login.html', {'activePage': 'home'})
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    
+  #  context = {}
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('rlcis:home')
+        else:
+            messages.info(request,'Username or Password is incorrect...')
+
+    return render(request, 'rlcis/accounts/login.html', {'activePage': 'login'})
+
+def logoutUser(request):
+    logout(request)
+    return redirect('rlcis:loginPage')
