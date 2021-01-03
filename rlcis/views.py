@@ -5,12 +5,20 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+
+from django.core.files.storage import FileSystemStorage
+from django.views.generic import TemplateView, ListView, CreateView
+
+from .forms import IncidentForm, SearchForm, DocumentForm
+from .models import Incident, Document
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
 from .forms import IncidentForm, SearchForm, CreateUserForm
 from .models import Incident
+
 
 """
 RLCIS Views that control the flow of information
@@ -34,17 +42,54 @@ logger = logging.getLogger(__name__)
 """
 Example found at https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
 Currently it's uploading the file to the root directory instead of in the /media folder.
-The next video to watch is https://www.youtube.com/watch?v=KQJRwWpP8hs
+
+implement model file: https://www.youtube.com/watch?v=KQJRwWpP8hs
+Implement Class View to display documents: https://www.youtube.com/watch?v=HSn-e2snNc8
+
 """
-def upload(request):
-    template = 'rlcis/upload.html'
-    context = {}
+# def upload(request):
+#     template = 'rlcis/upload.html'
+#     context = {}
+#     if request.method == 'POST':
+#         uploaded_file = request.FILES['document']
+#         fs = FileSystemStorage()
+#         name = fs.save(uploaded_file.name, uploaded_file)
+#         context['url'] = fs.url(name)
+#     return render(request, template, context)
+
+
+
+def document_list(request):
+    documents = Document.objects.all()
+    return render(request,'rlcis/document_list.html', {
+        'documents': documents
+    })
+
+
+def upload_document(request):
     if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
-        context['url'] = fs.url(name)
-    return render(request, template, context)
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('rlcis:document_list')
+    else:
+            form = DocumentForm()
+    form = DocumentForm()
+    return render(request,'rlcis/upload_document.html', {
+        'form': form
+    })
+    
+
+class DocumentListView(ListView):
+    model = Document
+    template_name = 'class_document_list.html'
+    context_object_name = 'documents'
+
+class UploadDocumentView(CreateView):
+    model = Document
+    form = DocumentForm()
+    success_url = 'document_list'
+    template_name = 'upload_document.html'
 
 """
 
