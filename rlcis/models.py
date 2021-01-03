@@ -9,6 +9,14 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser
 
 
+class Document(models.Model):
+    name = models.CharField(max_length=100)
+    file = models.FileField(upload_to='incidents/uploads/')
+    image = models.ImageField(upload_to='incidents/images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
 """ 
 RLCIS models.py define the structure to the underlying database.
 Using python manage.py makemigrations followed by python manage.py migrate
