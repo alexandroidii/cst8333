@@ -6,7 +6,7 @@ from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.core.files.storage import FileSystemStorage
-from django.views.generic import ListView
+from django.views.generic import TemplateView, ListView, CreateView
 
 from .forms import IncidentForm, SearchForm, DocumentForm
 from .models import Incident, Document
@@ -75,6 +75,12 @@ class DocumentListView(ListView):
     model = Document
     template_name = 'class_document_list.html'
     context_object_name = 'documents'
+
+class UploadDocumentView(CreateView):
+    model = Document
+    form = DocumentForm()
+    success_url = 'document_list'
+    template_name = 'upload_document.html'
 
 """
 Return all Incidents or search based on the returned Query from persistance.

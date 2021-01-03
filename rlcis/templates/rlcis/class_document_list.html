@@ -1,8 +1,8 @@
-{% extends 'document_list.html' %}
+{% extends 'rlcis/document_list.html' %}
 
-    {% block content_header %}
+{% block content_header %}
     <h2>Class Based Upload List</h2>
     <p>
-        <a href="" class="btn btn-primary">Upload Document</a>
+        <a href="{% url 'class_upload_document' %}" class="btn btn-primary">Upload Document</a>
     </p>
-    {% endblock %}
+{% endblock %}

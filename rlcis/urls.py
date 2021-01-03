@@ -44,6 +44,10 @@ urlpatterns = [
         views.DocumentListView.as_view(), 
         name='class_document_list'),
     path(
+        'class/documents/upload', 
+        views.UploadDocumentView.as_view(), 
+        name='class_document_upload'),
+    path(
         'add_incident/',
         views.incident_form,
         name="incident_insert"),
