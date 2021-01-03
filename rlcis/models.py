@@ -5,6 +5,8 @@ from django.db.models import Model
 from django.forms import ModelForm
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser
 
 
 """ 
@@ -213,3 +215,7 @@ class Incident(Model):
 
     def get_absolute_url(self):
         return reverse('incident_update', kwargs={'pk': self.pk})
+"""
+class NewContributer(AbstractBaseUser):
+    email = models.EmailField(_('email address'), unique=True)
+    user_name models.CharField(max_length=150, unique=True)

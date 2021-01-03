@@ -16,7 +16,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 
 urlpatterns = [
-    path('rlcis/', include('rlcis.urls')),
+    path('', include('rlcis.urls')),
     path('admin/', admin.site.urls),
 ]
 
