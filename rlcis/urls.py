@@ -21,16 +21,32 @@ Date: 2019-12-19
 
 app_name = 'rlcis'
 urlpatterns = [
-    
+
     # root path for the home page
     path(
         '',
         views.index,
         name='home'),
+    # path(
+    #     'upload/',
+    #     views.upload,
+    #     name='upload'),
     path(
-        'upload/',
-        views.upload, 
-        name='upload'),
+        'documents/',
+        views.document_list,
+        name='document_list'),
+    path(
+        'documents/upload/',
+        views.upload_document,
+        name='upload_document'),
+    path(
+        'class/documents/', 
+        views.DocumentListView.as_view(), 
+        name='class_document_list'),
+    path(
+        'class/documents/upload', 
+        views.UploadDocumentView.as_view(), 
+        name='class_document_upload'),
     path(
         'add_incident/',
         views.incident_form,
@@ -43,7 +59,7 @@ urlpatterns = [
         'delete_incident/<int:id>/',
         views.incident_delete,
         name='incident_delete'),
-    #return a list of incidents
+    # return a list of incidents
     path(
         'incidents/',
         views.incidents,
@@ -72,4 +88,5 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
