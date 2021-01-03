@@ -31,14 +31,13 @@ Date: 2019-12-19
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <title>Real Life Corruption Incidents & Scenarios</title>
-
 </head>
 
 <body>
     {{ form.errors }}
     {{ form.non_field_errors }}
     <div class="container-fluid">
-        <div class="col-md-16 mt-5">
+        <div class="col-md-16">
             <div class="jumbotron">
                 <h1 class="display-6">Real Life Corruption Incidents & Scenarios</h1>
                 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -64,6 +63,29 @@ Date: 2019-12-19
                                     Scenarios
                                 </a>
                             </li>
+                            <li class="nav-item {% if activePage == 'register' %} active {% endif %}">
+                                <a class="nav-link" href="{% url 'rlcis:registerPage' %}">
+                                    Register
+                                </a>
+                            </li>
+                
+                            <li class="nav-item {% if activePage == 'login' %} active {% endif %}">
+                                <a class="nav-link" href="{% url 'rlcis:loginPage' %}">
+                                    Login
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                
+                    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                        <ul class="navbar-nav ml-auto">
+              
+                            <li class="navbar-text">Hello, {{request.user}} :</li> 
+                            <li class="nav-item {% if activePage == 'logout' %} active {% endif %}">
+                               <a class="nav-link" href="{% url 'rlcis:logout' %}">
+                                     Logout 
+                                </a>
+                            </li>
                         </ul>
                     </div>
                     <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
@@ -76,6 +98,8 @@ Date: 2019-12-19
 
                         </ul>
                     </div>
+                   
+                    
                 </nav>
                 <hr class="md-4">
                 {% block content %}
