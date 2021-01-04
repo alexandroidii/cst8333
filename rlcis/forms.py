@@ -7,10 +7,15 @@ from django.contrib.auth.models import User
 from .models import Incident, Document
 
 class DocumentForm(forms.ModelForm):
-        class Meta:
-            model = Document
-            fields = ('name','file','image')
+    class Meta:
+        model = Document
+        fields = ('name','file','image')
+        widgets = {
+            'file': forms.ClearableFileInput(attrs={'multiple':True}),
+        }
 
+
+    
 
 """ 
 RLCIS forms used when populating the template fields.  

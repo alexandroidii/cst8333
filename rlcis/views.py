@@ -89,7 +89,7 @@ class DocumentListView(ListView):
 class UploadDocumentView(CreateView):
     model = Document
     form_class = DocumentForm
-    success_url = reverse_lazy('class_document_list')
+    success_url = reverse_lazy('rlcis:class_document_list')
     template_name = 'rlcis/upload_document.html'
 
 """

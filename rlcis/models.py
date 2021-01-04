@@ -217,6 +217,12 @@ class Incident(Model):
         help_text="Is this a real life Incident or a Ficticous Scenario?",
     )
 
+    document = models.ForeignKey(
+        Document,
+        on_delete = models.CASCADE,
+        null=True,
+        blank=True,
+    )
     # Return string repesenation of pk and incident summary (used in t/s)
     def __str__(self):
         return str(self.pk) + " " + self.incident_summary 
