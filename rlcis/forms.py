@@ -108,6 +108,7 @@ class IncidentForm(forms.ModelForm):
             'scenario',
             'industry_type',
             'industry_type_other',
+            'document',
 
         ]
         labels = { # assign all the labels for the fields used in the template automatically
