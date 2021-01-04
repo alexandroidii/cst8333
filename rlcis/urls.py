@@ -46,7 +46,7 @@ urlpatterns = [
     path(
         'class/documents/upload', 
         views.UploadDocumentView.as_view(), 
-        name='class_document_upload'),
+        name='class_upload_document'),
     path(
         'add_incident/',
         views.incident_form,

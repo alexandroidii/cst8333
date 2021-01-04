@@ -5,6 +5,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
@@ -82,14 +83,14 @@ def upload_document(request):
 
 class DocumentListView(ListView):
     model = Document
-    template_name = 'class_document_list.html'
+    template_name = 'rlcis/class_document_list.html'
     context_object_name = 'documents'
 
 class UploadDocumentView(CreateView):
     model = Document
-    form = DocumentForm()
-    success_url = 'document_list'
-    template_name = 'upload_document.html'
+    form_class = DocumentForm
+    success_url = reverse_lazy('class_document_list')
+    template_name = 'rlcis/upload_document.html'
 
 """
 
