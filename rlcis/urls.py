@@ -23,10 +23,7 @@ app_name = 'rlcis'
 urlpatterns = [
 
     # root path for the home page
-    path(
-        '',
-        views.index,
-        name='home'),
+    path('', views.index, name='home'),
     # path(
     #     'upload/',
     #     views.upload,
@@ -82,9 +79,7 @@ urlpatterns = [
         views.scenarios,
         name='scenarios'),
 
-    path('register/', views.registerPage, name="registerPage"),
-    path('login/', views.loginPage, name="loginPage"),
-    path('logout/', views.logoutUser, name="logout"),
+   
 ]
 
 if settings.DEBUG:

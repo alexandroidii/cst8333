@@ -62,7 +62,7 @@ Implement Class View to display documents: https://www.youtube.com/watch?v=HSn-e
 def document_list(request):
     documents = Document.objects.all()
     return render(request,'rlcis/document_list.html', {
-        'documents': documents
+        'documents': documents, 'activePage': 'upload_document'
     })
 
 
@@ -109,7 +109,7 @@ def incidents(request):
         incident_list = __search(query).filter(scenario=False)
 
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 2)
+    paginator = Paginator(incident_list, 4)
     page = request.GET.get('page')
     try:
         incidents = paginator.page(page)
@@ -322,41 +322,3 @@ Index method used to render index.html (home page)
 def index(request):
     return render(request, 'rlcis/index.html', {'activePage': 'home'})
 
-
-def registerPage(request):
-    form = CreateUserForm()
-
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user)
-            return redirect('rlcis:loginPage')
-
-    context = {'form':form,
-    'activePage': 'register'
-    }
-
-
-    return render(request, 'rlcis/accounts/register.html', context)
-
-def loginPage(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-  #  context = {}
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('rlcis:home')
-        else:
-            messages.info(request,'Username or Password is incorrect...')
-
-    return render(request, 'rlcis/accounts/login.html', {'activePage': 'login'})
-
-def logoutUser(request):
-    logout(request)
-    return redirect('rlcis:loginPage')
