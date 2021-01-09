@@ -17,8 +17,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import IncidentForm, SearchForm, CreateUserForm
-from .models import Incident
+from .forms import IncidentForm, SearchForm, CreateUserForm, IncidentDocumentForm
+from .models import Incident, IncidentDocument
 
 
 """
@@ -155,22 +155,34 @@ def incident_form(request, id=0):
         }
         return render(request, 'rlcis/incident_form.html', context)
     else:
+        fileLength = request.POST.get('fileLength')
+        print(fileLength)
+        logger.debug("fileLength = " + fileLength)
         if id == 0:
             logger.debug("starting incident_form - id = 0 POST")
-            form = IncidentForm(request.POST)
+            form = IncidentForm(request.POST.get("incidentForm"))
         else:
             logger.debug("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
-            form = IncidentForm(request.POST, instance=incident)
+            form = IncidentForm(request.POST.get("incidentForm"), instance=incident)
+        print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
-            form.save()
+            incident = form.save()
+            for file_num in range(0, int(fileLength)):
+                documentForm = IncidentDocumentForm(
+                    incident = incident,
+                    document = request.FILES.get(f'document{file_num}'),
+                )
+                documentForm.save()
+
             print('form submitted - RL')
         else:
+            print(form.errors)
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
-        return redirect('/rlcis/incidents/')
+        return redirect('/incidents/')
 
 
 """

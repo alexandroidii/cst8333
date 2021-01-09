@@ -4,12 +4,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Incident, Document
+from .models import Incident, Document, IncidentDocument
 
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ('name','file','image')
+        fields = ('name','files','images')
         widgets = {
             'file': forms.ClearableFileInput(attrs={'multiple':True}),
         }
@@ -108,7 +108,7 @@ class IncidentForm(forms.ModelForm):
             'scenario',
             'industry_type',
             'industry_type_other',
-            'document',
+            # 'documents',
 
         ]
         labels = { # assign all the labels for the fields used in the template automatically
@@ -146,6 +146,15 @@ class IncidentForm(forms.ModelForm):
             self.fields['first_occurence'].required = False
             self.fields['resolution_date'].required = False
             self.fields['reviewer'].required = False
+
+class IncidentDocumentForm(forms.ModelForm):
+    
+    class Meta:
+        model = IncidentDocument
+        fields = [
+            'incident',
+            'document',
+        ]
 
 class CreateUserForm(UserCreationForm):
     class Meta:

@@ -48,7 +48,6 @@ INSTALLED_APPS = [
 ]
 
 
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
@@ -91,8 +90,8 @@ DATABASES = {
         'NAME': 'RlcisDB',
         'USER': 'rlcisadm',
         'PASSWORD': '12345678',
-        'HOST': 'localhost'      
-        
+        'HOST': 'localhost'
+
     }
 }
 
@@ -135,12 +134,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MediA_ROOT = os.path.join(BASE_DIR,'media') 
+MediA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/images/'
 
 
-
-STATICFILES_DIRS =[
-    os.path.join(BASE_DIR,'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
 ]

@@ -12,7 +12,7 @@ Date: 2019-12-19
 {% block content %}
 
 
-<form action="" method="post">
+<form action="" method="post" id="incidentForm">
 
     {% csrf_token %}
     {{ form.errors }}
@@ -78,7 +78,7 @@ Date: 2019-12-19
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-8">
-            {{ form.document|as_crispy_field }}
+            <input type="file" multiple>
         </div>
     </div>
     <div class="row">
@@ -88,7 +88,7 @@ Date: 2019-12-19
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-8">
-            <button type="submit" class="btn btn-success btn-block btn-sm">
+            <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
                 <i class="fas fa-save"></i> Submit
             </button>
         </div>
@@ -104,6 +104,62 @@ Date: 2019-12-19
         </div>
     </div>
 </form>
+<!-- 
+<button type="button" id="testsubmitBtn" class="btn btn-success btn-block btn-sm">
+    <i class="fas fa-save"></i> Submit
+</button> -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        var files = []
+        
+        const inputElement = document.querySelector('input[type="file"]');
+        const pond = FilePond.create( inputElement, {
+            onaddfile: (err, fileItem) => {
+                if (!err){
+                    files.push(fileItem.file)
+                }     
+                console.log(files)
+            },
+            onremovefile: (err, fileItem) => {
+                const index = files.indexOf(fileItem.file)
+                if (index > -1){
+                    files.splice(index, 1)
+                }
+                console.log(files)
+            }
+        });
+
+ 
+        $(document).on('click', '#submitBtn', function(e) {
+            var form = $('#incidentForm')[0];
+            var formData = new FormData();
+            formData.append('fileLength', files.length)
+            formData.append('incidentForm', form)
+            for (var i = 0; i < files.length; i++) {
+                formData.append('document' + i, files[i])
+            }
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "rlcis:incident_insert" %}',
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                success: function (){
+                    alert('The post has been created!')
+                },
+                error: function(xhr, errmsg, err) {
+                    console.log(xhr.status + ":" + xhr.responseText)
+                }
+            })
+        })
+    })
+</script>
+
 
 <script type='text/javascript'>
     $(document).on('click', '.confirm-delete', function () {
