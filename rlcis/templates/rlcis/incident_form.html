@@ -12,7 +12,7 @@ Date: 2019-12-19
 {% block content %}
 
 
-<form action="" method="post" id="incidentForm">
+<form action="" method="post" id="incidentForm"  enctype="multipart/form-data">
 
     {% csrf_token %}
     {{ form.errors }}
@@ -78,6 +78,48 @@ Date: 2019-12-19
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-8">
+            <div class="container-fluid">
+                <div id="carouselExample" class="carousel slide" data-ride="carousel" data-interval="9000">
+                    <div class="carousel-inner row w-10 mxauto" role="listbox">
+                        {% for f in files %}
+                            <div class="carousel-item col-md-4 active">
+                                <img class="img-fluid mx-auto d-bloc" src="{{f.document.url}}" alt="{{f.document.name}}">
+                            </div>
+                        {% endfor %}
+                            <!-- <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=2" alt="slide 2">
+                            </div>
+                            <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=3" alt="slide 3">
+                            </div>
+                            <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=4" alt="slide 4">
+                            </div>
+                            <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=5" alt="slide 5">
+                            </div>
+                            <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=6" alt="slide 6">
+                            </div>
+                            <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=7" alt="slide 7">
+                            </div>
+                            <div class="carousel-item col-md-4">
+                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=8" alt="slide 7">
+                            </div> -->
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+                            <i class="fa fa-chevron-left fa-lg text-muted"></i>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next text-faded" href="#carouselExample" role="button" data-slide="next">
+                            <i class="fa fa-chevron-right fa-lg text-muted"></i>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+           
+
             <input type="file" multiple>
         </div>
     </div>
@@ -110,11 +152,34 @@ Date: 2019-12-19
 </button> -->
 
 <script>
+
+    /***
+     * This example was found in the following repo.
+     * https://github.com/raszidzie/Multiple-Images-Template-Django
+     * */
     document.addEventListener('DOMContentLoaded', function(){
         var files = []
-        
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.setOptions({
+            allowMultiple:true,
+            maxFiles:10,
+            maxFileSize: '6MB'
+        })
         const inputElement = document.querySelector('input[type="file"]');
         const pond = FilePond.create( inputElement, {
+            acceptedFileTypes:[
+                'image/png', 
+                'image/jpeg',
+                'application/pdf',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'audio/mpeg',
+                'text/plain',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+
+            ],
             onaddfile: (err, fileItem) => {
                 if (!err){
                     files.push(fileItem.file)
@@ -133,9 +198,9 @@ Date: 2019-12-19
  
         $(document).on('click', '#submitBtn', function(e) {
             var form = $('#incidentForm')[0];
-            var formData = new FormData();
+            var formData = new FormData(form);
             formData.append('fileLength', files.length)
-            formData.append('incidentForm', form)
+            // formData.append('incidentForm', form)
             for (var i = 0; i < files.length; i++) {
                 formData.append('document' + i, files[i])
             }
@@ -150,7 +215,7 @@ Date: 2019-12-19
                 contentType: false,
                 enctype: 'multipart/form-data',
                 success: function (){
-                    alert('The post has been created!')
+                    console.log("Files have been saved")
                 },
                 error: function(xhr, errmsg, err) {
                     console.log(xhr.status + ":" + xhr.responseText)
@@ -160,6 +225,39 @@ Date: 2019-12-19
     })
 </script>
 
+<script type='text/javascript'>
+
+$('#carouselExample').on('slide.bs.carousel', function (e) {
+
+    /*
+
+    CC 2.0 License Iatek LLC 2018
+    Attribution required
+    
+    */
+
+    var $e = $(e.relatedTarget);
+    
+    var idx = $e.index();
+    console.log("IDX :  " + idx);
+    
+    var itemsPerSlide = 8;
+    var totalItems = $('.carousel-item').length;
+    
+    if (idx >= totalItems-(itemsPerSlide-1)) {
+        var it = itemsPerSlide - (totalItems - idx);
+        for (var i=0; i<it; i++) {
+            // append slides to end
+            if (e.direction=="left") {
+                $('.carousel-item').eq(i).appendTo('.carousel-inner');
+            }
+            else {
+                $('.carousel-item').eq(0).appendTo('.carousel-inner');
+            }
+        }
+    }
+});
+</script>
 
 <script type='text/javascript'>
     $(document).on('click', '.confirm-delete', function () {

@@ -148,8 +148,10 @@ def incident_form(request, id=0):
             logger.debug("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
+            files = IncidentDocument.objects.filter(incident=incident)
         context = {
             'form': form,
+            'files': files,
             'activePage': 'incidents',
             'id': id,
         }
@@ -160,22 +162,28 @@ def incident_form(request, id=0):
         logger.debug("fileLength = " + fileLength)
         if id == 0:
             logger.debug("starting incident_form - id = 0 POST")
-            form = IncidentForm(request.POST.get("incidentForm"))
+            form = IncidentForm(request.POST)
         else:
             logger.debug("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
-            form = IncidentForm(request.POST.get("incidentForm"), instance=incident)
+            form = IncidentForm(request.POST, instance=incident)
         print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
-            incident = form.save()
+            savedIncident = form.save()
             for file_num in range(0, int(fileLength)):
-                documentForm = IncidentDocumentForm(
-                    incident = incident,
-                    document = request.FILES.get(f'document{file_num}'),
+                IncidentDocument.objects.create(
+                    incident=savedIncident,
+                    document=request.FILES.get(f'document{file_num}')
                 )
-                documentForm.save()
+                
+                
+                # documentForm = IncidentDocumentForm(
+                #     incident=savedIncident,
+                #     document=request.FILES.get(f'document{file_num}'),
+                # )
+                # documentForm.save()
 
             print('form submitted - RL')
         else:
