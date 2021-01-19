@@ -77,8 +77,11 @@ Date: 2019-12-19
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-md-8">
-            <div class="container-fluid">
+        <div class="col-sm-12 col-md-12">
+            <div class="file-loading">
+                <input id="files" name="file" multiple type="file">
+            </div>
+            <!-- <div class="container-fluid">
                 <div id="carouselExample" class="carousel slide" data-ride="carousel" data-interval="9000">
                     <div class="carousel-inner row w-10 mxauto" role="listbox">
                         {% for f in files %}
@@ -86,7 +89,7 @@ Date: 2019-12-19
                                 <img class="img-fluid mx-auto d-bloc" src="{{f.document.url}}" alt="{{f.document.name}}">
                             </div>
                         {% endfor %}
-                            <!-- <div class="carousel-item col-md-4">
+                             <div class="carousel-item col-md-4">
                                 <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=2" alt="slide 2">
                             </div>
                             <div class="carousel-item col-md-4">
@@ -106,7 +109,7 @@ Date: 2019-12-19
                             </div>
                             <div class="carousel-item col-md-4">
                                 <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=8" alt="slide 7">
-                            </div> -->
+                            </div> 
                         </div>
                         <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
                             <i class="fa fa-chevron-left fa-lg text-muted"></i>
@@ -120,7 +123,25 @@ Date: 2019-12-19
                 </div>
            
 
-            <input type="file" multiple>
+            <input type="file" multiple> -->
+
+
+            <!-- Allow only certain file content for preview -->
+
+<script>
+$("#file").fileinput({
+    uploadUrl: '{% url "rlcis:incident_insert" %}',
+    previewFileIcon: '<i class="fas fa-file"></i>',
+    allowedPreviewTypes: ['image', 'text'], // allow only preview of image & text files
+    previewFileIconSettings: {
+        'docx': '<i class="fas fa-file-word text-primary"></i>',
+        'xlsx': '<i class="fas fa-file-excel text-success"></i>',
+        'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
+        'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
+        'zip': '<i class="fas fa-file-archive text-muted"></i>',
+    }
+});
+</script>
         </div>
     </div>
     <div class="row">
@@ -157,106 +178,106 @@ Date: 2019-12-19
      * This example was found in the following repo.
      * https://github.com/raszidzie/Multiple-Images-Template-Django
      * */
-    document.addEventListener('DOMContentLoaded', function(){
-        var files = []
-        FilePond.registerPlugin(FilePondPluginFileValidateSize);
-        FilePond.registerPlugin(FilePondPluginFileValidateType);
-        FilePond.setOptions({
-            allowMultiple:true,
-            maxFiles:10,
-            maxFileSize: '6MB'
-        })
-        const inputElement = document.querySelector('input[type="file"]');
-        const pond = FilePond.create( inputElement, {
-            acceptedFileTypes:[
-                'image/png', 
-                'image/jpeg',
-                'application/pdf',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/msword',
-                'audio/mpeg',
-                'text/plain',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'application/vnd.ms-excel',
+    // document.addEventListener('DOMContentLoaded', function(){
+    //     var files = []
+    //     FilePond.registerPlugin(FilePondPluginFileValidateSize);
+    //     FilePond.registerPlugin(FilePondPluginFileValidateType);
+    //     FilePond.setOptions({
+    //         allowMultiple:true,
+    //         maxFiles:10,
+    //         maxFileSize: '6MB'
+    //     })
+    //     const inputElement = document.querySelector('input[type="file"]');
+    //     const pond = FilePond.create( inputElement, {
+    //         acceptedFileTypes:[
+    //             'image/png', 
+    //             'image/jpeg',
+    //             'application/pdf',
+    //             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    //             'application/msword',
+    //             'audio/mpeg',
+    //             'text/plain',
+    //             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    //             'application/vnd.ms-excel',
 
-            ],
-            onaddfile: (err, fileItem) => {
-                if (!err){
-                    files.push(fileItem.file)
-                }     
-                console.log(files)
-            },
-            onremovefile: (err, fileItem) => {
-                const index = files.indexOf(fileItem.file)
-                if (index > -1){
-                    files.splice(index, 1)
-                }
-                console.log(files)
-            }
-        });
+    //         ],
+    //         onaddfile: (err, fileItem) => {
+    //             if (!err){
+    //                 files.push(fileItem.file)
+    //             }     
+    //             console.log(files)
+    //         },
+    //         onremovefile: (err, fileItem) => {
+    //             const index = files.indexOf(fileItem.file)
+    //             if (index > -1){
+    //                 files.splice(index, 1)
+    //             }
+    //             console.log(files)
+    //         }
+    //     });
 
  
-        $(document).on('click', '#submitBtn', function(e) {
-            var form = $('#incidentForm')[0];
-            var formData = new FormData(form);
-            formData.append('fileLength', files.length)
-            // formData.append('incidentForm', form)
-            for (var i = 0; i < files.length; i++) {
-                formData.append('document' + i, files[i])
-            }
-            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+    //     $(document).on('click', '#submitBtn', function(e) {
+    //         var form = $('#incidentForm')[0];
+    //         var formData = new FormData(form);
+    //         formData.append('fileLength', files.length)
+    //         // formData.append('incidentForm', form)
+    //         for (var i = 0; i < files.length; i++) {
+    //             formData.append('document' + i, files[i])
+    //         }
+    //         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
 
-            $.ajax({
-                type: 'POST',
-                url: '{% url "rlcis:incident_insert" %}',
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-                enctype: 'multipart/form-data',
-                success: function (){
-                    console.log("Files have been saved")
-                },
-                error: function(xhr, errmsg, err) {
-                    console.log(xhr.status + ":" + xhr.responseText)
-                }
-            })
-        })
-    })
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: '{% url "rlcis:incident_insert" %}',
+    //             data: formData,
+    //             cache: false,
+    //             processData: false,
+    //             contentType: false,
+    //             enctype: 'multipart/form-data',
+    //             success: function (){
+    //                 console.log("Files have been saved")
+    //             },
+    //             error: function(xhr, errmsg, err) {
+    //                 console.log(xhr.status + ":" + xhr.responseText)
+    //             }
+    //         })
+    //     })
+    // })
 </script>
 
 <script type='text/javascript'>
 
-$('#carouselExample').on('slide.bs.carousel', function (e) {
+// $('#carouselExample').on('slide.bs.carousel', function (e) {
 
-    /*
+//     /*
 
-    CC 2.0 License Iatek LLC 2018
-    Attribution required
+//     CC 2.0 License Iatek LLC 2018
+//     Attribution required
     
-    */
+//     */
 
-    var $e = $(e.relatedTarget);
+//     var $e = $(e.relatedTarget);
     
-    var idx = $e.index();
-    console.log("IDX :  " + idx);
+//     var idx = $e.index();
+//     console.log("IDX :  " + idx);
     
-    var itemsPerSlide = 8;
-    var totalItems = $('.carousel-item').length;
+//     var itemsPerSlide = 8;
+//     var totalItems = $('.carousel-item').length;
     
-    if (idx >= totalItems-(itemsPerSlide-1)) {
-        var it = itemsPerSlide - (totalItems - idx);
-        for (var i=0; i<it; i++) {
-            // append slides to end
-            if (e.direction=="left") {
-                $('.carousel-item').eq(i).appendTo('.carousel-inner');
-            }
-            else {
-                $('.carousel-item').eq(0).appendTo('.carousel-inner');
-            }
-        }
-    }
-});
+//     if (idx >= totalItems-(itemsPerSlide-1)) {
+//         var it = itemsPerSlide - (totalItems - idx);
+//         for (var i=0; i<it; i++) {
+//             // append slides to end
+//             if (e.direction=="left") {
+//                 $('.carousel-item').eq(i).appendTo('.carousel-inner');
+//             }
+//             else {
+//                 $('.carousel-item').eq(0).appendTo('.carousel-inner');
+//             }
+//         }
+//     }
+// });
 </script>
 
 <script type='text/javascript'>

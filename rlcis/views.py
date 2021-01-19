@@ -144,17 +144,22 @@ def incident_form(request, id=0):
         if id == 0:
             logger.debug("starting incident_form - id = 0")
             form = IncidentForm()
+            context = {
+                'form': form,
+                'activePage': 'incidents',
+                'id': id,
+            }
         else:
             logger.debug("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
             files = IncidentDocument.objects.filter(incident=incident)
-        context = {
-            'form': form,
-            'files': files,
-            'activePage': 'incidents',
-            'id': id,
-        }
+            context = {
+                'form': form,
+                'files': files,
+                'activePage': 'incidents',
+                'id': id,
+            }
         return render(request, 'rlcis/incident_form.html', context)
     else:
         fileLength = request.POST.get('fileLength')
