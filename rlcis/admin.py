@@ -29,7 +29,7 @@ class IncidentDocumentAdmin(admin.StackedInline):
     model = IncidentDocument
 
 @admin.register(Incident)
-class incidentAdmin(admin.ModelAdmin):
+class IncidentAdmin(admin.ModelAdmin):
     inlines = [IncidentDocumentAdmin]
 
     class Meta:

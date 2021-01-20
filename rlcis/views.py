@@ -110,7 +110,7 @@ def incidents(request):
         incident_list = __search(query).filter(scenario=False)
 
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 2)
+    paginator = Paginator(incident_list, 20)
     page = request.GET.get('page')
     try:
         incidents = paginator.page(page)
@@ -144,20 +144,26 @@ def incident_form(request, id=0):
         if id == 0:
             logger.debug("starting incident_form - id = 0")
             form = IncidentForm()
+            context = {
+                'form': form,
+                'activePage': 'incidents',
+                'id': id,
+            }
         else:
             logger.debug("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
             files = IncidentDocument.objects.filter(incident=incident)
-        context = {
-            'form': form,
-            'files': files,
-            'activePage': 'incidents',
-            'id': id,
-        }
+            context = {
+                'form': form,
+                'files': files,
+                'activePage': 'incidents',
+                'id': id,
+            }
         return render(request, 'rlcis/incident_form.html', context)
     else:
         fileLength = request.POST.get('fileLength')
+        id = int(request.POST.get('id'))
         print(fileLength)
         logger.debug("fileLength = " + fileLength)
         if id == 0:
@@ -190,7 +196,7 @@ def incident_form(request, id=0):
             print(form.errors)
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
-        return redirect('/incidents/')
+        return redirect('rlcis:incidents')
 
 
 """
@@ -204,7 +210,7 @@ def incident_delete(request, id):
     incident = Incident.objects.get(pk=id)
     logger.debug(incident)
     incident.delete()
-    return redirect('/rlcis/incidents/')
+    return redirect('rlcis:incidents')
 
 
 """
@@ -277,7 +283,7 @@ def scenario_form(request, id=0):
         else:
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
-        return redirect('/rlcis/scenarios/')
+        return redirect('rlcis:scenarios')
 
 """
 Scenario delete method used to remove a scenario from persisted store.
@@ -290,7 +296,7 @@ def scenario_delete(request, id):
     incident = Incident.objects.get(pk=id)
     logger.debug(incident)
     incident.delete()
-    return redirect('scenarios/')
+    return redirect('rlcis:scenarios')
 
 """
 private method used to search multiple Incident columns utilizing postgres SearchVector.

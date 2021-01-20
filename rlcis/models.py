@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.db import models
 from django.db.models import Model
@@ -230,7 +231,8 @@ class Incident(Model):
     # )
     # Return string repesenation of pk and incident summary (used in t/s)
     def __str__(self):
-        return str(self.pk) + " " + self.incident_summary 
+        return str(self.pk) 
+        # + " " + self.incident_summary 
 
     def get_absolute_url(self):
         return reverse('incident_update', kwargs={'pk': self.pk})
@@ -242,7 +244,8 @@ class IncidentDocument(models.Model):
     def __str__(self):
         return self.incident.incident_summary
 
-
+    def filename(self):
+        return os.path.basename(self.document.name)
 
 
 

@@ -18,8 +18,11 @@ Date: 2019-12-19
     {{ form.errors }}
     {{ form.non_field_errors }}
     <div class="row">
-        <div class="col-sm-4 col-md-12">
+        <div class="col-sm-2 col-md-4">
             {{ form.anonymous|as_crispy_field }}
+        </div>
+        <div class="col-sm-2 col-md-8">
+            Incident Number: <span id="incidentId">{{ id }}</span>
         </div>
     </div>
     <div class="row">
@@ -78,14 +81,29 @@ Date: 2019-12-19
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-8">
-            <div class="container-fluid">
+            Supporting Documents
+            {% for f in files %}
+            <div class="col-sm-4 col-md-8">
+
+               <a href="{{f.document.url}}" >{{ f.filename }}</a>
+            </div>
+            {% endfor %}
+
+
+
+            <!-- <div class="container-fluid">
+
+
+
+
+
                 <div id="carouselExample" class="carousel slide" data-ride="carousel" data-interval="9000">
                     <div class="carousel-inner row w-10 mxauto" role="listbox">
                         {% for f in files %}
                             <div class="carousel-item col-md-4 active">
                                 <img class="img-fluid mx-auto d-bloc" src="{{f.document.url}}" alt="{{f.document.name}}">
                             </div>
-                        {% endfor %}
+                        {% endfor %} -->
                             <!-- <div class="carousel-item col-md-4">
                                 <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=2" alt="slide 2">
                             </div>
@@ -107,7 +125,7 @@ Date: 2019-12-19
                             <div class="carousel-item col-md-4">
                                 <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=8" alt="slide 7">
                             </div> -->
-                        </div>
+                        <!-- </div>
                         <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
                             <i class="fa fa-chevron-left fa-lg text-muted"></i>
                             <span class="sr-only">Previous</span>
@@ -117,7 +135,7 @@ Date: 2019-12-19
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
-                </div>
+                </div> -->
            
 
             <input type="file" multiple>
@@ -200,7 +218,7 @@ Date: 2019-12-19
             var form = $('#incidentForm')[0];
             var formData = new FormData(form);
             formData.append('fileLength', files.length)
-            // formData.append('incidentForm', form)
+            formData.append('id', $('#incidentId').text())
             for (var i = 0; i < files.length; i++) {
                 formData.append('document' + i, files[i])
             }
@@ -216,6 +234,7 @@ Date: 2019-12-19
                 enctype: 'multipart/form-data',
                 success: function (){
                     console.log("Files have been saved")
+                    window.location.href = '{% url "rlcis:incidents" %}'
                 },
                 error: function(xhr, errmsg, err) {
                     console.log(xhr.status + ":" + xhr.responseText)
