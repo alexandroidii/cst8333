@@ -39,9 +39,7 @@ urlpatterns = [
     # return a list of Scenarios
     path('scenarios/', views.scenarios, name='scenarios'),
 
-    path('register/', views.registerPage, name="registerPage"),
-    path('login/', views.loginPage, name="loginPage"),
-    path('logout/', views.logoutUser, name="logout"),
+   
 ]
 
 if settings.DEBUG:
