@@ -134,7 +134,7 @@ Date: 2019-12-19
                 </div> -->
            
 
-            <input type="file" multiple> -->
+            <input type="file" multiple> 
 
 
             <!-- Allow only certain file content for preview -->
@@ -189,43 +189,43 @@ $("#file").fileinput({
      * This example was found in the following repo.
      * https://github.com/raszidzie/Multiple-Images-Template-Django
      * */
-    // document.addEventListener('DOMContentLoaded', function(){
-    //     var files = []
-    //     FilePond.registerPlugin(FilePondPluginFileValidateSize);
-    //     FilePond.registerPlugin(FilePondPluginFileValidateType);
-    //     FilePond.setOptions({
-    //         allowMultiple:true,
-    //         maxFiles:10,
-    //         maxFileSize: '6MB'
-    //     })
-    //     const inputElement = document.querySelector('input[type="file"]');
-    //     const pond = FilePond.create( inputElement, {
-    //         acceptedFileTypes:[
-    //             'image/png', 
-    //             'image/jpeg',
-    //             'application/pdf',
-    //             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    //             'application/msword',
-    //             'audio/mpeg',
-    //             'text/plain',
-    //             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //             'application/vnd.ms-excel',
+    document.addEventListener('DOMContentLoaded', function(){
+        var files = []
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.setOptions({
+            allowMultiple:true,
+            maxFiles:10,
+            maxFileSize: '6MB'
+        })
+        const inputElement = document.querySelector('input[type="file"]');
+        const pond = FilePond.create( inputElement, {
+            acceptedFileTypes:[
+                'image/png', 
+                'image/jpeg',
+                'application/pdf',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'audio/mpeg',
+                'text/plain',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
 
-    //         ],
-    //         onaddfile: (err, fileItem) => {
-    //             if (!err){
-    //                 files.push(fileItem.file)
-    //             }     
-    //             console.log(files)
-    //         },
-    //         onremovefile: (err, fileItem) => {
-    //             const index = files.indexOf(fileItem.file)
-    //             if (index > -1){
-    //                 files.splice(index, 1)
-    //             }
-    //             console.log(files)
-    //         }
-    //     });
+            ],
+            onaddfile: (err, fileItem) => {
+                if (!err){
+                    files.push(fileItem.file)
+                }     
+                console.log(files)
+            },
+            onremovefile: (err, fileItem) => {
+                const index = files.indexOf(fileItem.file)
+                if (index > -1){
+                    files.splice(index, 1)
+                }
+                console.log(files)
+            }
+        });
 
  
         $(document).on('click', '#submitBtn', function(e) {
@@ -257,40 +257,6 @@ $("#file").fileinput({
         })
     })
  
-</script>
-
-<script type='text/javascript'>
-
-// $('#carouselExample').on('slide.bs.carousel', function (e) {
-
-//     /*
-
-//     CC 2.0 License Iatek LLC 2018
-//     Attribution required
-    
-//     */
-
-//     var $e = $(e.relatedTarget);
-    
-//     var idx = $e.index();
-//     console.log("IDX :  " + idx);
-    
-//     var itemsPerSlide = 8;
-//     var totalItems = $('.carousel-item').length;
-    
-//     if (idx >= totalItems-(itemsPerSlide-1)) {
-//         var it = itemsPerSlide - (totalItems - idx);
-//         for (var i=0; i<it; i++) {
-//             // append slides to end
-//             if (e.direction=="left") {
-//                 $('.carousel-item').eq(i).appendTo('.carousel-inner');
-//             }
-//             else {
-//                 $('.carousel-item').eq(0).appendTo('.carousel-inner');
-//             }
-//         }
-//     }
-// });
 </script>
 
 <script type='text/javascript'>
