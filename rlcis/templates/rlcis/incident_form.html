@@ -11,8 +11,44 @@ Date: 2019-12-19
 
 {% block content %}
 
+<style>
+@media (max-width: 768px) {
+    .carousel-inner .carousel-item > div {
+        display: none;
+    }
+    .carousel-inner .carousel-item > div:first-child {
+        display: block;
+    }
+}
 
-<form action="" method="post" id="incidentForm"  enctype="multipart/form-data">
+.carousel-inner .carousel-item.active,
+.carousel-inner .carousel-item-next,
+.carousel-inner .carousel-item-prev {
+    display: flex;
+}
+
+/* display 3 */
+@media (min-width: 768px) {
+    
+    .carousel-inner .carousel-item-right.active,
+    .carousel-inner .carousel-item-next {
+      transform: translateX(33.333%);
+    }
+    
+    .carousel-inner .carousel-item-left.active, 
+    .carousel-inner .carousel-item-prev {
+      transform: translateX(-33.333%);
+    }
+}
+
+.carousel-inner .carousel-item-right,
+.carousel-inner .carousel-item-left{ 
+  transform: translateX(0);
+}
+
+</style>
+
+<form action="" method="post" id="incidentForm" enctype="multipart/form-data">
 
     {% csrf_token %}
     {{ form.errors }}
@@ -80,79 +116,94 @@ Date: 2019-12-19
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-md-8">
+        <div class="col-sm-4 col-md-12">
             Supporting Documents
-            {% for f in files %}
-            <div class="col-sm-4 col-md-8">
 
-               <a href="{{f.document.url}}" >{{ f.filename }}</a>
-            </div>
-            {% endfor %}
-
-
-
-            <!-- <div class="container-fluid">
-                <div id="carouselExample" class="carousel slide" data-ride="carousel" data-interval="9000">
-                    <div class="carousel-inner row w-10 mxauto" role="listbox">
-                        {% for f in files %}
-                            <div class="carousel-item col-md-4 active">
-                                <img class="img-fluid mx-auto d-bloc" src="{{f.document.url}}" alt="{{f.document.name}}">
+            <div class="container text-center my-3">
+                <div class="row mx-auto my-auto">
+                    <div id="documentCarousel" class="carousel slide w-100" data-ride="carousel">
+                        <div class="carousel-inner w-100" role="listbox">
+                            {% for f in files %}
+                            <div data-slide-to="{{ forloop.counter0 }}" class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                                <div class="col-md-4">
+                                    <h5 class="card-title">{{ f.name }}</h5>
+                                    <div class="card card-body">
+                                        <a href="{{f.document.url}}">{{ f.filename }}</a>
+                                    </div>                                       
+                                </div>
                             </div>
-                        {% endfor %} -->
-                            <!-- <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=2" alt="slide 2">
-                            </div>
-                            <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=3" alt="slide 3">
-                            </div>
-                            <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=4" alt="slide 4">
-                            </div>
-                            <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=5" alt="slide 5">
-                            </div>
-                            <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=6" alt="slide 6">
-                            </div>
-                            <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=7" alt="slide 7">
-                            </div>
-                            <div class="carousel-item col-md-4">
-                                <img class="img-fluid mx-auto d-block" src="//placehold.it/600x400?text=8" alt="slide 7">
-                            </div> -->
-                        <!-- </div>
-
-                        <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
-                            <i class="fa fa-chevron-left fa-lg text-muted"></i>
+                            {% endfor %}
+                           
+                        </div>
+                        <a class="carousel-control-prev w-auto" href="#documentCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
                             <span class="sr-only">Previous</span>
                         </a>
-                        <a class="carousel-control-next text-faded" href="#carouselExample" role="button" data-slide="next">
-                            <i class="fa fa-chevron-right fa-lg text-muted"></i>
+                        <a class="carousel-control-next w-auto" href="#documentCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
-                </div> -->
-           
+                </div>
+            </div>
 
-            <input type="file" multiple> 
+
+
+<!-- 
+
+            <div class="container-fluid">
+                <div id="supportingDocumentsCarousel" class="carousel slide" data-ride="carousel" data-interval="9000">
+                    <div class="carousel-inner row w-10 mxauto" role="listbox">
+                        {% for f in files %}
+                        <div class="carousel-item col-md-4 active">
+
+                            <div class="card" style="width: 12rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ f.name }}/h5>
+                                        <a href="{{f.document.url}}">{{ f.filename }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                    <a class="carousel-control-prev" href="#supportingDocumentsCarousel" role="button"
+                        data-slide="prev">
+                        <i class="fa fa-chevron-left fa-lg text-muted"></i>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next text-faded" href="#supportingDocumentsCarousel" role="button"
+                        data-slide="next">
+                        <i class="fa fa-chevron-right fa-lg text-muted"></i>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 col-md-12">
+
+            <input type="file" multiple>
 
 
             <!-- Allow only certain file content for preview -->
 
-<script>
-$("#file").fileinput({
-    uploadUrl: '{% url "rlcis:incident_insert" %}',
-    previewFileIcon: '<i class="fas fa-file"></i>',
-    allowedPreviewTypes: ['image', 'text'], // allow only preview of image & text files
-    previewFileIconSettings: {
-        'docx': '<i class="fas fa-file-word text-primary"></i>',
-        'xlsx': '<i class="fas fa-file-excel text-success"></i>',
-        'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
-        'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
-        'zip': '<i class="fas fa-file-archive text-muted"></i>',
-    }
-});
-</script>
+            <!-- <script>
+            $("#file").fileinput({
+                uploadUrl: '{% url "rlcis:incident_insert" %}',
+                previewFileIcon: '<i class="fas fa-file"></i>',
+                allowedPreviewTypes: ['image', 'text'], // allow only preview of image & text files
+                previewFileIconSettings: {
+                    'docx': '<i class="fas fa-file-word text-primary"></i>',
+                    'xlsx': '<i class="fas fa-file-excel text-success"></i>',
+                    'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
+                    'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
+                    'zip': '<i class="fas fa-file-archive text-muted"></i>',
+                }
+            });
+        </script> -->
         </div>
     </div>
     <div class="row">
@@ -181,7 +232,75 @@ $("#file").fileinput({
 <!-- 
 <button type="button" id="testsubmitBtn" class="btn btn-success btn-block btn-sm">
     <i class="fas fa-save"></i> Submit
-</button> -->
+</button> 
+
+'docx': '<i class="fas fa-file-word text-primary"></i>',
+        'xlsx': '<i class="fas fa-file-excel text-success"></i>',
+        'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
+        'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
+        'zip': '<i class="fas fa-file-archive text-muted"></i>',
+
+
+
+
+-->
+
+<script type="text/javascript">
+
+$('#documentCarousel').carousel({
+  interval: 10000
+})
+
+$('.carousel .carousel-item').each(function(){
+    var minPerSlide = 3;
+    var next = $(this).next();
+    if (!next.length) {
+    next = $(this).siblings(':first');
+    }
+    next.children(':first-child').clone().appendTo($(this));
+    
+    for (var i=0;i<minPerSlide;i++) {
+        next=next.next();
+        if (!next.length) {
+        	next = $(this).siblings(':first');
+      	}
+        
+        next.children(':first-child').clone().appendTo($(this));
+      }
+});
+
+
+
+    /*   
+   CC 2.0 License Iatek LLC 2018	
+   Attribution required	   
+   */
+
+    // $('#supportingDocumentsCarousel').on('slide.bs.carousel', function (e) {
+    //     var $e = $(e.relatedTarget);
+
+    //     var idx = $e.index();
+    //     console.log("IDX :  " + idx);
+
+    //     var itemsPerSlide = 8;
+    //     var totalItems = $('.carousel-item').length;
+
+    //     if (idx >= totalItems - (itemsPerSlide - 1)) {
+    //         var it = itemsPerSlide - (totalItems - idx);
+    //         for (var i = 0; i < it; i++) {
+    //             // append slides to end	//             
+    //             if (e.direction == "left") {
+    //                 $('.carousel-item').eq(i).appendTo('.carousel-inner');
+    //             }
+    //             else {
+    //                 $('.carousel-item').eq(0).appendTo('.carousel-inner');
+    //             }
+    //         }
+    //     }
+    // });	
+</script>
+
+
 
 <script>
 
@@ -189,19 +308,19 @@ $("#file").fileinput({
      * This example was found in the following repo.
      * https://github.com/raszidzie/Multiple-Images-Template-Django
      * */
-    document.addEventListener('DOMContentLoaded', function(){
+    document.addEventListener('DOMContentLoaded', function () {
         var files = []
         FilePond.registerPlugin(FilePondPluginFileValidateSize);
         FilePond.registerPlugin(FilePondPluginFileValidateType);
         FilePond.setOptions({
-            allowMultiple:true,
-            maxFiles:10,
+            allowMultiple: true,
+            maxFiles: 10,
             maxFileSize: '6MB'
         })
         const inputElement = document.querySelector('input[type="file"]');
-        const pond = FilePond.create( inputElement, {
-            acceptedFileTypes:[
-                'image/png', 
+        const pond = FilePond.create(inputElement, {
+            acceptedFileTypes: [
+                'image/png',
                 'image/jpeg',
                 'application/pdf',
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -213,22 +332,22 @@ $("#file").fileinput({
 
             ],
             onaddfile: (err, fileItem) => {
-                if (!err){
+                if (!err) {
                     files.push(fileItem.file)
-                }     
+                }
                 console.log(files)
             },
             onremovefile: (err, fileItem) => {
                 const index = files.indexOf(fileItem.file)
-                if (index > -1){
+                if (index > -1) {
                     files.splice(index, 1)
                 }
                 console.log(files)
             }
         });
 
- 
-        $(document).on('click', '#submitBtn', function(e) {
+
+        $(document).on('click', '#submitBtn', function (e) {
             var form = $('#incidentForm')[0];
             var formData = new FormData(form);
             formData.append('fileLength', files.length)
@@ -246,17 +365,17 @@ $("#file").fileinput({
                 processData: false,
                 contentType: false,
                 enctype: 'multipart/form-data',
-                success: function (){
+                success: function () {
                     console.log("Files have been saved")
                     window.location.href = '{% url "rlcis:incidents" %}'
                 },
-                error: function(xhr, errmsg, err) {
+                error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ":" + xhr.responseText)
                 }
             })
         })
     })
- 
+
 </script>
 
 <script type='text/javascript'>
@@ -264,10 +383,10 @@ $("#file").fileinput({
         return confirm('Are you sure you want to delete this?');
     })
 
-    $(".anonymousToggle").change(function(){
-        if ($(".anonymous").is(":hidden")){
+    $(".anonymousToggle").change(function () {
+        if ($(".anonymous").is(":hidden")) {
             $(".anonymous").show();
-        }else{
+        } else {
             $(".anonymous").hide();
         }
     })
