@@ -4,7 +4,7 @@ from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 
 from django.core.files.storage import FileSystemStorage
@@ -80,6 +80,17 @@ def upload_document(request):
         'form': form
     })
     
+def deleteDocument(request):
+    if request.method != 'POST':
+        raise HTTP404
+
+    docId = request.POST.get('id', None)
+    docToDel = get_object_or_404(IncidentDocument, pk = docId)
+    docToDel.delete()
+
+    messages.success(request, 'The file has been deleted successfully.')
+
+    return HttpResponse("OK")
 
 class DocumentListView(ListView):
     model = Document

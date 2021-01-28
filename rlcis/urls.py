@@ -29,6 +29,7 @@ urlpatterns = [
     path('class/documents/', views.DocumentListView.as_view(), name='class_document_list'),
     path('class/documents/upload', views.UploadDocumentView.as_view(), name='class_upload_document'),
     path('add_incident/', views.incident_form, name="incident_insert"),
+    path('delete_document/', views.deleteDocument, name='delete_document'),
     path('incident/<int:id>', views.incident_form, name='incident_update'),
     path('delete_incident/<int:id>/', views.incident_delete, name='incident_delete'),
     # return a list of incidents

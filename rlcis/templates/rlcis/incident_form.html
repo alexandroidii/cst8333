@@ -12,40 +12,40 @@ Date: 2019-12-19
 {% block content %}
 
 <style>
-@media (max-width: 768px) {
-    .carousel-inner .carousel-item > div {
-        display: none;
-    }
-    .carousel-inner .carousel-item > div:first-child {
-        display: block;
-    }
-}
+    @media (max-width: 768px) {
+        .carousel-inner .carousel-item>div {
+            display: none;
+        }
 
-.carousel-inner .carousel-item.active,
-.carousel-inner .carousel-item-next,
-.carousel-inner .carousel-item-prev {
-    display: flex;
-}
-
-/* display 3 */
-@media (min-width: 768px) {
-    
-    .carousel-inner .carousel-item-right.active,
-    .carousel-inner .carousel-item-next {
-      transform: translateX(33.333%);
+        .carousel-inner .carousel-item>div:first-child {
+            display: block;
+        }
     }
-    
-    .carousel-inner .carousel-item-left.active, 
+
+    .carousel-inner .carousel-item.active,
+    .carousel-inner .carousel-item-next,
     .carousel-inner .carousel-item-prev {
-      transform: translateX(-33.333%);
+        display: flex;
     }
-}
 
-.carousel-inner .carousel-item-right,
-.carousel-inner .carousel-item-left{ 
-  transform: translateX(0);
-}
+    /* display 3 */
+    @media (min-width: 768px) {
 
+        .carousel-inner .carousel-item-right.active,
+        .carousel-inner .carousel-item-next {
+            transform: translateX(33.333%);
+        }
+
+        .carousel-inner .carousel-item-left.active,
+        .carousel-inner .carousel-item-prev {
+            transform: translateX(-33.333%);
+        }
+    }
+
+    .carousel-inner .carousel-item-right,
+    .carousel-inner .carousel-item-left {
+        transform: translateX(0);
+    }
 </style>
 
 <form action="" method="post" id="incidentForm" enctype="multipart/form-data">
@@ -117,93 +117,36 @@ Date: 2019-12-19
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-12">
-            Supporting Documents
 
-            <div class="container text-center my-3">
-                <div class="row mx-auto my-auto">
-                    <div id="documentCarousel" class="carousel slide w-100" data-ride="carousel">
-                        <div class="carousel-inner w-100" role="listbox">
-                            {% for f in files %}
-                            <div data-slide-to="{{ forloop.counter0 }}" class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
-                                <div class="col-md-4">
-                                    <h5 class="card-title">{{ f.name }}</h5>
-                                    <div class="card card-body">
-                                        <a href="{{f.document.url}}">{{ f.filename }}</a>
-                                    </div>                                       
-                                </div>
-                            </div>
-                            {% endfor %}
-                           
-                        </div>
-                        <a class="carousel-control-prev w-auto" href="#documentCarousel" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next w-auto" href="#documentCarousel" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
+
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapseDocuments" role="button"
+                    aria-expanded="false" aria-controls="collapseDocuments">
+                    Supporting Documents
+                </a>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseDocuments"
+                    aria-expanded="false" aria-controls="collapseDocuments">
+                    Supporting Documents
+                </button>
+            </p>
+            <div class="collapse" id="collapseDocuments">
+                {% for f in files %}
+                <!-- <h5 class="card-title">{{ f.name }}</h5> -->
+                <div class="card card-body" id="{{ f.filename }}">
+                    <a href="{{f.document.url}}">{{ f.filename }}</a>
+
+                    <!-- TODO need to add the PK of the document to pass it to the ajax call to delete it. -->
+                    <button class="btn deleteFileBtn" type="button" data-docid="{{ f.document.pk }}" data-filename="{{ f.filename }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
+                {% endfor %}
             </div>
-
-
-
-<!-- 
-
-            <div class="container-fluid">
-                <div id="supportingDocumentsCarousel" class="carousel slide" data-ride="carousel" data-interval="9000">
-                    <div class="carousel-inner row w-10 mxauto" role="listbox">
-                        {% for f in files %}
-                        <div class="carousel-item col-md-4 active">
-
-                            <div class="card" style="width: 12rem;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ f.name }}/h5>
-                                        <a href="{{f.document.url}}">{{ f.filename }}</a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-
-                    </div>
-
-                    <a class="carousel-control-prev" href="#supportingDocumentsCarousel" role="button"
-                        data-slide="prev">
-                        <i class="fa fa-chevron-left fa-lg text-muted"></i>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next text-faded" href="#supportingDocumentsCarousel" role="button"
-                        data-slide="next">
-                        <i class="fa fa-chevron-right fa-lg text-muted"></i>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </div>
-            </div> -->
         </div>
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-12">
-
             <input type="file" multiple>
-
-
-            <!-- Allow only certain file content for preview -->
-
-            <!-- <script>
-            $("#file").fileinput({
-                uploadUrl: '{% url "rlcis:incident_insert" %}',
-                previewFileIcon: '<i class="fas fa-file"></i>',
-                allowedPreviewTypes: ['image', 'text'], // allow only preview of image & text files
-                previewFileIconSettings: {
-                    'docx': '<i class="fas fa-file-word text-primary"></i>',
-                    'xlsx': '<i class="fas fa-file-excel text-success"></i>',
-                    'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
-                    'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
-                    'zip': '<i class="fas fa-file-archive text-muted"></i>',
-                }
-            });
-        </script> -->
         </div>
     </div>
     <div class="row">
@@ -234,7 +177,7 @@ Date: 2019-12-19
     <i class="fas fa-save"></i> Submit
 </button> 
 
-'docx': '<i class="fas fa-file-word text-primary"></i>',
+        'docx': '<i class="fas fa-file-word text-primary"></i>',
         'xlsx': '<i class="fas fa-file-excel text-success"></i>',
         'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
         'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
@@ -247,57 +190,28 @@ Date: 2019-12-19
 
 <script type="text/javascript">
 
-$('#documentCarousel').carousel({
-  interval: 10000
-})
+    $('#documentCarousel').carousel({
+        interval: 1000000
+    })
 
-$('.carousel .carousel-item').each(function(){
-    var minPerSlide = 3;
-    var next = $(this).next();
-    if (!next.length) {
-    next = $(this).siblings(':first');
-    }
-    next.children(':first-child').clone().appendTo($(this));
-    
-    for (var i=0;i<minPerSlide;i++) {
-        next=next.next();
+    $('.carousel .carousel-item').each(function () {
+        var minPerSlide = 4;
+        var next = $(this).next();
         if (!next.length) {
-        	next = $(this).siblings(':first');
-      	}
-        
+            next = $(this).siblings(':first');
+        }
         next.children(':first-child').clone().appendTo($(this));
-      }
-});
 
+        for (var i = 0; i < minPerSlide; i++) {
+            next = next.next();
+            if (!next.length) {
+                next = $(this).siblings(':first');
+            }
 
+            next.children(':first-child').clone().appendTo($(this));
+        }
+    });
 
-    /*   
-   CC 2.0 License Iatek LLC 2018	
-   Attribution required	   
-   */
-
-    // $('#supportingDocumentsCarousel').on('slide.bs.carousel', function (e) {
-    //     var $e = $(e.relatedTarget);
-
-    //     var idx = $e.index();
-    //     console.log("IDX :  " + idx);
-
-    //     var itemsPerSlide = 8;
-    //     var totalItems = $('.carousel-item').length;
-
-    //     if (idx >= totalItems - (itemsPerSlide - 1)) {
-    //         var it = itemsPerSlide - (totalItems - idx);
-    //         for (var i = 0; i < it; i++) {
-    //             // append slides to end	//             
-    //             if (e.direction == "left") {
-    //                 $('.carousel-item').eq(i).appendTo('.carousel-inner');
-    //             }
-    //             else {
-    //                 $('.carousel-item').eq(0).appendTo('.carousel-inner');
-    //             }
-    //         }
-    //     }
-    // });	
 </script>
 
 
@@ -310,12 +224,13 @@ $('.carousel .carousel-item').each(function(){
      * */
     document.addEventListener('DOMContentLoaded', function () {
         var files = []
+        FilePond.registerPlugin(FilePondPluginFileMetadata);
         FilePond.registerPlugin(FilePondPluginFileValidateSize);
         FilePond.registerPlugin(FilePondPluginFileValidateType);
         FilePond.setOptions({
             allowMultiple: true,
             maxFiles: 10,
-            maxFileSize: '6MB'
+            maxFileSize: '6MB',
         })
         const inputElement = document.querySelector('input[type="file"]');
         const pond = FilePond.create(inputElement, {
@@ -345,6 +260,35 @@ $('.carousel .carousel-item').each(function(){
                 console.log(files)
             }
         });
+
+
+        $(document).on('click', '.deleteFileBtn', function (e) {
+            if (confirm("Are you sure you want to delete this file?")){
+                var id = $(this).data('docid');
+                var formData = new FormData();
+                formData.append('id', id)
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+
+                // don't forget to add the confirmation message
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "rlcis:delete_document" %}',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    success: function () {
+                        console.log("Files have been delete")
+                        $("#" + $(this).data('filename')).remove()
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log(xhr.status + ":" + xhr.responseText)
+                    }
+                })
+            }
+        })
+
 
 
         $(document).on('click', '#submitBtn', function (e) {
