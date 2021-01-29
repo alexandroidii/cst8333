@@ -1,4 +1,4 @@
-import logging
+import logging, json
 
 from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -86,11 +86,15 @@ def deleteDocument(request):
 
     docId = request.POST.get('id', None)
     docToDel = get_object_or_404(IncidentDocument, pk = docId)
+    jsonData = json.dumps({
+        'filename': docToDel.filename()
+    })
+
     docToDel.delete()
 
-    messages.success(request, 'The file has been deleted successfully.')
+    # messages.success(request, 'The file has been deleted successfully.')
 
-    return HttpResponse("OK")
+    return HttpResponse(jsonData, content_type='json')
 
 class DocumentListView(ListView):
     model = Document

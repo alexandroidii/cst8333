@@ -116,7 +116,7 @@ Date: 2019-12-19
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-md-12">
+        <div class="col-sm-4 col-md-6">
 
 
             <p>
@@ -124,10 +124,6 @@ Date: 2019-12-19
                     aria-expanded="false" aria-controls="collapseDocuments">
                     Supporting Documents
                 </a>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseDocuments"
-                    aria-expanded="false" aria-controls="collapseDocuments">
-                    Supporting Documents
-                </button>
             </p>
             <div class="collapse" id="collapseDocuments">
                 {% for f in files %}
@@ -136,16 +132,16 @@ Date: 2019-12-19
                     <a href="{{f.document.url}}">{{ f.filename }}</a>
 
                     <!-- TODO need to add the PK of the document to pass it to the ajax call to delete it. -->
-                    <button class="btn deleteFileBtn" type="button" data-docid="{{ f.document.pk }}" data-filename="{{ f.filename }}">
+                    <button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
                 {% endfor %}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-12">
+    <!-- </div>
+    <div class="row"> -->
+        <div class="col-sm-4 col-md-6">
             <input type="file" multiple>
         </div>
     </div>
@@ -268,7 +264,7 @@ Date: 2019-12-19
                 var formData = new FormData();
                 formData.append('id', id)
                 formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
-
+                $("#" +  $(this).data('filename')).remove();
                 // don't forget to add the confirmation message
                 $.ajax({
                     type: 'POST',
@@ -278,9 +274,11 @@ Date: 2019-12-19
                     processData: false,
                     contentType: false,
                     enctype: 'multipart/form-data',
-                    success: function () {
-                        console.log("Files have been delete")
-                        $("#" + $(this).data('filename')).remove()
+                    dataType: 'json',
+                    success: function (jsonData) {
+                        console.log("Files have been delete");
+                        alert(jsonData.filename);
+                        $("#" + jsonData.filename).remove();
                     },
                     error: function (xhr, errmsg, err) {
                         console.log(xhr.status + ":" + xhr.responseText)
@@ -310,11 +308,11 @@ Date: 2019-12-19
                 contentType: false,
                 enctype: 'multipart/form-data',
                 success: function () {
-                    console.log("Files have been saved")
-                    window.location.href = '{% url "rlcis:incidents" %}'
+                    console.log("Files have been saved");
+                    window.location.href = '{% url "rlcis:incidents" %}';
                 },
                 error: function (xhr, errmsg, err) {
-                    console.log(xhr.status + ":" + xhr.responseText)
+                    console.log(xhr.status + ":" + xhr.responseText);
                 }
             })
         })
