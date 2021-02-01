@@ -48,38 +48,7 @@ implement model file: https://www.youtube.com/watch?v=KQJRwWpP8hs
 Implement Class View to display documents: https://www.youtube.com/watch?v=HSn-e2snNc8
 
 """
-# def upload(request):
-#     template = 'rlcis/upload.html'
-#     context = {}
-#     if request.method == 'POST':
-#         uploaded_file = request.FILES['document']
-#         fs = FileSystemStorage()
-#         name = fs.save(uploaded_file.name, uploaded_file)
-#         context['url'] = fs.url(name)
-#     return render(request, template, context)
 
-
-
-def document_list(request):
-    documents = Document.objects.all()
-    return render(request,'rlcis/document_list.html', {
-        'documents': documents, 'activePage': 'upload_document'
-    })
-
-
-def upload_document(request):
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('rlcis:document_list')
-    else:
-            form = DocumentForm()
-    form = DocumentForm()
-    return render(request,'rlcis/upload_document.html', {
-        'form': form
-    })
-    
 def deleteDocument(request):
     if request.method != 'POST':
         raise HTTP404
@@ -87,25 +56,13 @@ def deleteDocument(request):
     docId = request.POST.get('id', None)
     docToDel = get_object_or_404(IncidentDocument, pk = docId)
     jsonData = json.dumps({
-        'filename': docToDel.filename()
+        'filename': docToDel.filename(),
+        'id': docToDel.pk
     })
 
     docToDel.delete()
 
-    # messages.success(request, 'The file has been deleted successfully.')
-
     return HttpResponse(jsonData, content_type='json')
-
-class DocumentListView(ListView):
-    model = Document
-    template_name = 'rlcis/class_document_list.html'
-    context_object_name = 'documents'
-
-class UploadDocumentView(CreateView):
-    model = Document
-    form_class = DocumentForm
-    success_url = reverse_lazy('rlcis:class_document_list')
-    template_name = 'rlcis/upload_document.html'
 
 """
 
@@ -192,20 +149,16 @@ def incident_form(request, id=0):
         logger.debug(form.errors)
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
+
+            # First save the form
             savedIncident = form.save()
+
+            # Then loop through any files and save them with a link to the incident.
             for file_num in range(0, int(fileLength)):
                 IncidentDocument.objects.create(
                     incident=savedIncident,
                     document=request.FILES.get(f'document{file_num}')
                 )
-                
-                
-                # documentForm = IncidentDocumentForm(
-                #     incident=savedIncident,
-                #     document=request.FILES.get(f'document{file_num}'),
-                # )
-                # documentForm.save()
-
             print('form submitted - RL')
         else:
             print(form.errors)

@@ -253,10 +253,6 @@ class IncidentDocument(models.Model):
         return os.path.basename(self.document.name)
 
 
-
-
-
-
 """
 class NewContributer(AbstractBaseUser):
     email = models.EmailField(_('email address'), unique=True)

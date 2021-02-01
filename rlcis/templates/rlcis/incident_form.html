@@ -11,43 +11,6 @@ Date: 2019-12-19
 
 {% block content %}
 
-<style>
-    @media (max-width: 768px) {
-        .carousel-inner .carousel-item>div {
-            display: none;
-        }
-
-        .carousel-inner .carousel-item>div:first-child {
-            display: block;
-        }
-    }
-
-    .carousel-inner .carousel-item.active,
-    .carousel-inner .carousel-item-next,
-    .carousel-inner .carousel-item-prev {
-        display: flex;
-    }
-
-    /* display 3 */
-    @media (min-width: 768px) {
-
-        .carousel-inner .carousel-item-right.active,
-        .carousel-inner .carousel-item-next {
-            transform: translateX(33.333%);
-        }
-
-        .carousel-inner .carousel-item-left.active,
-        .carousel-inner .carousel-item-prev {
-            transform: translateX(-33.333%);
-        }
-    }
-
-    .carousel-inner .carousel-item-right,
-    .carousel-inner .carousel-item-left {
-        transform: translateX(0);
-    }
-</style>
-
 <form action="" method="post" id="incidentForm" enctype="multipart/form-data">
 
     {% csrf_token %}
@@ -127,20 +90,16 @@ Date: 2019-12-19
             </p>
             <div class="collapse" id="collapseDocuments">
                 {% for f in files %}
-                <!-- <h5 class="card-title">{{ f.name }}</h5> -->
-                <div class="card card-body" id="{{ f.filename }}">
-                    <a href="{{f.document.url}}">{{ f.filename }}</a>
-
-                    <!-- TODO need to add the PK of the document to pass it to the ajax call to delete it. -->
+                <div class="card card-body d-block" id="{{ f.pk }}">
                     <button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">
                         <i class="fas fa-trash-alt"></i>
                     </button>
+                    <a href="{{f.document.url}}">{{ f.filename }}</a>
+
                 </div>
                 {% endfor %}
             </div>
         </div>
-    <!-- </div>
-    <div class="row"> -->
         <div class="col-sm-4 col-md-6">
             <input type="file" multiple>
         </div>
@@ -168,50 +127,6 @@ Date: 2019-12-19
         </div>
     </div>
 </form>
-<!-- 
-<button type="button" id="testsubmitBtn" class="btn btn-success btn-block btn-sm">
-    <i class="fas fa-save"></i> Submit
-</button> 
-
-        'docx': '<i class="fas fa-file-word text-primary"></i>',
-        'xlsx': '<i class="fas fa-file-excel text-success"></i>',
-        'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
-        'pdf': '<i class="fas fa-file-pdf text-danger"></i>',
-        'zip': '<i class="fas fa-file-archive text-muted"></i>',
-
-
-
-
--->
-
-<script type="text/javascript">
-
-    $('#documentCarousel').carousel({
-        interval: 1000000
-    })
-
-    $('.carousel .carousel-item').each(function () {
-        var minPerSlide = 4;
-        var next = $(this).next();
-        if (!next.length) {
-            next = $(this).siblings(':first');
-        }
-        next.children(':first-child').clone().appendTo($(this));
-
-        for (var i = 0; i < minPerSlide; i++) {
-            next = next.next();
-            if (!next.length) {
-                next = $(this).siblings(':first');
-            }
-
-            next.children(':first-child').clone().appendTo($(this));
-        }
-    });
-
-</script>
-
-
-
 <script>
 
     /***
@@ -257,15 +172,13 @@ Date: 2019-12-19
             }
         });
 
-
+        // Ajax call when deleting a supporting document
         $(document).on('click', '.deleteFileBtn', function (e) {
             if (confirm("Are you sure you want to delete this file?")){
                 var id = $(this).data('docid');
                 var formData = new FormData();
                 formData.append('id', id)
                 formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
-                $("#" +  $(this).data('filename')).remove();
-                // don't forget to add the confirmation message
                 $.ajax({
                     type: 'POST',
                     url: '{% url "rlcis:delete_document" %}',
@@ -276,9 +189,8 @@ Date: 2019-12-19
                     enctype: 'multipart/form-data',
                     dataType: 'json',
                     success: function (jsonData) {
-                        console.log("Files have been delete");
-                        alert(jsonData.filename);
-                        $("#" + jsonData.filename).remove();
+                        console.log(jsonData.filename + " has been delete");
+                        $(".card-body").remove("#" + jsonData.id);
                     },
                     error: function (xhr, errmsg, err) {
                         console.log(xhr.status + ":" + xhr.responseText)
@@ -288,7 +200,7 @@ Date: 2019-12-19
         })
 
 
-
+        // Ajax call to submit the form wit any documents attached
         $(document).on('click', '#submitBtn', function (e) {
             var form = $('#incidentForm')[0];
             var formData = new FormData(form);
