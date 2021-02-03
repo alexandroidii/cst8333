@@ -175,7 +175,13 @@ id = incident id,  pk of incident to delete
 """
 def incident_delete(request, id):
     logger.debug("trying to delete ")
+
     incident = Incident.objects.get(pk=id)
+    files = IncidentDocument.objects.filter(incident=incident)
+    for file in files:
+        logger.debug(file)
+        file.delete()
+
     logger.debug(incident)
     incident.delete()
     return redirect('rlcis:incidents')

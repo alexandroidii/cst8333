@@ -24,10 +24,6 @@ urlpatterns = [
 
     # root path for the home page
     path('', views.index, name='home'),
-    path('documents/', views.document_list, name='document_list'),
-    path('documents/upload/', views.upload_document, name='upload_document'),
-    path('class/documents/', views.DocumentListView.as_view(), name='class_document_list'),
-    path('class/documents/upload', views.UploadDocumentView.as_view(), name='class_upload_document'),
     path('add_incident/', views.incident_form, name="incident_insert"),
     path('delete_document/', views.deleteDocument, name='delete_document'),
     path('incident/<int:id>', views.incident_form, name='incident_update'),
