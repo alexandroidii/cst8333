@@ -239,11 +239,7 @@ class Incident(Model):
 
 class IncidentDocument(models.Model):
     incident = models.ForeignKey(Incident, default=None, on_delete=models.CASCADE)
-    name = models.CharField(
-                            max_length=255,
-                            null=True,
-                            blank=True,
-                            )
+ 
     document = models.FileField(upload_to='incidents/uploads/')
     
     def __str__(self):
