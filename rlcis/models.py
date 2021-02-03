@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.db import models
 from django.db.models import Model
@@ -11,11 +12,14 @@ from django.contrib.auth.models import AbstractBaseUser
 
 class Document(models.Model):
     name = models.CharField(max_length=100)
-    file = models.FileField(upload_to='incidents/uploads/')
-    image = models.ImageField(upload_to='incidents/images/', null=True, blank=True)
+    files = models.FileField(upload_to='incidents/uploads/')
+    images = models.ImageField(upload_to='incidents/images/', null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+
+
 
 """ 
 RLCIS models.py define the structure to the underlying database.
@@ -217,13 +221,36 @@ class Incident(Model):
         help_text="Is this a real life Incident or a Ficticous Scenario?",
     )
 
+    # documents = models.FileField(blank=True)
+
+    # document = models.ForeignKey(
+    #     Document,
+    #     on_delete = models.CASCADE,
+    #     null=True,
+    #     blank=True,
+    # )
     # Return string repesenation of pk and incident summary (used in t/s)
     def __str__(self):
-        return str(self.pk) + " " + self.incident_summary 
+        return str(self.pk) 
+        # + " " + self.incident_summary 
 
     def get_absolute_url(self):
         return reverse('incident_update', kwargs={'pk': self.pk})
+
+class IncidentDocument(models.Model):
+    incident = models.ForeignKey(Incident, default=None, on_delete=models.CASCADE)
+ 
+    document = models.FileField(upload_to='incidents/uploads/')
+    
+    def __str__(self):
+        return self.incident.incident_summary
+
+    def filename(self):
+        return os.path.basename(self.document.name)
+
+
 """
 class NewContributer(AbstractBaseUser):
     email = models.EmailField(_('email address'), unique=True)
     user_name models.CharField(max_length=150, unique=True)
+    """

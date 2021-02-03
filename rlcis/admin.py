@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Incident, Reviewer
+from .models import Incident, Reviewer, IncidentDocument
 
 """ 
 RLCIS admin.py - used to display models for admin pannel.
@@ -21,6 +21,20 @@ admin.site.site_header = "RLCIS Admin"
 admin.site.site_title = "RLCIS Admin Area"
 admin.site.index_title = "Welcome to the RLCIS Admin area"
 
-admin.site.register(Incident)
+# admin.site.register(Incident)
 admin.site.register(Reviewer)
-admin.site.site_url= "/rlcis"
+admin.site.site_url= "/"
+
+class IncidentDocumentAdmin(admin.StackedInline):
+    model = IncidentDocument
+
+@admin.register(Incident)
+class IncidentAdmin(admin.ModelAdmin):
+    inlines = [IncidentDocumentAdmin]
+
+    class Meta:
+        model = Incident
+
+@admin.register(IncidentDocument)
+class IncidentDocumentAdmin(admin.ModelAdmin):
+    pass

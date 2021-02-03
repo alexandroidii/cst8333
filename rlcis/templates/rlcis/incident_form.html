@@ -11,15 +11,17 @@ Date: 2019-12-19
 
 {% block content %}
 
-
-<form action="" method="post">
+<form action="" method="post" id="incidentForm" enctype="multipart/form-data">
 
     {% csrf_token %}
     {{ form.errors }}
     {{ form.non_field_errors }}
     <div class="row">
-        <div class="col-sm-4 col-md-12">
+        <div class="col-sm-2 col-md-4">
             {{ form.anonymous|as_crispy_field }}
+        </div>
+        <div class="col-sm-2 col-md-8">
+            Incident Number: <span id="incidentId">{{ id }}</span>
         </div>
     </div>
     <div class="row">
@@ -77,13 +79,39 @@ Date: 2019-12-19
         </div>
     </div>
     <div class="row">
+        <div class="col-sm-4 col-md-6">
+
+
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapseDocuments" role="button"
+                    aria-expanded="false" aria-controls="collapseDocuments">
+                    Supporting Documents
+                </a>
+            </p>
+            <div class="collapse" id="collapseDocuments">
+                {% for f in files %}
+                <div class="card card-body d-block" id="{{ f.pk }}">
+                    <button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <a href="{{f.document.url}}">{{ f.filename }}</a>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-6">
+            <input type="file" multiple>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm-4 col-md-8">
 
         </div>
     </div>
     <div class="row">
         <div class="col-sm-4 col-md-8">
-            <button type="submit" class="btn btn-success btn-block btn-sm">
+            <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
                 <i class="fas fa-save"></i> Submit
             </button>
         </div>
@@ -99,16 +127,120 @@ Date: 2019-12-19
         </div>
     </div>
 </form>
+<script>
+
+    /***
+     * This example was found in the following repo.
+     * https://github.com/raszidzie/Multiple-Images-Template-Django
+     * */
+    document.addEventListener('DOMContentLoaded', function () {
+        var files = []
+        FilePond.registerPlugin(FilePondPluginFileMetadata);
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.setOptions({
+            allowMultiple: true,
+            maxFiles: 10,
+            maxFileSize: '6MB',
+        })
+        const inputElement = document.querySelector('input[type="file"]');
+        const pond = FilePond.create(inputElement, {
+            acceptedFileTypes: [
+                'image/png',
+                'image/jpeg',
+                'application/pdf',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'audio/mpeg',
+                'text/plain',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+
+            ],
+            onaddfile: (err, fileItem) => {
+                if (!err) {
+                    files.push(fileItem.file)
+                }
+                console.log(files)
+            },
+            onremovefile: (err, fileItem) => {
+                const index = files.indexOf(fileItem.file)
+                if (index > -1) {
+                    files.splice(index, 1)
+                }
+                console.log(files)
+            }
+        });
+
+        // Ajax call when deleting a supporting document
+        $(document).on('click', '.deleteFileBtn', function (e) {
+            if (confirm("Are you sure you want to delete this file?")){
+                var id = $(this).data('docid');
+                var formData = new FormData();
+                formData.append('id', id)
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "rlcis:delete_document" %}',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    dataType: 'json',
+                    success: function (jsonData) {
+                        console.log(jsonData.filename + " has been delete");
+                        $(".card-body").remove("#" + jsonData.id);
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log(xhr.status + ":" + xhr.responseText)
+                    }
+                })
+            }
+        })
+
+
+        // Ajax call to submit the form wit any documents attached
+        $(document).on('click', '#submitBtn', function (e) {
+            var form = $('#incidentForm')[0];
+            var formData = new FormData(form);
+            formData.append('fileLength', files.length)
+            formData.append('id', $('#incidentId').text())
+            for (var i = 0; i < files.length; i++) {
+                formData.append('document' + i, files[i])
+            }
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "rlcis:incident_insert" %}',
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                success: function () {
+                    console.log("Files have been saved");
+                    window.location.href = '{% url "rlcis:incidents" %}';
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ":" + xhr.responseText);
+                }
+            })
+        })
+    })
+
+</script>
 
 <script type='text/javascript'>
     $(document).on('click', '.confirm-delete', function () {
         return confirm('Are you sure you want to delete this?');
     })
 
-    $(".anonymousToggle").change(function(){
-        if ($(".anonymous").is(":hidden")){
+    $(".anonymousToggle").change(function () {
+        if ($(".anonymous").is(":hidden")) {
             $(".anonymous").show();
-        }else{
+        } else {
             $(".anonymous").hide();
         }
     })

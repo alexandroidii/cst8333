@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rlcis.apps.RlcisConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,9 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'crispy_forms',
+    
 
 ]
-
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -91,8 +92,8 @@ DATABASES = {
         'NAME': 'RlcisDB',
         'USER': 'rlcisadm',
         'PASSWORD': '12345678',
-        'HOST': 'localhost'      
-        
+        'HOST': 'localhost'
+
     }
 }
 
@@ -135,12 +136,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MediA_ROOT = os.path.join(BASE_DIR,'media') 
 
-MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
+MEDIA_URL = '/media/'
 
+LOGIN_REDIRECT_URL = 'rlcis:home'
+LOGIN_URL = 'login'
 
-STATICFILES_DIRS =[
-    os.path.join(BASE_DIR,'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
 ]

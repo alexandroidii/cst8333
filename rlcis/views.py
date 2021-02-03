@@ -1,10 +1,11 @@
-import logging
+import logging, json
 
 from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
+from django.urls import reverse_lazy
 
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
@@ -16,8 +17,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import IncidentForm, SearchForm, CreateUserForm
-from .models import Incident
+from .forms import IncidentForm, SearchForm, CreateUserForm, IncidentDocumentForm
+from .models import Incident, IncidentDocument
 
 
 """
@@ -47,49 +48,21 @@ implement model file: https://www.youtube.com/watch?v=KQJRwWpP8hs
 Implement Class View to display documents: https://www.youtube.com/watch?v=HSn-e2snNc8
 
 """
-# def upload(request):
-#     template = 'rlcis/upload.html'
-#     context = {}
-#     if request.method == 'POST':
-#         uploaded_file = request.FILES['document']
-#         fs = FileSystemStorage()
-#         name = fs.save(uploaded_file.name, uploaded_file)
-#         context['url'] = fs.url(name)
-#     return render(request, template, context)
 
+def deleteDocument(request):
+    if request.method != 'POST':
+        raise HTTP404
 
-
-def document_list(request):
-    documents = Document.objects.all()
-    return render(request,'rlcis/document_list.html', {
-        'documents': documents
+    docId = request.POST.get('id', None)
+    docToDel = get_object_or_404(IncidentDocument, pk = docId)
+    jsonData = json.dumps({
+        'filename': docToDel.filename(),
+        'id': docToDel.pk
     })
 
+    docToDel.delete()
 
-def upload_document(request):
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('rlcis:document_list')
-    else:
-            form = DocumentForm()
-    form = DocumentForm()
-    return render(request,'rlcis/upload_document.html', {
-        'form': form
-    })
-    
-
-class DocumentListView(ListView):
-    model = Document
-    template_name = 'class_document_list.html'
-    context_object_name = 'documents'
-
-class UploadDocumentView(CreateView):
-    model = Document
-    form = DocumentForm()
-    success_url = 'document_list'
-    template_name = 'upload_document.html'
+    return HttpResponse(jsonData, content_type='json')
 
 """
 
@@ -109,7 +82,7 @@ def incidents(request):
         incident_list = __search(query).filter(scenario=False)
 
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 2)
+    paginator = Paginator(incident_list, 20)
     page = request.GET.get('page')
     try:
         incidents = paginator.page(page)
@@ -143,17 +116,28 @@ def incident_form(request, id=0):
         if id == 0:
             logger.debug("starting incident_form - id = 0")
             form = IncidentForm()
+            context = {
+                'form': form,
+                'activePage': 'incidents',
+                'id': id,
+            }
         else:
             logger.debug("starting incident_form - id exists")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(instance=incident)
-        context = {
-            'form': form,
-            'activePage': 'incidents',
-            'id': id,
-        }
+            files = IncidentDocument.objects.filter(incident=incident)
+            context = {
+                'form': form,
+                'files': files,
+                'activePage': 'incidents',
+                'id': id,
+            }
         return render(request, 'rlcis/incident_form.html', context)
     else:
+        fileLength = request.POST.get('fileLength')
+        id = int(request.POST.get('id'))
+        print(fileLength)
+        logger.debug("fileLength = " + fileLength)
         if id == 0:
             logger.debug("starting incident_form - id = 0 POST")
             form = IncidentForm(request.POST)
@@ -161,15 +145,26 @@ def incident_form(request, id=0):
             logger.debug("starting incident_form - id exist POST")
             incident = Incident.objects.get(pk=id)
             form = IncidentForm(request.POST, instance=incident)
+        print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
-            form.save()
+
+            # First save the form
+            savedIncident = form.save()
+
+            # Then loop through any files and save them with a link to the incident.
+            for file_num in range(0, int(fileLength)):
+                IncidentDocument.objects.create(
+                    incident=savedIncident,
+                    document=request.FILES.get(f'document{file_num}')
+                )
             print('form submitted - RL')
         else:
+            print(form.errors)
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
-        return redirect('/rlcis/incidents/')
+        return redirect('rlcis:incidents')
 
 
 """
@@ -180,10 +175,16 @@ id = incident id,  pk of incident to delete
 """
 def incident_delete(request, id):
     logger.debug("trying to delete ")
+
     incident = Incident.objects.get(pk=id)
+    files = IncidentDocument.objects.filter(incident=incident)
+    for file in files:
+        logger.debug(file)
+        file.delete()
+
     logger.debug(incident)
     incident.delete()
-    return redirect('/rlcis/incidents/')
+    return redirect('rlcis:incidents')
 
 
 """
@@ -256,7 +257,7 @@ def scenario_form(request, id=0):
         else:
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
-        return redirect('/rlcis/scenarios/')
+        return redirect('rlcis:scenarios')
 
 """
 Scenario delete method used to remove a scenario from persisted store.
@@ -269,7 +270,7 @@ def scenario_delete(request, id):
     incident = Incident.objects.get(pk=id)
     logger.debug(incident)
     incident.delete()
-    return redirect('scenarios/')
+    return redirect('rlcis:scenarios')
 
 """
 private method used to search multiple Incident columns utilizing postgres SearchVector.
@@ -322,41 +323,3 @@ Index method used to render index.html (home page)
 def index(request):
     return render(request, 'rlcis/index.html', {'activePage': 'home'})
 
-
-def registerPage(request):
-    form = CreateUserForm()
-
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user)
-            return redirect('rlcis:loginPage')
-
-    context = {'form':form,
-    'activePage': 'register'
-    }
-
-
-    return render(request, 'rlcis/accounts/register.html', context)
-
-def loginPage(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-  #  context = {}
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('rlcis:home')
-        else:
-            messages.info(request,'Username or Password is incorrect...')
-
-    return render(request, 'rlcis/accounts/login.html', {'activePage': 'login'})
-
-def logoutUser(request):
-    logout(request)
-    return redirect('rlcis:loginPage')
