@@ -29,7 +29,7 @@ SECRET_KEY = '_-ow7!wi+0tk9_5z-g)4gupsfo0rnd@ja$&pq&9k91l2ty=652'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [rlcis-env.eba-pguumn7q.us-west-2.elasticbeanstalk.com]
 
 
 # Application definition
@@ -86,16 +86,28 @@ WSGI_APPLICATION = 'cst8333.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'RlcisDB',
-        'USER': 'rlcisadm',
-        'PASSWORD': '12345678',
-        'HOST': 'localhost'
-
+if 'RDS_DB_NAME' in os.environ:
+    DATABASES = {
+        'default':{
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'RlcisDB',
+            'USER': 'rlcisadm',
+            'PASSWORD': '12345678',
+            'HOST': 'localhost'
+
+        }
+    }
 
 
 # Password validation
@@ -134,8 +146,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, ". .", "www", "static")
 STATIC_URL = '/static/'
-
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
