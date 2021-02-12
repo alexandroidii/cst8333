@@ -29,7 +29,10 @@ SECRET_KEY = '_-ow7!wi+0tk9_5z-g)4gupsfo0rnd@ja$&pq&9k91l2ty=652'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [rlcis-env-dev.us-west-2.elasticbeanstalk.com]
+ALLOWED_HOSTS = [
+    'rlcis-env-dev.us-west-2.elasticbeanstalk.com',
+    '127.0.0.1',
+    ]
 
 
 # Application definition
@@ -45,8 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'crispy_forms',
-    
-
 ]
 
 
