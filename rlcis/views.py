@@ -164,6 +164,19 @@ def incident_form(request, id=0):
             print(form.errors)
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
+            # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
+            incident = Incident.objects.get(pk=id)
+            form = IncidentForm(instance=incident)
+            files = IncidentDocument.objects.filter(incident=incident)
+            context = {
+                'form': form,
+                'files': files,
+                'activePage': 'incidents',
+                'id': id,
+            }
+            return render(request, 'rlcis/incident_form.html', context)
+
+        # ToDo: Maybe we don't redirect but show a successfully saved message and just reload the form?   
         return redirect('rlcis:incidents')
 
 

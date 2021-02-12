@@ -80,6 +80,7 @@ reviewer            -- Optional
 scenario            -- Required but hidden.  This determines if the Incident is actually a Scenario
 industry_type       -- Required
 industry_type_other -- Optional field only if industry_type is set to Other
+level               -- Optional field
 """
 class IncidentForm(forms.ModelForm):
     anonymous = forms.BooleanField(
@@ -108,6 +109,8 @@ class IncidentForm(forms.ModelForm):
             'scenario',
             'industry_type',
             'industry_type_other',
+            'level',
+            'email',
             # 'documents',
 
         ]
@@ -127,12 +130,13 @@ class IncidentForm(forms.ModelForm):
             'reviewer': 'Reviewer',
             'industry_type': 'Industry Type',
             'industry_type_other': 'Industry Type Other',
+            'level':'Level',
+            'email':'Public Email',
         }
         widgets = {
             'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
             'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
             'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
-
         }
 
         def __init__(self, *args, **kwargs):
@@ -141,11 +145,13 @@ class IncidentForm(forms.ModelForm):
             self.fields['bribed_by_other'].required = False
             self.fields['bribe_type_other'].required = False
             self.fields['industry_type_other'].required = False
+            self.fields['level'].required = False
             self.fields['company_name'].required = False
             self.fields['anonymous'].required = False
             self.fields['first_occurence'].required = False
             self.fields['resolution_date'].required = False
             self.fields['reviewer'].required = False
+            self.fields['email'].required = False
 
 class IncidentDocumentForm(forms.ModelForm):
     

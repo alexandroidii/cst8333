@@ -82,7 +82,10 @@ class Incident(Model):
     TECHNOLOGY = 'TE'
     TRANSPORTATION = 'TR'
 
-
+    # Levels
+    FEDERAL = 'FE'
+    PROVINCIAL = 'PR'
+    MUNICIPAL = 'MU'
 
     # General types related to all options
     # 
@@ -121,6 +124,12 @@ class Incident(Model):
         (TRANSPORTATION, 'Transportation'),
         (OTHER, 'Other Transportation Type'),
 
+    ]
+
+    LEVEL_CHOICES = [
+        (FEDERAL, 'Federal'),
+        (PROVINCIAL, 'Provincial'),
+        (MUNICIPAL, 'Municipal'),
     ]
 
     # company_name attribute in incident table as defined
@@ -192,6 +201,14 @@ class Incident(Model):
         null=True,
         blank=True,
     )
+    # industry_type attribute in incident table as defined
+    level = models.CharField(
+        max_length=2,
+        choices=LEVEL_CHOICES,
+        null=True,
+        blank=True,
+        # default=OTHER,
+    )
     # first_occurence attribute in incident table as defined
     first_occurence = models.DateField(
         null=True,
@@ -221,14 +238,13 @@ class Incident(Model):
         help_text="Is this a real life Incident or a Ficticous Scenario?",
     )
 
-    # documents = models.FileField(blank=True)
+    #public email address that can be contacted
+    email = models.EmailField(
+        null=True,
+        blank=True,
+    )
 
-    # document = models.ForeignKey(
-    #     Document,
-    #     on_delete = models.CASCADE,
-    #     null=True,
-    #     blank=True,
-    # )
+
     # Return string repesenation of pk and incident summary (used in t/s)
     def __str__(self):
         return str(self.pk) 

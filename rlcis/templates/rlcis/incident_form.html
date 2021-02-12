@@ -20,16 +20,22 @@ Date: 2019-12-19
         <div class="col-sm-2 col-md-4">
             {{ form.anonymous|as_crispy_field }}
         </div>
-        <div class="col-sm-2 col-md-8">
+        <div class="col-sm-2 col-md-4">
             Incident Number: <span id="incidentId">{{ id }}</span>
+        </div>
+        <div class="col-sm-2 col-md-4">
+            {{ form.email|as_crispy_field }}
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-md-6 anonymous">
+        <div class="col-sm-2 col-md-4 anonymous">
             {{ form.company_name|as_crispy_field }}
         </div>
-        <div class="col-sm-4 col-md-6">
+        <div class="col-sm-2 col-md-4">
             {{ form.industry_type|as_crispy_field }}
+        </div>
+        <div class="col-sm-2 col-md-4">
+            {{ form.level|as_crispy_field }}
         </div>
     </div>
     <div class="row">

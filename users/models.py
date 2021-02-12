@@ -11,7 +11,7 @@ class Profile(models.Model):
     StateProvince = models.CharField(max_length=12, default='DEFAULT')
     CompanyPosition = models.CharField(max_length=30)
     Website = models.CharField(max_length=30, null=True)
-
+    
 
     def __str__(self):
         return f'{self.user.username} Profile'
