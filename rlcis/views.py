@@ -3,7 +3,7 @@ import logging, json
 from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 
@@ -51,7 +51,7 @@ Implement Class View to display documents: https://www.youtube.com/watch?v=HSn-e
 
 def deleteDocument(request):
     if request.method != 'POST':
-        raise HTTP404
+        raise Http404
 
     docId = request.POST.get('id', None)
     docToDel = get_object_or_404(IncidentDocument, pk = docId)
@@ -165,12 +165,25 @@ def incident_form(request, id=0):
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
             # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(instance=incident)
-            files = IncidentDocument.objects.filter(incident=incident)
+            # incident = Incident.objects.get(pk=id)
+            # form = IncidentForm(instance=incident)
+            # files = IncidentDocument.objects.filter(incident=incident)
+
+            # The problem is this is triggered from an Ajax call so it goes into the 
+            # success portion of the Ajax callback which calls the incidents. 
+            #  need to find a way to reload the page with the incorrect data and validation
+            jsonData = json.dumps({
+                'filename': docToDel.filename(),
+                'id': docToDel.pk
+            })
+
+ 
+
+            return HttpResponse(jsonData, content_type='json')
+
             context = {
                 'form': form,
-                'files': files,
+                'files': request.FILES,
                 'activePage': 'incidents',
                 'id': id,
             }

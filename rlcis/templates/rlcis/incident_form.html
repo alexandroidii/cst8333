@@ -225,7 +225,7 @@ Date: 2019-12-19
                 processData: false,
                 contentType: false,
                 enctype: 'multipart/form-data',
-                success: function () {
+                success: function (jsonData) {
                     console.log("Files have been saved");
                     window.location.href = '{% url "rlcis:incidents" %}';
                 },
