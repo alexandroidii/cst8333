@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'crispy_forms',
+	'phone_field',
 ]
 
 
@@ -150,6 +151,8 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, ". .", "www", "static")
 STATIC_URL = '/static/'
 
+AUTH_USER_MODEL = 'users.Users' #tell django to utilize this model for users
+
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
 MEDIA_URL = '/media/'
@@ -160,3 +163,21 @@ LOGIN_URL = 'login'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'ns.lange.ca'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+CRISPY_CLASS_CONVERTERS = {
+    'textinput': "form-control cst__radius",
+    'urlinput': "form-control cst__radius",
+    'numberinput': "form-control cst__radius",
+    'emailinput': "form-control cst__radius",
+    'dateinput': "form-control cst__radius",
+    'textarea': "form-control cst__radius",
+    'passwordinput': "form-control cst__radius",
+    'select': "form-control cst__radius",
+}
