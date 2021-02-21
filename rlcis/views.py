@@ -19,7 +19,10 @@ from django.contrib.auth import authenticate, login, logout
 
 from .forms import IncidentForm, SearchForm, CreateUserForm, IncidentDocumentForm
 from .models import Incident, IncidentDocument
-
+from django.template.context_processors import csrf
+from crispy_forms.utils import render_crispy_form
+from django.http import HttpResponse
+import json
 
 """
 RLCIS Views that control the flow of information
@@ -99,6 +102,112 @@ def incidents(request):
     }
     return render(request, template, context)
 
+
+"""
+Save an incident form using ajax
+"""
+def save_incident(request, id=0):
+    logger.debug("Saving Incident form")
+    if request.method == 'POST' and request.is_ajax():
+        form = IncidentForm(request.POST)
+        response = {}
+        id = int(request.POST.get('id'))
+        # print(fileLength)
+        # logger.debug("fileLength = " + fileLength)
+        if id == 0:
+            logger.debug("starting incident_form - id = 0 POST")
+            form = IncidentForm(request.POST)
+        else:
+            logger.debug("starting incident_form - id exist POST")
+            incident = Incident.objects.get(pk=id)
+            form = IncidentForm(request.POST, instance=incident)
+        print(form.errors)
+        logger.debug(form.errors)
+        if form.is_valid():
+           
+            logger.debug("starting incident_form - is valid save() POST")
+
+            # First save the form
+            savedIncident = form.save()
+
+            fileLength = request.POST.get('fileLength')
+            # Then loop through any files and save them with a link to the incident.
+            for file_num in range(0, int(fileLength)):
+                IncidentDocument.objects.create(
+                    incident=savedIncident,
+                    document=request.FILES.get(f'document{file_num}')
+                )
+            print('form submitted - RL')
+            response['success'] = True
+
+        else:
+            logger.debug("form.is_valid() failed")
+            logger.debug(form.errors)
+            response['success'] = False
+            csrf_context = {}
+            csrf_context.update(csrf(request))
+            incidentForm_html = render_crispy_form(form, context=csrf_context)
+            response['html'] = incidentForm_html
+            incident = Incident.objects.get(pk=id)
+            files = IncidentDocument.objects.filter(incident=incident)
+            response['files'] = request.FILES
+            response['activePage'] = 'incidents'
+            response['id'] = id
+            
+        return HttpResponse(json.dumps(response), content_type='application/json')
+            
+    form = IncidentForm()
+    return render(request, 'incident_form.html', {'form': form})
+    
+                # print(form.errors)
+                # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
+
+                # The problem is this is triggered from an Ajax call so it goes into the 
+                # success portion of the Ajax callback which calls the incidents. 
+                #  need to find a way to reload the page with the incorrect data and validation
+                # jsonData = json.dumps({
+                #     'filename': docToDel.filename(),
+                #     'id': docToDel.pk
+                # })
+
+    
+
+                # return HttpResponse( content_type='json')
+        # will try to follow this: https://www.codingforentrepreneurs.com/blog/ajaxify-django-forms
+                # context = {
+                #     'form': form,
+                #     'files': request.FILES,
+                #     'activePage': 'incidents',
+                #     'id': id,
+                # }
+                # return render(request, 'rlcis/incident_form.html', context)
+
+            # ToDo: Maybe we don't redirect but show a successfully saved message and just reload the form?   
+            # return redirect('rlcis:incidents')
+
+            
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+        #    form.save()
+        #    response['success'] = True
+        # else:
+        #    response['success'] = False
+        #    csrf_context = {}
+        #    csrf_context.update(csrf(request))
+        #    incidentForm_html = render_crispy_form(form, context=csrf_context)
+        #    response['html'] = incidentForm_html
+        # return HttpResponse(json.dumps(response), content_type='application/json')
 
 
 
@@ -180,7 +289,7 @@ def incident_form(request, id=0):
  
 
             # return HttpResponse( content_type='json')
-
+    # will try to follow this: https://www.codingforentrepreneurs.com/blog/ajaxify-django-forms
             context = {
                 'form': form,
                 'files': request.FILES,

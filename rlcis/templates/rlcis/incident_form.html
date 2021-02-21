@@ -199,6 +199,7 @@ Date: 2019-12-19
                         $(".card-body").remove("#" + jsonData.id);
                     },
                     error: function (xhr, errmsg, err) {
+                        // Todo: Need to add error when the file doesn't delete successfully.
                         console.log(xhr.status + ":" + xhr.responseText)
                     }
                 })
@@ -219,15 +220,23 @@ Date: 2019-12-19
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "rlcis:incident_insert" %}',
+                url: '{% url "rlcis:save_incident" %}',
                 data: formData,
                 cache: false,
                 processData: false,
                 contentType: false,
                 enctype: 'multipart/form-data',
-                success: function (jsonData) {
-                    console.log("Files have been saved");
-                    window.location.href = '{% url "rlcis:incident_insert" %}';
+                dataType: 'json',
+                success: function (response) {
+                    var success = response['success'];
+                    if(success){
+                        console.log("Incident has been saved");
+                        alert('incident has been saved.')
+                    }else{
+                        console.log("Response form with validation errors: " + response['html']);
+                        $("#incidentForm").replaceWith(response['html']);
+                    }
+                    // window.location.href = '{% url "rlcis:incidents" %}';
                 },
                 error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ":" + xhr.responseText);
