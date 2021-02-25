@@ -1,5 +1,6 @@
+import collections
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout
+from crispy_forms.layout import Field, Layout, Row, Column
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
@@ -139,19 +140,63 @@ class IncidentForm(forms.ModelForm):
             'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
         }
 
-        def __init__(self, *args, **kwargs):
-            super(IncidentForm, self).__init__(*args, **kwargs)
-            # set which fields are not required.
-            self.fields['bribed_by_other'].required = False
-            self.fields['bribe_type_other'].required = False
-            self.fields['industry_type_other'].required = False
-            self.fields['level'].required = False
-            self.fields['company_name'].required = False
-            self.fields['anonymous'].required = False
-            self.fields['first_occurence'].required = False
-            self.fields['resolution_date'].required = False
-            self.fields['reviewer'].required = False
-            self.fields['email'].required = False
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'incidentForm'
+        self.helper.layout = Layout(
+            Row(
+                Column('anonymous', css_class='form-group col-sm-2 col-md-6'),
+                Column('email', css_class='form-group col-sm-4 col-md-6'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
+                Column('level', css_class='form-group col-sm-2 col-md-4'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('incident_summary', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('bribed_by', css_class='form-group col-sm-4 col-md-6'),
+                Column('bribe_type', css_class='form-group col-sm-4 col-md-6'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('bribed_by_other', css_class='form-group col-sm-4 col-md-6'),
+                Column('bribe_type_other', css_class='form-group col-sm-4 col-md-6'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('first_occurence', css_class='form-group col-sm-4 col-md-6'),
+                Column('resolution_date', css_class='form-group col-sm-4 col-md-6'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('country', css_class='form-group col-sm-2 col-md-4'),
+                Column('region', css_class='form-group col-sm-2 col-md-4'),
+                Column('location', css_class='form-group col-sm-2 col-md-4'),
+                css_class='form-row'
+            )
+        )
+        # set which fields are not required.
+        self.fields['bribed_by_other'].required = False
+        self.fields['bribe_type_other'].required = False
+        self.fields['industry_type_other'].required = False
+        self.fields['level'].required = False
+        self.fields['company_name'].required = False
+        self.fields['anonymous'].required = False
+        self.fields['first_occurence'].required = False
+        self.fields['resolution_date'].required = False
+        self.fields['reviewer'].required = False
+        self.fields['email'].required = False
 
 class IncidentDocumentForm(forms.ModelForm):
     

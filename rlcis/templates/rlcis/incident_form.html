@@ -11,128 +11,58 @@ Date: 2019-12-19
 
 {% block content %}
 
-<form action="" method="post" id="incidentForm" enctype="multipart/form-data">
+{% crispy form %}
 
-    {% csrf_token %}
-    {{ form.errors }}
-    {{ form.non_field_errors }}
-    <div class="row">
-        <div class="col-sm-2 col-md-4">
-            {{ form.anonymous|as_crispy_field }}
-        </div>
-        <div class="col-sm-2 col-md-4">
-            Incident Number: <span id="incidentId">{{ id }}</span>
-        </div>
-        <div class="col-sm-2 col-md-4">
-            {{ form.email|as_crispy_field }}
-        </div>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <input type="file" multiple>
     </div>
-    <div class="row">
-        <div class="col-sm-2 col-md-4 anonymous">
-            {{ form.company_name|as_crispy_field }}
-        </div>
-        <div class="col-sm-2 col-md-4">
-            {{ form.industry_type|as_crispy_field }}
-        </div>
-        <div class="col-sm-2 col-md-4">
-            {{ form.level|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-12">
-            {{ form.incident_summary|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-12">
-            {{ form.incident_details|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribed_by|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribe_type|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribed_by_other|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribe_type_other|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
-
-            {{ form.first_occurence|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-6">
-            {{ form.resolution_date|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-4 anonymous">
-            {{ form.country|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-4 anonymous">
-            {{ form.region|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-4 anonymous">
-            {{ form.location|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
 
 
-            <p>
-                <a class="btn btn-primary" data-toggle="collapse" href="#collapseDocuments" role="button"
-                    aria-expanded="false" aria-controls="collapseDocuments">
-                    Supporting Documents
-                </a>
-            </p>
-            <div class="collapse" id="collapseDocuments">
-                {% for f in files %}
-                <div class="card card-body d-block" id="{{ f.pk }}">
-                    <button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                    <a href="{{f.document.url}}">{{ f.filename }}</a>
+        <p>
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseDocuments" role="button"
+                aria-expanded="false" aria-controls="collapseDocuments">
+                Supporting Documents
+            </a>
+        </p>
+        <div class="collapse" id="collapseDocuments">
+            {% for f in files %}
+            <div class="card card-body d-block" id="{{ f.pk }}">
+                <button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <a href="{{f.document.url}}">{{ f.filename }}</a>
 
-                </div>
-                {% endfor %}
             </div>
-        </div>
-        <div class="col-sm-4 col-md-6">
-            <input type="file" multiple>
+            {% endfor %}
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-8">
+</div>
+<div class="row">
+    <div class="col-sm-4 col-md-8">
 
-        </div>
     </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-8">
-            <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
-                <i class="fas fa-save"></i> Submit
-            </button>
-        </div>
-        <div class="col-sm-4 col-md-3">
-            <a href="{% url 'rlcis:incidents' %}" class="btn btn-secondary btn-block btn-sm">
-                <i class="fas fa-stream"></i> Back to list
-            </a>
-        </div>
-        <div class="col-sm-4 col-md-1">
-            <a href="{% url 'rlcis:incident_delete' id %}" class="btn text-secondary px-0 confirm-delete">
-                <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
-            </a>
-        </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-md-8">
+        <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
+            <i class="fas fa-save"></i> Submit
+        </button>
     </div>
-</form>
+    <div class="col-sm-4 col-md-3">
+        <a href="{% url 'rlcis:incidents' %}" class="btn btn-secondary btn-block btn-sm">
+            <i class="fas fa-stream"></i> Back to list
+        </a>
+    </div>
+    <div class="col-sm-4 col-md-1">
+        <a href="{% url 'rlcis:incident_delete' id %}" class="btn text-secondary px-0 confirm-delete">
+            <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
+        </a>
+    </div>
+</div>
 <script>
 
     /***
@@ -212,7 +142,7 @@ Date: 2019-12-19
             var form = $('#incidentForm')[0];
             var formData = new FormData(form);
             formData.append('fileLength', files.length)
-            formData.append('id', $('#incidentId').text())
+            formData.append('id', '{{ id }}')
             for (var i = 0; i < files.length; i++) {
                 formData.append('document' + i, files[i])
             }
@@ -220,7 +150,7 @@ Date: 2019-12-19
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "rlcis:save_incident" %}',
+                url: '{% url "rlcis:save_incident"%}',
                 data: formData,
                 cache: false,
                 processData: false,
