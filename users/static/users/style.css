@@ -1,0 +1,57 @@
+html, body, .container-table {
+    height: 100%;
+    color: #999;
+}
+body{
+    
+    background-color: #fff;
+    background-size: 20%;
+}
+.profile-main-div{
+    background-color: #cdcdcd;
+    border: 5px solid #ffffff;
+    box-shadow: 0 0 15px #000000;
+    border-radius: 4px;
+    padding: 25px;
+}
+hr{
+    margin: 0 20%;
+    border-top: 1px solid #fff;
+}
+.btn-success{
+    background-color: #17a2b8;
+}
+p.head-msg{
+    text-align: center;
+    font-size: 18px;
+    margin-top: 5px;
+    font-weight: bold;
+    color: #404040;
+}
+.profile-sub-form{
+    padding-right:15px;
+    padding-left:15px;
+}
+.form-group{
+    margin-right: 0px !important;
+}
+.error input, .error select {
+ border: 2px red solid;
+ }
+ 
+ .my-container {
+     border: 1px solid green;
+ }
+ .my-row {
+     border: 3px solid white;
+     
+ }
+ .my-col {
+     border: 3px dotted blue;
+ }
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}

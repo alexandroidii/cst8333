@@ -1,0 +1,35 @@
+{
+    "editor.formatOnSave": false,
+    "editor.insertSpaces": true,
+    "editor.rulers": [
+        80,
+        100
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        ".vscode": true,
+        "**/*.pyc": true,
+    },
+    "workbench.editor.enablePreview": false,
+	"python.linting.enabled": false
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 500,
+    "editor.minimap.enabled": false,
+    "python.pythonPath": "C:\\Users\\robert\\envs\\acc\\Scripts\\python.exe",
+    "editor.fontSize": 16,
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
+    "workbench.startupEditor": "newUntitledFile",
+    "explorer.confirmDelete": false,
+    "git.enableSmartCommit": true,
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    "python.showStartPage": false
+}

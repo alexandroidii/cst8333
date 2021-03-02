@@ -1,14 +1,137 @@
 {% extends "rlcis/base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-      <div class="media">
-        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
-        <div class="media-body">
-          <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">{{ user.email }}</p>
-        </div>
-      </div>
-      <!-- FORM HERE -->
+
+<html>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}"/>
+<style>
+    .my-row {
+        height: 40px;
+        border: 3px red;
+       
+      }
+</style>
+<body>
+
+<div class="container container-table">
+    <div class="d-flex justify-content-center">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 profile-main-div">
+            <hr>
+            <div class="row">
+                <div class="col-12 text-center">
+                     <p class="head-msg col-sm-offset-3">Complete your Profile to continue </p>
+                <div class="col-xs-2 col-xs-offset-5 text-center column-div">
+                </div>
+            </div>
+        </div>  
+            <form class="form-horizontal profile-sub-form" method=POST>
+                <div class="row">
+                    <div class="col-sm-6">
+                    {% csrf_token %}
+                    {{ form.errors }}
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.email|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.user_name|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.first_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.last_name|as_crispy_field }}
+                        </div>
+                    </div> 
+                </div>
+                <div class="row">  
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.company_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="form-check">
+                    <div class="col">
+                        <div class="row">
+                            <label class="control-label" >Phone number</label>
+                        </div>
+                        <div class="row">
+                            <div class="form-inline test">
+                                {{ u_form.phone_number|as_crispy_field }} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.position|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.industry_type|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.website|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.address|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.city|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.province_state|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ u_form.country|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="row">
+                            <div class="col-12">
+                               <!-- <input  class="btn btn-success skip-btn pull-right" type="button" value="Return" onclick=location.href="{% url 'users:home' %}" />-->
+                                <button type="submit" class="btn btn-success accept-btn pull-right">Save Profile</button>
+                            </div>
+                    </div>
+                    <hr> 
+                </div>             
+            </form>   
+    
     </div>
-    {% endblock content %}
+</div>
+</body>
+</html>
+{% endblock content %}
