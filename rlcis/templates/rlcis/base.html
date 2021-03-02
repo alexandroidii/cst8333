@@ -19,75 +19,86 @@
     
    
     <link rel="stylesheet" type="text/css" href="{% static 'rlcis/main.css' %}">
-
     {% if title %}
         <title>RLCIS - {{ title }}</title>
     {% else %}
         <title>RLCIS</title>
     {% endif %}
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+    <style>
+      .my-pad { 
+        border: 3px;       
+      }
+    </style>
 </head>
+
 <body>
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-          <a class="navbar-brand text-warning mr-5 font-italic" href="/">Real Life Corruption Incidents & Scenarios</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top py-3">
+        <div class="container-fluid">          
+          <a class="navbar-brand text-warning mr-5 font-italic" href="/">Real Life Corruption Incidents & Scenarios - Alex</a>
           <ul class="navbar-nav mr-auto">
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
                         <li class="nav-item {% if activePage == 'incident' %} active {% endif %}">
-                          <a class="nav-link" href="{% url 'rlcis:incidents' %}">
-                              Incidents
-                          </a>
+                          <a class="nav-link" href="{% url 'rlcis:incidents' %}">Incidents</a>                                                   
                         </li>
                         <li class="nav-item {% if activePage == 'scenarios' %} active {% endif %}">
-                          <a class="nav-link" href="{% url 'rlcis:scenarios' %}">
-                              Scenarios
-                          </a>
+                          <a class="nav-link" href="{% url 'rlcis:scenarios' %}">Scenarios</a>                         
+                        </li>             
+                        <li class="nav-item {% if activePage == 'about' %} active {% endif %}">
+                          <a class="nav-link" href="{% url 'rlcis:home' %}">About</a>                          
                         </li>
-                  <a class="nav-item nav-link" href="/">About</a>
-                </div>
+                    </div>
+              </div> 
             </ul>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
+ 
               {% if user.is_authenticated %}
-              <li class="nav-item {% if activePage == 'register' %} active {% endif %}"></li>
-              <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-              <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+              <a class="nav-item nav-link text-warning mr-4 font-italic" >Hello, {{request.user}}</a>
+              <li class="nav-item {% if activePage == 'profile' %} active {% endif %}"></li>
+                  <a class="nav-item nav-link" href="{% url 'users:profile' %}">Profile</a>
+                  <a class="nav-item nav-link" href="{% url 'users:logout' %}">Logout</a>
               {% else %}
               <li class="nav-item {% if activePage == 'login' %} active {% endif %}"></li>
-                  <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-            </li>
+                  <a class="nav-item nav-link" href="{% url 'users:login' %}">Login</a>
               <li class="nav-item {% if activePage == 'register' %} active {% endif %}">
-                  <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-              </li>
+                  <a class="nav-item nav-link" href="{% url 'users:register' %}">Register</a>
+              
               {% endif %}
             </div>
-          </div>
         </div>
       </nav>
     </header>
-    <main role="main" class="container-fluid">
-      <div class="d-flex justify-content-center">
-            {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}">
-                {{ message }}
+
+      <div class="container-fluid my-container justify-content-center py-4"></div>             
+         <div class="row pt-3 my-row">
+            <div class="col-12 d-flex justify-content-center">
+              <div class="row">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="row justify-content-center ">
+                      <div class="row alert alert-{{ message.tags }}" id="mess_con">
+                        {{ message }}
+                      </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
               </div>
-            {% endfor %}
-          {% endif %}
-      </div>
-      <div class="row">
-        <div class="col-md-11">
-          <div class="m-5 mt-sm-1">
-             {% block content %}{% endblock %}
-            </div>
+            </div>      
+          </div>   
         </div>
-      </div>
-    </main>
+
+        <main role="main" class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12 my-row">
+                    <div class="m-4">
+                      {% block content %}{% endblock %}
+                    </div>
+                  </div>
+                </div>
+        </main>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -100,5 +111,14 @@
     <script src="https://unpkg.com/filepond-plugin-file-metadata/dist/filepond-plugin-file-metadata.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script>
+      var message_ele = document.getElementById("mess_con");
+
+      setTimeout(function(){ 
+         message_ele.style.display = "none"; 
+      }, 2000);
+      // Timeout is 3 sec, you can change it
+  </script>
+
 </body>
 </html>

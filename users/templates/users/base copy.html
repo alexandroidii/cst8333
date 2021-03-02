@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+   
+    <link rel="stylesheet" type="text/css" href="{% static 'users/main.css' %}"/>
+
+    {% if title %}
+        <title>RLCIS - {{ title }}</title>
+    {% else %}
+        <title>RLCIS</title>
+    {% endif %}
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+    <style>
+      .my-row {
+        height: 42px;
+        border: 3px red;       
+      }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top py-3">
+        <div class="container-fluid">
+          
+          <a class="navbar-brand text-warning mr-5 font-italic" href="/">Real Life Corruption Incidents & Scenarios - Robert</a>
+          <ul class="navbar-nav mr-auto">
+              <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                        <li class="nav-item {% if activePage == 'incident' %} active {% endif %}">
+                          <a class="nav-link" href="{% url 'rlcis:incidents' %}">Incidents</a>                                                   
+                        </li>
+                        <li class="nav-item {% if activePage == 'scenarios' %} active {% endif %}">
+                          <a class="nav-link" href="{% url 'rlcis:scenarios' %}">Scenarios</a>                         
+                        </li>
+                        <li class="nav-item {% if activePage == 'upload_document' %} active {% endif %}">
+                          <a class="nav-link" href="#">Uploads</a>                           
+                        </li>             
+                        <li class="nav-item {% if activePage == 'about' %} active {% endif %}">
+                          <a class="nav-link" href="{% url 'rlcis:home' %}">About</a>                          
+                        </li>
+                    </div>
+              </div> 
+            </ul>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+ 
+              {% if user.is_authenticated %}
+              <a class="nav-item nav-link text-warning mr-4 font-italic" >Hello, {{request.user}}</a>
+              <li class="nav-item {% if activePage == 'profile' %} active {% endif %}"></li>
+                  <a class="nav-item nav-link" href="{% url 'users:profile' %}">Profile</a>
+                  <a class="nav-item nav-link" href="{% url 'users:logout' %}">Logout</a>
+              {% else %}
+              <li class="nav-item {% if activePage == 'login' %} active {% endif %}"></li>
+                  <a class="nav-item nav-link" href="{% url 'users:login' %}">Login</a>
+              </li>
+              <li class="nav-item {% if activePage == 'register' %} active {% endif %}">
+                  <a class="nav-item nav-link" href="{% url 'users:register' %}">Register</a>
+              </li>
+              {% endif %}
+            </div>
+        </div>
+      </nav>
+    </header>
+    <div class="container"></div>
+      <div class="row my-row justify-content-center">
+        <div class="col-6 my-col align-self-start">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="row justify-content-center ">
+            <div class="row my-row alert alert-{{ message.tags }}" id="mess_con">
+              {{ message }}
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    <main role="main" class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="m-4">
+             {% block content %}{% endblock %}
+            </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script>
+      var message_ele = document.getElementById("mess_con");
+
+      setTimeout(function(){ 
+         message_ele.style.display = "none"; 
+      }, 3000);
+      // Timeout is 3 sec, you can change it
+  </script>
+  </body>
+</html>
