@@ -7,7 +7,6 @@ from django.contrib.auth.signals import user_logged_in
 from phone_field import PhoneField
 
 
-
 """
 Ref:https://www.codingforentrepreneurs.com/blog/how-to-create-a-custom-django-user-model/
 https://youtu.be/Ae7nc1EGv-A

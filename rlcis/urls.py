@@ -27,6 +27,7 @@ urlpatterns = [
     path('add_incident/', views.incident_form, name="incident_insert"),
     path('delete_document/', views.deleteDocument, name='delete_document'),
     path('incident/<int:id>', views.incident_form, name='incident_update'),
+    path('save_incident/', views.save_incident, name='save_incident'),
     path('delete_incident/<int:id>/', views.incident_delete, name='incident_delete'),
     # return a list of incidents
     path('incidents/', views.incidents, name='incidents'),
