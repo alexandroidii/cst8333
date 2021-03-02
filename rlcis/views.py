@@ -6,7 +6,7 @@ from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
-
+from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
 
@@ -149,17 +149,17 @@ def incident_form(request, id=0):
         logger.debug(form.errors)
         if form.is_valid():
             logger.debug("starting incident_form - is valid save() POST")
-
+            print('test')
+            messages.info(request, f'New incident from was submitted successfully')
             # First save the form
             savedIncident = form.save()
-
+            
             # Then loop through any files and save them with a link to the incident.
             for file_num in range(0, int(fileLength)):
                 IncidentDocument.objects.create(
                     incident=savedIncident,
                     document=request.FILES.get(f'document{file_num}')
                 )
-            print('form submitted - RL')
         else:
             print(form.errors)
             logger.debug(form.errors)

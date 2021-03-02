@@ -1,0 +1,25 @@
+py -m venv venv
+venv\Scripts\activate
+pip install django
+django-admin startproject core .
+py manage.py startapp users
+py manage.py makemigrations --dry-run (optional --verbosity 1,2,3)
+pip install coverage
+coverage run manage.py test (.coveragerc in directory where you are running command)
+coverage html
+
+file contents of .coveragerc
+
+[run]
+omit =
+    */site-packages/*
+    */distutils/*
+    tests/*
+
+How to rebuild Users model from scratch
+1. Remove the all migrations files within your project
+2. drop previous table
+Clear the migration history
+3 python manage.py migrate --fake users zero
+4. Create the initial migrations
+python manage.py makemigrations

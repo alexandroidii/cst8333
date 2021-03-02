@@ -1,0 +1,27 @@
+{% extends "rlcis/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}"/>
+
+        <div class="d-flex justify-content-center">
+            <div class="col-xs-12 col-sm-4 col-sm-offset-2 profile-main-div">
+                <hr>
+                <div class="row d-flex justify-content-center">
+                    <p class="head-msg col-sm-offset-3">RLCIS Login </p>
+                </div>  
+            {% csrf_token %}
+            {% crispy form %}
+            <hr>
+            <div class='container'>
+                <small class="text-muted">
+                    <span class="ml-0"></span> Need An Account?</span> <a href="{% url 'users:register' %}">Sign Up Now</a>
+                    <span class="ml-4"></span> Forgot Password? <a href="{% url 'users:password_reset' %}">Reset Password</a>
+                </small>
+            <div>              
+        </div>    
+    </div>         
+</div>
+    </div>
+{% endblock content %}
