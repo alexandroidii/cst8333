@@ -162,6 +162,7 @@ Date: 2019-12-19
                     if(success){
                         console.log("Incident has been saved");
                         alert('incident has been saved.')
+                        $("#incidentForm").replaceWith(response['html']);
                     }else{
                         console.log("Response form with validation errors: " + response['html']);
                         $("#incidentForm").replaceWith(response['html']);

@@ -138,6 +138,8 @@ def save_incident(request, id=0):
                     document=request.FILES.get(f'document{file_num}')
                 )
             print('form submitted - RL')
+            incidentForm_html = render_crispy_form(form, context=csrf_context)
+            response['html'] = incidentForm_html
             response['success'] = True
 
         else:
