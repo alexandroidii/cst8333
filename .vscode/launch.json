@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/acc_core/manage.py",
             "console": "integratedTerminal",
-			"justMyCode":"false"
+			"justMyCode":false,
 			"args": [
                "runserver",
                "--noreload"

@@ -15,7 +15,7 @@
         "**/*.pyc": true,
     },
     "workbench.editor.enablePreview": false,
-	"python.linting.enabled": false
+	"python.linting.enabled": false,
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 500,
     "editor.minimap.enabled": false,
