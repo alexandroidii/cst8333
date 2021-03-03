@@ -1,4 +1,5 @@
 import collections
+from .fields import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, Row, Column
 from django.contrib.auth.forms import UserCreationForm
@@ -112,8 +113,8 @@ class IncidentForm(forms.ModelForm):
             'industry_type_other',
             'level',
             'email',
-            # 'documents',
-
+            'risks',
+            'resolution'
         ]
         labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
@@ -131,13 +132,18 @@ class IncidentForm(forms.ModelForm):
             'reviewer': 'Reviewer',
             'industry_type': 'Industry Type',
             'industry_type_other': 'Industry Type Other',
-            'level':'Level',
+            'level':'Level of Authority of Public Official',
             'email':'Public Email',
+            'risks':'What where the risks of this incident?',
+            'resolution':'How was the incident resolved?'
         }
         widgets = {
             'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
             'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
             'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            'bribed_by': forms.ModelChoiceField(queryset=), # sets the number of rows in the incident_details to 2
         }
 
     def __init__(self, *args, **kwargs):
@@ -151,6 +157,12 @@ class IncidentForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('country', css_class='form-group col-sm-2 col-md-4'),
+                Column('region', css_class='form-group col-sm-2 col-md-4'),
+                Column('location', css_class='form-group col-sm-2 col-md-4'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
                 Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
                 Column('level', css_class='form-group col-sm-2 col-md-4'),
@@ -158,10 +170,6 @@ class IncidentForm(forms.ModelForm):
             ),
             Row(
                 Column('incident_summary', css_class='form-group col-sm-4 col-md-12'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
                 css_class='form-row'
             ),
             Row(
@@ -175,16 +183,22 @@ class IncidentForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('risks', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('resolution', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('first_occurence', css_class='form-group col-sm-4 col-md-6'),
                 Column('resolution_date', css_class='form-group col-sm-4 col-md-6'),
                 css_class='form-row'
             ),
-            Row(
-                Column('country', css_class='form-group col-sm-2 col-md-4'),
-                Column('region', css_class='form-group col-sm-2 col-md-4'),
-                Column('location', css_class='form-group col-sm-2 col-md-4'),
-                css_class='form-row'
-            )
         )
         # set which fields are not required.
         self.fields['bribed_by_other'].required = False
@@ -197,6 +211,9 @@ class IncidentForm(forms.ModelForm):
         self.fields['resolution_date'].required = False
         self.fields['reviewer'].required = False
         self.fields['email'].required = False
+        self.fields['level'].required = False
+        self.fields['risks'].required = False
+        self.fields['resolution'].required = False
 
 class IncidentDocumentForm(forms.ModelForm):
     
@@ -212,4 +229,15 @@ class CreateUserForm(UserCreationForm):
         model = User
         fields = ['username', 'email','password1', 'password2']
 
-      
+class ListTextWidget(forms.Select):
+    template_name = 'listtxt.html'
+
+    def format_value(self, value):
+        if value == '' or value is None:
+            return ''
+        if self.is_localized:
+            return formats.localize_input(value)
+            return str(value)
+
+class ChoiceTextField(forms.ModelChoiceField):
+    widget=ListTextWidget()      

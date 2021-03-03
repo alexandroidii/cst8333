@@ -152,10 +152,10 @@ def save_incident(request, id=0):
             csrf_context.update(csrf(request))
             incidentForm_html = render_crispy_form(form, context=csrf_context)
             response['html'] = incidentForm_html
-            incident = Incident.objects.get(pk=id)
-            files = IncidentDocument.objects.filter(incident=incident)
-            response['files'] = request.FILES
-            response['activePage'] = 'incidents'
+            # incident = Incident.objects.get(pk=id)
+            # files = IncidentDocument.objects.filter(incident=incident)
+            # response['files'] = request.FILES
+            # response['activePage'] = 'incidents'
             response['id'] = id
             
         return HttpResponse(json.dumps(response), content_type='application/json')

@@ -83,9 +83,9 @@ class Incident(Model):
     TRANSPORTATION = 'TR'
 
     # Levels
-    FEDERAL = 'FE'
-    PROVINCIAL = 'PR'
-    MUNICIPAL = 'MU'
+    LOCAL = 'LO'
+    STATE = 'ST'
+    NATIONAL = 'NA'
 
     # General types related to all options
     # 
@@ -127,9 +127,9 @@ class Incident(Model):
     ]
 
     LEVEL_CHOICES = [
-        (FEDERAL, 'Federal'),
-        (PROVINCIAL, 'Provincial'),
-        (MUNICIPAL, 'Municipal'),
+        (LOCAL, 'Local'),
+        (STATE, 'State/Provincial'),
+        (NATIONAL, 'National'),
     ]
 
     # company_name attribute in incident table as defined
@@ -147,6 +147,17 @@ class Incident(Model):
     incident_details = models.TextField(
         null=True,
     )
+
+    #Describes the risks reported in the incident
+    risks = models.TextField(
+        null=True,
+    )
+
+    # how was the incident resolved?
+    resolution = models.TextField(
+        null=True,
+    )
+
     # country attribute in incident table as defined
     country = models.CharField(
         max_length=60,
