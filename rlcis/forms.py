@@ -1,12 +1,12 @@
 import collections
-from .fields import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, Row, Column
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
+from django.utils import formats
 
-from .models import Incident, Document, IncidentDocument
+from .models import BribedBy, Incident, Document, IncidentDocument
 
 class DocumentForm(forms.ModelForm):
     class Meta:
@@ -102,16 +102,16 @@ class IncidentForm(forms.ModelForm):
             'region',
             'location',
             'bribed_by',
-            'bribed_by_other',
+            # 'bribed_by_other',
             'bribe_type',
-            'bribe_type_other',
+            # 'bribe_type_other',
             'first_occurence',
             'resolution_date',
             'reviewer',
             'scenario',
             'industry_type',
-            'industry_type_other',
-            'level',
+            # 'industry_type_other',
+            'levelOfAuthority',
             'email',
             'risks',
             'resolution'
@@ -123,16 +123,16 @@ class IncidentForm(forms.ModelForm):
             'country': 'Country',
             'region': 'Region',
             'bribed_by': 'Bribed By',
-            'bribed_by_other': 'Bribed By Other',
+            # 'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
-            'bribe_type_other': 'Bribe Type Other',
+            # 'bribe_type_other': 'Bribe Type Other',
             'first_occurence': 'First Occurence',
             'location': 'Location',
             'resolution_date': 'Resolution Date',
             'reviewer': 'Reviewer',
             'industry_type': 'Industry Type',
-            'industry_type_other': 'Industry Type Other',
-            'level':'Level of Authority of Public Official',
+            # 'industry_type_other': 'Industry Type Other',
+            'levelOfAuthority':'Level of Authority of Public Official',
             'email':'Public Email',
             'risks':'What where the risks of this incident?',
             'resolution':'How was the incident resolved?'
@@ -143,7 +143,10 @@ class IncidentForm(forms.ModelForm):
             'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
             'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
             'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
-            'bribed_by': forms.ModelChoiceField(queryset=), # sets the number of rows in the incident_details to 2
+            # 'bribed_by': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'bribe_type': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'industry_type': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'levelOfAuthority': ChoiceTextField(queryset=BribedBy.objects.all()),
         }
 
     def __init__(self, *args, **kwargs):
@@ -165,7 +168,7 @@ class IncidentForm(forms.ModelForm):
             Row(
                 Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
                 Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
-                Column('level', css_class='form-group col-sm-2 col-md-4'),
+                Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-4'),
                 css_class='form-row'
             ),
             Row(
@@ -177,11 +180,11 @@ class IncidentForm(forms.ModelForm):
                 Column('bribe_type', css_class='form-group col-sm-4 col-md-6'),
                 css_class='form-row'
             ),
-            Row(
-                Column('bribed_by_other', css_class='form-group col-sm-4 col-md-6'),
-                Column('bribe_type_other', css_class='form-group col-sm-4 col-md-6'),
-                css_class='form-row'
-            ),
+            # Row(
+            #     Column('bribed_by_other', css_class='form-group col-sm-4 col-md-6'),
+            #     Column('bribe_type_other', css_class='form-group col-sm-4 col-md-6'),
+            #     css_class='form-row'
+            # ),
             Row(
                 Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
                 css_class='form-row'
@@ -201,17 +204,17 @@ class IncidentForm(forms.ModelForm):
             ),
         )
         # set which fields are not required.
-        self.fields['bribed_by_other'].required = False
-        self.fields['bribe_type_other'].required = False
-        self.fields['industry_type_other'].required = False
-        self.fields['level'].required = False
+        # self.fields['bribed_by_other'].required = False
+        # self.fields['bribe_type_other'].required = False
+        # self.fields['industry_type_other'].required = False
+        # self.fields['level'].required = False
         self.fields['company_name'].required = False
         self.fields['anonymous'].required = False
         self.fields['first_occurence'].required = False
         self.fields['resolution_date'].required = False
         self.fields['reviewer'].required = False
         self.fields['email'].required = False
-        self.fields['level'].required = False
+        # self.fields['level'].required = False
         self.fields['risks'].required = False
         self.fields['resolution'].required = False
 

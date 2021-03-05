@@ -35,7 +35,7 @@ Date: 2019-12-19
                 <button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">
                     <i class="fas fa-trash-alt"></i>
                 </button>
-                <a href="{{f.document.url}}">{{ f.filename }}</a>
+                <a href="{{f.document.url}}" target="_blank">{{ f.filename }}</a>
 
             </div>
             {% endfor %}
