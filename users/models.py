@@ -42,14 +42,14 @@ class CustomAccountManager(BaseUserManager):
 
         if not email:
             raise ValueError(_('You must provide an email address'))
+        if not user_name:
+            raise ValueError(_('You must provide a username'))
 
         email = self.normalize_email(email)
         user = self.model(email=email, user_name=user_name,
                           first_name=first_name, last_name=last_name, **other_fields)
         user.set_password(password)
-        # user.set_password(self.cleaned_data['password'])
         user.save()
-
         return user
 
     
@@ -116,10 +116,11 @@ class Users(AbstractBaseUser, PermissionsMixin):
     objects = CustomAccountManager()    #define we are using customaccountmanager above 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['user_name', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['user_name', 'first_name', 'last_name'] #shows up with py manage.py createsuperuser
 
     def __str__(self):
         return self.user_name
+
     
     """
     Create signal for first time login

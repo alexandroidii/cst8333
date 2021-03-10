@@ -4,26 +4,29 @@
 {% block content %}
 
 <html>
-    
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#4CB96B" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}"/>
-    </head>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}"/>
+<style>
+    .my-row {
+        height: 40px;
+        border: 3px red;
+       
+      }
+</style>
 <body>
 
 <div class="container container-table">
-    <div class="row vertical-center-row">
+    <div class="d-flex justify-content-center">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2 profile-main-div">
             <hr>
             <div class="row">
-                <p class="head-msg col-sm-offset-3">Complete your Profile to continue </p>
+                <div class="col-12 text-center">
+                     <p class="head-msg col-sm-offset-3">Complete your Profile to continue </p>
                 <div class="col-xs-2 col-xs-offset-5 text-center column-div">
                 </div>
-            </div>  
+            </div>
+        </div>  
+        
             <form class="form-horizontal profile-sub-form" method=POST>
                 <div class="row">
                     <div class="col-sm-6">
@@ -31,99 +34,103 @@
                     {{ form.errors }}
                     </div>
                 </div>
-                <div class="row">
+                <div class="row pt-3">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.email|as_crispy_field }}
+                            {{ form.email|as_crispy_field }}
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.user_name|as_crispy_field }}
+                            {{ form.user_name|as_crispy_field }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.first_name|as_crispy_field }}
+                            {{ form.first_name|as_crispy_field }}
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.last_name|as_crispy_field }}
+                            {{ form.last_name|as_crispy_field }}
                         </div>
                     </div> 
                 </div>
                 <div class="row">  
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.company_name|as_crispy_field }}
+                            {{ form.company_name|as_crispy_field }}
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="form-check">
+                    <div class="col">
                         <div class="row">
                             <label class="control-label" >Phone number</label>
                         </div>
                         <div class="row">
-                            <div class="form-inline">
-                                {{ u_form.phone_number|as_crispy_field }} 
+                            <div class="form-inline test">
+                                {{ form.phone_number|as_crispy_field }} 
                             </div>
                         </div>
                     </div>
                 </div>
+                </div>
+
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.position|as_crispy_field }}
+                            {{ form.position|as_crispy_field }}
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.industry_type|as_crispy_field }}
+                            {{ form.industry_type|as_crispy_field }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.website|as_crispy_field }}
+                            {{ form.website|as_crispy_field }}
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.address|as_crispy_field }}
+                            {{ form.address|as_crispy_field }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.city|as_crispy_field }}
+                            {{ form.city|as_crispy_field }}
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.province_state|as_crispy_field }}
+                            {{ form.province_state|as_crispy_field }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {{ u_form.country|as_crispy_field }}
+                            {{ form.country|as_crispy_field }}
                         </div>
                     </div>
-                    <p class="col-xs-12 response text-center"></p>
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-success accept-btn pull-right">Save Profile</button>
-                        <input  class="btn btn-success skip-btn pull-left" type="button" value="Return" onclick=location.href="{% url 'users:home' %}" />
+                    <div class="col-12">
+                      <div class="row">
+                            <div class="col-12">
+                               <!-- <input  class="btn btn-success skip-btn pull-right" type="button" value="Return" onclick=location.href="{% url 'users:home' %}" />-->
+                                <button type="submit" class="btn btn-success accept-btn pull-right">Save Profile</button>
+                            </div>
                     </div>
-                </div>
-            </form>           
-       
-            <hr>
-        </div>
+                    <hr> 
+                </div>             
+            </form>   
+    
     </div>
 </div>
 </body>

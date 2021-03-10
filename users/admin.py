@@ -1,7 +1,4 @@
 from django.contrib import admin
-
-# Register your models here.
-from django.contrib import admin
 from .models import Users
 from django.contrib.auth.admin import UserAdmin
 from django.forms import TextInput, Textarea
@@ -27,7 +24,7 @@ class UserAdminConfig(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'user_name', 'first_name', 'password1', 'password2', 'is_active', 'is_staff', 'is_reviewer')}
+            'fields': ('email', 'user_name', 'first_name', 'last_name', 'password1', 'password2', 'is_active', 'is_staff', 'is_reviewer')}
          ),
     )   
 admin.site.register(Users,UserAdminConfig)

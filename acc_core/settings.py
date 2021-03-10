@@ -146,12 +146,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, ". .", "www", "static")
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.Users' #tell django to utilize this model for users
-'''
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.AllowAllUsersModelBackend',
-    'acc_core.CustomEmailAuthBackend.EmailAuthBackend',
+    'acc_core.backends.CustomEmailAuthBackend.CaseInsensitiveAuth',
 )
-'''
+
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LdWwV8aAAAAAAmPYinqHliRCDFGvQamTEuYbg2n'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
@@ -184,3 +184,8 @@ CRISPY_CLASS_CONVERTERS = {
 }
 
 CRISPY_FAIL_SILENTLY = not DEBUG
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}

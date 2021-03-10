@@ -9,10 +9,14 @@
             <div class="col-xs-12 col-sm-4 col-sm-offset-2 profile-main-div">
                     <hr>
                     <div class="row d-flex justify-content-center">
-                        <p class="head-msg col-sm-offset-3">RLCIS Profile </p>
+                        <p class="head-msg col-sm-offset-3">RLCIS Registration </p>
                     </div> 
-                {% csrf_token %}
-                {% crispy form %}
+                    {% csrf_token %}
+                    {% crispy form %}  
+                    <ul>
+                        <li>You password must contain at least 8 characters</li>
+                        <li>Your password can't be a commonly used password</li>
+                    </ul>
             </div>            
         </div>    
 
