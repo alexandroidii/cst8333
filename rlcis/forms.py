@@ -1,6 +1,7 @@
 import collections
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Row, Column
+from crispy_forms.layout import Field, Layout, Row, Column, HTML
+from crispy_forms.bootstrap import Accordion, AccordionGroup
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
@@ -90,6 +91,12 @@ class IncidentForm(forms.ModelForm):
         label="Submit Anonymously?",
         widget=forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
     )
+
+    # file = forms.FileField(
+    #     required=False, 
+    #     label="Supporting Documents",
+    #     widget=forms.FileInput(attrs={'multiple':'true'})
+    # )
 
     class Meta:
         model = Incident
@@ -202,6 +209,28 @@ class IncidentForm(forms.ModelForm):
                 Column('resolution_date', css_class='form-group col-sm-4 col-md-6'),
                 css_class='form-row'
             ),
+            Row(
+                Column(HTML('<input type="file" multiple>'),css_class='col-sm-12 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(
+                    Accordion(
+                        AccordionGroup('Supporting Documents',
+                            HTML(
+                                '{% for f in files %}'
+                                + '<div class="card card-body d-block" id="file-{{ f.pk }}">'
+                                + '<button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">'
+                                + '<i class="fas fa-trash-alt"></i>'
+                                + '</button>'
+                                + '<a href="{{f.document.url}}" target="_blank">{{ f.filename }}</a>'
+                                + '</div>'
+                                + '{% endfor %}"'
+                            )    
+                        )
+                    )
+                )
+            )
         )
         # set which fields are not required.
         # self.fields['bribed_by_other'].required = False

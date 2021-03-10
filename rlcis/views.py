@@ -131,16 +131,26 @@ def save_incident(request, id=0):
             savedIncident = form.save()
 
             fileLength = request.POST.get('fileLength')
+            
+            files = {}
             # Then loop through any files and save them with a link to the incident.
             for file_num in range(0, int(fileLength)):
-                IncidentDocument.objects.create(
+                incidentDocument = IncidentDocument.objects.create(
                     incident=savedIncident,
                     document=request.FILES.get(f'document{file_num}')
                 )
+                # form.files.update(incidentDocument)
+                # files.append(incidentDocument)
+
             print('form submitted - RL')
-            csrf_context = {}
-            csrf_context.update(csrf(request))
-            incidentForm_html = render_crispy_form(form, context=csrf_context)
+            context = {}
+            context.update(csrf(request))
+            incident = Incident.objects.get(pk=id)
+            files = IncidentDocument.objects.filter(incident=incident)
+            context['files'] = files
+            incidentForm_html = render_crispy_form(form, context=context)
+            # response['files'] = files
+            response['activePage'] = 'incidents'
             response['html'] = incidentForm_html
             response['success'] = True
 
@@ -148,71 +158,16 @@ def save_incident(request, id=0):
             logger.debug("form.is_valid() failed")
             logger.debug(form.errors)
             response['success'] = False
-            csrf_context = {}
-            csrf_context.update(csrf(request))
-            incidentForm_html = render_crispy_form(form, context=csrf_context)
+            context = {}
+            context.update(csrf(request))
+            incidentForm_html = render_crispy_form(form, context=context)
             response['html'] = incidentForm_html
-            # incident = Incident.objects.get(pk=id)
-            # files = IncidentDocument.objects.filter(incident=incident)
-            # response['files'] = request.FILES
-            # response['activePage'] = 'incidents'
             response['id'] = id
             
         return HttpResponse(json.dumps(response), content_type='application/json')
             
     form = IncidentForm()
     return render(request, 'incident_form.html', {'form': form})
-    
-                # print(form.errors)
-                # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
-
-                # The problem is this is triggered from an Ajax call so it goes into the 
-                # success portion of the Ajax callback which calls the incidents. 
-                #  need to find a way to reload the page with the incorrect data and validation
-                # jsonData = json.dumps({
-                #     'filename': docToDel.filename(),
-                #     'id': docToDel.pk
-                # })
-
-    
-
-                # return HttpResponse( content_type='json')
-        # will try to follow this: https://www.codingforentrepreneurs.com/blog/ajaxify-django-forms
-                # context = {
-                #     'form': form,
-                #     'files': request.FILES,
-                #     'activePage': 'incidents',
-                #     'id': id,
-                # }
-                # return render(request, 'rlcis/incident_form.html', context)
-
-            # ToDo: Maybe we don't redirect but show a successfully saved message and just reload the form?   
-            # return redirect('rlcis:incidents')
-
-            
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-        #    form.save()
-        #    response['success'] = True
-        # else:
-        #    response['success'] = False
-        #    csrf_context = {}
-        #    csrf_context.update(csrf(request))
-        #    incidentForm_html = render_crispy_form(form, context=csrf_context)
-        #    response['html'] = incidentForm_html
-        # return HttpResponse(json.dumps(response), content_type='application/json')
-
 
 
 """
