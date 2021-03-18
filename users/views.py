@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
-from .forms import UserRegisterForm,ProfileUpdateForm,LoginForm
+from .forms import UserRegisterForm,ProfileUpdateForm,LoginForm,MyPasswordResetForm,NewPassResetForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage, BadHeaderError
 from .utils import token_generator
@@ -16,8 +16,7 @@ from django.contrib.auth import authenticate, login, logout
 import threading
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models.query_utils import Q
-#test
-from django.views.generic import FormView
+from django.views.generic.edit import FormView
 
 
 """
@@ -37,8 +36,7 @@ class EmailThread(threading.Thread):
     """
     Used combination of documentation and Youtube
     https://docs.djangoproject.com/en/3.1/topics/auth/customizing/
-
-
+    
     """
 def register(request):
     if request.method == 'POST':
@@ -59,8 +57,8 @@ def register(request):
             email_address = form.cleaned_data.get('email')
             email = EmailMessage(email_subject, message, to=[email_address])
             EmailThread(email).start()
-            messages.success(request, f'Account created for {user} with email address {email_address}! Check your inbox to activate')
-            return redirect ('users:login')
+            messages.success(request, f'Account created for {user}. Check your inbox to activate')
+            #return redirect ('users:login')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form, 'activePage': 'register'})
@@ -73,10 +71,15 @@ https://www.youtube.com/watch?v=a2Rom1nfHRs
 
 """
 class RequestPasswordResetEmail(View):
-    def get(self,request):
-        return render(request,'users/password_reset.html')
+    form = MyPasswordResetForm
+    template_name = 'users/password_reset.html'
+    
+    def get(self, request):
+        form = self.form(None)
+        return render(request, self.template_name, {'form': form})
 
     def post(self,request):
+        form = self.form(request.POST)
         email_address = request.POST['email']
 
         context = {
@@ -84,14 +87,10 @@ class RequestPasswordResetEmail(View):
         }
         email_template_name = "users/password_reset.html"
 
-        
-       # if  validate_email(email_address):
-           # messages.error(request, 'Please supply a valid email')
-           # return render(request,'users/password_reset.html', context)
-
         current_site = get_current_site(request)
-
+ 
         user = User.objects.filter(email=email_address)
+
         if user.exists():
                 message = render_to_string('users/send_acc_reset.html', {
                 'user': user[0],
@@ -100,13 +99,15 @@ class RequestPasswordResetEmail(View):
                 'token': PasswordResetTokenGenerator().make_token(user[0]),
                 })
 
-        email_subject = 'Password Reset Your Account'
-        email = EmailMessage(email_subject, message, to=[email_address])
-        EmailThread(email).start()
-        messages.success(request, 'We have sent you an email to reset your password')     
-           
-        return render(request,'users/password_reset.html')
+                email_subject = 'Password Reset Your Account'
+                email = EmailMessage(email_subject, message, to=[email_address])
+                EmailThread(email).start()
+                messages.success(request, 'We have sent you an email to reset your password')  
+                
+                return render(request, self.template_name, {'form': form})   
 
+        else:
+            return render(request, "users/password_reset.html",{'form': form})   
 
 
 class VerificationView(View):
@@ -122,7 +123,7 @@ class VerificationView(View):
                 return redirect('users:login')
             user.is_active = True
             user.save()
-
+          
             messages.success(request, 'Your account has been activated successfully')
             return redirect('users:login')
 
@@ -138,11 +139,16 @@ https://simpleisbetterthancomplex.com/tutorial/2016/08/24/how-to-create-one-time
 
 """
 class CompletePasswordReset(View):
+    form = NewPassResetForm
+    template_name = 'users/set-new-password.html'
+
     def get(self, request, uidb64, token):
+        form = self.form(None)
 
         context = {
             'uidb64':uidb64,
-            'token': token
+            'token': token,
+            'form': form
         }
         # check to see if user uses the link a second time and invalidate if true
         id = force_text(urlsafe_base64_decode(uidb64))
@@ -153,7 +159,7 @@ class CompletePasswordReset(View):
         """
         try:        
             if not PasswordResetTokenGenerator().check_token(user, token):
-                messages.info(request, 'Password link is invalid, please request a new one')
+                messages.error(request, 'Password link is invalid, please request a new one')
                 return redirect ('users:login')
         except Exception as identifier:
                 #import pdb #setup debugger so you can see what identifier is
@@ -163,27 +169,28 @@ class CompletePasswordReset(View):
 
 
     def post(self, request, uidb64, token):
-
+        form = self.form(None)
         context = {
             'uidb64':uidb64,
-            'token': token
+            'token': token,
+            'form': form
         }
-        password = request.POST['password']
+        password1 = request.POST['password1']
         password2 = request.POST['password2']
 
-        if password != password2:
-            messages.warning(request, 'Passwords do not match')
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match')
             return render(request,'users/set-new-password.html', context)
 
-        if len(password) < 6:
-            messages.warning(request, 'Password too short')
+        if len(password1) < 6:
+            messages.error(request, 'Password too short')
             return render(request,'users/set-new-password.html', context)
 
         try:
             id = force_bytes(urlsafe_base64_decode(uidb64))
 
             user = User.objects.get(pk=id)
-            user.set_password(password)
+            user.set_password(password1)
             user.save()
 
             messages.success(request, 'Password reset successfully, you may login with your new password')
@@ -192,7 +199,7 @@ class CompletePasswordReset(View):
         except Exception as identifier:
           #  import pdb #setup debugger so you can see what identifier is
           #  pdb.set_trace()
-            messages.info(request, 'Something went wrong, try again')
+            messages.error(request, 'Something went wrong, try again')
             return render(request,'users/set-new-password.html', context)
 
             
@@ -201,23 +208,17 @@ class CompletePasswordReset(View):
 def profile(request):
     if request.method == 'POST':
         #print(request.POST)
-        u_form = ProfileUpdateForm(request.POST,instance=request.user)
-        if u_form.is_valid():
-            u_form.save()
-            messages.success(request, f'Profile has been updated')
-            u_form = ProfileUpdateForm() #clear form after submit
+        form = ProfileUpdateForm(request.POST,instance=request.user)
+        if  form.is_valid():
+            form.save()
+            messages.success(request, f'You profile has been updated')
+            form = ProfileUpdateForm() #clear form after submit
             return redirect ('users:profile')
-        ''' 
-        else:
-            messages.warning(request, ('ERROR: Compile the form properly! '))
-            print(u_form.errors)
-            return redirect ('users:profile')
-        '''
     else:
-        u_form = ProfileUpdateForm(instance=request.user)
+        form = ProfileUpdateForm(instance=request.user)
 
     context = {
-        'u_form':u_form,
+        'form':form,
         'activePage': 'profile'
     }
     return render(request, 'users/profile.html', context)
@@ -238,78 +239,39 @@ def index(request):
     else:
         return redirect('users:login')
 
-    ''' 
-class LoginView(FormView):
+
+class LoginView(View):
     form = LoginForm
-    success_url = '/'
     template_name = 'users/login.html'
 
-    def form_valid(self, form):
-        request = self.request
-        next_ = request.GET.get('next')
-        next_post = request.POST.get('next')
-        email = form.cleaned_data.get("email")
-        password = form.cleaned_data.get("password")
+    def get(self, request):
+        form = self.form(None)
+        return render(request, self.template_name, {'form': form})
 
-        user = authenticate(request, username=email, passord=password)
-        if user is not None:
-            login(request, user)
-            try:
-                pass
-            except:
-                pass
-            if is_safe_url(redirect_path. request.get_host()):
-                return redirect(redirect_path)
-            else:
-                return redirect("/")
- 
-        return super(LoginPage, self).form_invalid()
-    '''
-    '''
-class LoginView(FormView):
-    form_class = LoginForm
-    template_name = 'users/login.html'
+    def post(self, request):
+        user = None
+        form = self.form(request.POST)
 
-    def form_valid(self, form):
-        email = form.cleaned_data['email']
-        password = form.cleaned_data['password']
-        user = authenticate(username=email, password=password)
-
-        # Check here if the user is an admin
-        if user is not None and user.is_active and user.is_staff:
-            login(self.request, user)
-            return HttpResponseRedirect(self.success_url)
-        else:
-            return self.form_invalid(form)
-   
-    '''
-'''  
-def loginView(request):
-
-    from django.conf import settings
-    print(settings.AUTHENTICATION_BACKENDS)
-    form = LoginForm()
-       
-    if request.method == 'POST':
-        print(request.POST)
-        form = LoginForm()
-        
-        username = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = authenticate(username=username, passord=password)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
             
-        if user is not None:
-            login(request, user)
-            redirect('home')
-        else:
-            form = LoginForm()
+        #check with acc_core.backends.CustomEmailAuthBackend.CaseInsensitiveAuth
+            user = authenticate(email=email, password=password)
 
-    else:
-        context={
-       'form': form,
-       'activePage': 'login'
-            }
-      
-    return render(request, 'users/login.html', {'form': form})
-'''       
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('/')
+        # else:
+        #     messages.error(request, ('Email Address and/or Password are not correct'))
+
+        return render(request, self.template_name, {'form': form})
+    
+class LogoutView(View):
+    template_name = 'users/logout.html'
+   
+    def get(self, request):
+        logout(request)
+        return render(request, self.template_name)
+

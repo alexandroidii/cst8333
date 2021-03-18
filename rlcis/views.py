@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
+from django.contrib.auth.decorators import login_required
 
 from .forms import IncidentForm, SearchForm, DocumentForm
 from .models import Incident, Document
@@ -17,7 +18,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import IncidentForm, SearchForm, CreateUserForm, IncidentDocumentForm
+from .forms import IncidentForm, SearchForm, IncidentDocumentForm
 from .models import Incident, IncidentDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
@@ -267,6 +268,8 @@ Incident delete method used to remove an Incident from persisted store.
 Fields:
 id = incident id,  pk of incident to delete
 """
+
+@login_required #login required decorator
 def incident_delete(request, id):
     logger.debug("trying to delete ")
 
@@ -323,6 +326,7 @@ Fields:
 id = scenario id,  pk of scenario to display
 
 """
+@login_required #login required decorator
 def scenario_form(request, id=0):
     logger.debug("starting scenario_form")
     if request.method == "GET":
