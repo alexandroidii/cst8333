@@ -1,11 +1,13 @@
 import collections
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Row, Column
+from crispy_forms.layout import Field, Layout, Row, Column, HTML
+from crispy_forms.bootstrap import Accordion, AccordionGroup
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
+from django.utils import formats
 
-from .models import Incident, Document, IncidentDocument
+from .models import BribedBy, Incident, Document, IncidentDocument
 
 class DocumentForm(forms.ModelForm):
     class Meta:
@@ -90,6 +92,12 @@ class IncidentForm(forms.ModelForm):
         widget=forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
     )
 
+    # file = forms.FileField(
+    #     required=False, 
+    #     label="Supporting Documents",
+    #     widget=forms.FileInput(attrs={'multiple':'true'})
+    # )
+
     class Meta:
         model = Incident
         fields = [
@@ -101,19 +109,19 @@ class IncidentForm(forms.ModelForm):
             'region',
             'location',
             'bribed_by',
-            'bribed_by_other',
+            # 'bribed_by_other',
             'bribe_type',
-            'bribe_type_other',
+            # 'bribe_type_other',
             'first_occurence',
             'resolution_date',
             'reviewer',
             'scenario',
             'industry_type',
-            'industry_type_other',
-            'level',
+            # 'industry_type_other',
+            'levelOfAuthority',
             'email',
-            # 'documents',
-
+            'risks',
+            'resolution'
         ]
         labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
@@ -122,22 +130,30 @@ class IncidentForm(forms.ModelForm):
             'country': 'Country',
             'region': 'Region',
             'bribed_by': 'Bribed By',
-            'bribed_by_other': 'Bribed By Other',
+            # 'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
-            'bribe_type_other': 'Bribe Type Other',
+            # 'bribe_type_other': 'Bribe Type Other',
             'first_occurence': 'First Occurence',
             'location': 'Location',
             'resolution_date': 'Resolution Date',
             'reviewer': 'Reviewer',
             'industry_type': 'Industry Type',
-            'industry_type_other': 'Industry Type Other',
-            'level':'Level',
+            # 'industry_type_other': 'Industry Type Other',
+            'levelOfAuthority':'Level of Authority of Public Official',
             'email':'Public Email',
+            'risks':'What where the risks of this incident?',
+            'resolution':'How was the incident resolved?'
         }
         widgets = {
             'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
             'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
             'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            # 'bribed_by': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'bribe_type': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'industry_type': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'levelOfAuthority': ChoiceTextField(queryset=BribedBy.objects.all()),
         }
 
     def __init__(self, *args, **kwargs):
@@ -151,9 +167,15 @@ class IncidentForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('country', css_class='form-group col-sm-2 col-md-4'),
+                Column('region', css_class='form-group col-sm-2 col-md-4'),
+                Column('location', css_class='form-group col-sm-2 col-md-4'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
                 Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
-                Column('level', css_class='form-group col-sm-2 col-md-4'),
+                Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-4'),
                 css_class='form-row'
             ),
             Row(
@@ -161,17 +183,25 @@ class IncidentForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
-                css_class='form-row'
-            ),
-            Row(
                 Column('bribed_by', css_class='form-group col-sm-4 col-md-6'),
                 Column('bribe_type', css_class='form-group col-sm-4 col-md-6'),
                 css_class='form-row'
             ),
+            # Row(
+            #     Column('bribed_by_other', css_class='form-group col-sm-4 col-md-6'),
+            #     Column('bribe_type_other', css_class='form-group col-sm-4 col-md-6'),
+            #     css_class='form-row'
+            # ),
             Row(
-                Column('bribed_by_other', css_class='form-group col-sm-4 col-md-6'),
-                Column('bribe_type_other', css_class='form-group col-sm-4 col-md-6'),
+                Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('risks', css_class='form-group col-sm-4 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('resolution', css_class='form-group col-sm-4 col-md-12'),
                 css_class='form-row'
             ),
             Row(
@@ -180,23 +210,42 @@ class IncidentForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('country', css_class='form-group col-sm-2 col-md-4'),
-                Column('region', css_class='form-group col-sm-2 col-md-4'),
-                Column('location', css_class='form-group col-sm-2 col-md-4'),
+                Column(HTML('<input type="file" multiple>'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
+            ),
+            Row(
+                Column(
+                    Accordion(
+                        AccordionGroup('Supporting Documents',
+                            HTML(
+                                '{% for f in files %}'
+                                + '<div class="card card-body d-block" id="file-{{ f.pk }}">'
+                                + '<button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">'
+                                + '<i class="fas fa-trash-alt"></i>'
+                                + '</button>'
+                                + '<a href="{{f.document.url}}" target="_blank">{{ f.filename }}</a>'
+                                + '</div>'
+                                + '{% endfor %}"'
+                            )    
+                        )
+                    )
+                )
             )
         )
         # set which fields are not required.
-        self.fields['bribed_by_other'].required = False
-        self.fields['bribe_type_other'].required = False
-        self.fields['industry_type_other'].required = False
-        self.fields['level'].required = False
+        # self.fields['bribed_by_other'].required = False
+        # self.fields['bribe_type_other'].required = False
+        # self.fields['industry_type_other'].required = False
+        # self.fields['level'].required = False
         self.fields['company_name'].required = False
         self.fields['anonymous'].required = False
         self.fields['first_occurence'].required = False
         self.fields['resolution_date'].required = False
         self.fields['reviewer'].required = False
         self.fields['email'].required = False
+        # self.fields['level'].required = False
+        self.fields['risks'].required = False
+        self.fields['resolution'].required = False
 
 class IncidentDocumentForm(forms.ModelForm):
     
@@ -212,4 +261,15 @@ class CreateUserForm(UserCreationForm):
         model = User
         fields = ['username', 'email','password1', 'password2']
 
-      
+class ListTextWidget(forms.Select):
+    template_name = 'listtxt.html'
+
+    def format_value(self, value):
+        if value == '' or value is None:
+            return ''
+        if self.is_localized:
+            return formats.localize_input(value)
+            return str(value)
+
+class ChoiceTextField(forms.ModelChoiceField):
+    widget=ListTextWidget()      

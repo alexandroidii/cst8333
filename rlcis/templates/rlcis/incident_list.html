@@ -21,7 +21,7 @@ Date: 2019-12-19
         {% csrf_token %}
         <div class="col-sm-1 col-md-3">
             <a href="{% url 'rlcis:incident_insert' %}" class="btn btn-outline-success">
-                <i class="fas fa-plus"> New Incident</i>
+                <i class="fas fa-plus"> Report an Incident</i>
             </a>
         </div>
         <div class="col-sm-4 col-md-7">
@@ -56,27 +56,30 @@ Date: 2019-12-19
                     {{incident.id}}
                 </td>
                 <td>{{incident.company_name}}</td>
-                <td>{% if incident.industry_type_other %}
+                <td>
+                    <!-- {% if incident.industry_type_other %}
                     {{incident.industry_type_other}}
-                    {% else %}
-                    {{ incident.get_industry_type_display}}
-                    {% endif %}
+                    {% else %} -->
+                    {{ incident.industry_type}}
+                    <!-- {% endif %} -->
                 </td>
                 <td>{{incident.incident_summary}}</td>
                 <td>{{incident.country}}<br>{{incident.region}}<br>{{incident.location}}</td>
 
-                <td>{% if incident.bribed_by_other %}
+                <td>
+                    <!-- {% if incident.bribed_by_other %}
                     {{incident.bribed_by_other}}
-                    {% else %}
-                    {{ incident.get_bribed_by_display}}
-                    {% endif %}
+                    {% else %} -->
+                    {{ incident.bribed_by}}
+                    <!-- {% endif %} -->
                 </td>
 
-                <td>{% if incident.bribe_type_other %}
+                <td>
+                    <!-- {% if incident.bribe_type_other %}
                     {{incident.bribe_type_other}}
-                    {% else %}
-                    {{ incident.get_bribe_type_display}}
-                    {% endif %}
+                    {% else %} -->
+                    {{ incident.bribe_type}}
+                    <!-- {% endif %} -->
                 </td>
                 <td>{{incident.first_occurence}}</td>
                 <td>{{incident.resolution_date}}</td>

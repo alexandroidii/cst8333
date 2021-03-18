@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Incident, Reviewer, IncidentDocument
+from .models import BribeType, BribedBy, Incident, IndustryType, LevelOfAuthority, Reviewer, IncidentDocument
 
 """ 
 RLCIS admin.py - used to display models for admin pannel.
@@ -23,6 +23,10 @@ admin.site.index_title = "Welcome to the RLCIS Admin area"
 
 # admin.site.register(Incident)
 admin.site.register(Reviewer)
+admin.site.register(BribeType)
+admin.site.register(BribedBy)
+admin.site.register(IndustryType)
+admin.site.register(LevelOfAuthority)
 admin.site.site_url= "/"
 
 class IncidentDocumentAdmin(admin.StackedInline):
