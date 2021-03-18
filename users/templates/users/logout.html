@@ -1,9 +1,19 @@
 {% extends "rlcis/base.html" %}
+{% load static %}
 {% block content %}
-    <h2>You have been logged out</h2>
-    <div class="border-top pt-3">
-        <small class="text-muted">
+<link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}"/>
+
+<div class="d-flex justify-content-center">
+    <div class="col-xs-12 col-sm-4 col-sm-offset-2 profile-main-div">
+            <hr>
+            <div class="row d-flex justify-content-center">
+                <p class="head-msg col-sm-offset-3">Logged out</p>
+            </div>           
+   
+        <small class="d-flex justify-content-center text-muted">
             <a href="{% url 'users:login' %}">Log In Again</a>
         </small>
+        <hr>
     </div>
+</div> 
 {% endblock content %}

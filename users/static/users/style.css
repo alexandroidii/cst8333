@@ -27,6 +27,7 @@ p.head-msg{
     margin-top: 5px;
     font-weight: bold;
     color: #404040;
+   
 }
 .profile-sub-form{
     padding-right:15px;
@@ -39,17 +40,7 @@ p.head-msg{
  border: 2px red solid;
  }
  
- .my-container {
-     border: 1px solid green;
- }
- .my-row {
-     border: 3px solid white;
-     
- }
- .my-col {
-     border: 3px dotted blue;
- }
-
+ 
 .alert-error {
     color: #721c24;
     background-color: #f8d7da;
@@ -66,3 +57,14 @@ ul.no-bullets {
   .errorlist {
     list-style: none;
 }
+.message-row {
+    height: 52px;
+        }
+#id_phone_number_0 {
+width: 170px;
+
+    }
+#id_phone_number_1 {
+width: 92px;  
+     
+    }   

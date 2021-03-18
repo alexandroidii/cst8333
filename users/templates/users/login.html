@@ -13,7 +13,7 @@
                     </div> 
                 {% csrf_token %}
                 {% crispy form %}
-
+                
                 <hr class="mt-0 mb-2">
                 <div class='container'>
                     <small class="text-muted">
@@ -23,5 +23,16 @@
                 <div>  
             </div>            
         </div>    
-
+        <!-- <script type="text/javascript">
+            function reveal()
+            {
+            if(document.getElementById('password').checked)
+               {document.getElementById("id_password").type='text';}
+            else
+            document.getElementById("id_password").type='password';
+            }
+            </script>   
+            
+            <input type="checkbox" id="password" onclick ="reveal()">     -->
+        
 {% endblock content %}
