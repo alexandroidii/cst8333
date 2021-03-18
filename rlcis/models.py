@@ -19,7 +19,29 @@ class Document(models.Model):
         return self.name
 
 
+class BribeType(models.Model):
+    name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
+class BribedBy(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class IndustryType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class LevelOfAuthority(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 """ 
 RLCIS models.py define the structure to the underlying database.
@@ -56,36 +78,36 @@ The reviewer will be used to review the incidents.
 
 """
 class Incident(Model):
-    #Bribe Types
-    CASH = 'CA'
-    FAVORS = 'FA'
-    GRATUITY = 'GR'
-    GIFTS = 'GI'
+    # #Bribe Types
+    # CASH = 'CA'
+    # FAVORS = 'FA'
+    # GRATUITY = 'GR'
+    # GIFTS = 'GI'
 
-    #Bribed By Types
-    AGENT = 'AG'
-    THIRD_PARTY = 'TP'
-    PUBLIC_OFFICIAL = 'PO'
+    # #Bribed By Types
+    # AGENT = 'AG'
+    # THIRD_PARTY = 'TP'
+    # PUBLIC_OFFICIAL = 'PO'
 
-    #Industry Types
-    ADVERTISING = 'AD'
-    AGRICULTURE = 'AG'
-    CONSTRUCTION = 'CN'
-    COMMUNICATIONS = 'CM'
-    EDUCATION = 'ED'
-    ENTERTAINMENT = 'EN'
-    FASION = 'FA'
-    FINANCE = 'FI'
-    INFORMATION_TECHNOLOGY = 'IT'
-    MANUFACTURING = 'MA'
-    RETAIL = 'RE'
-    TECHNOLOGY = 'TE'
-    TRANSPORTATION = 'TR'
+    # #Industry Types
+    # ADVERTISING = 'AD'
+    # AGRICULTURE = 'AG'
+    # CONSTRUCTION = 'CN'
+    # COMMUNICATIONS = 'CM'
+    # EDUCATION = 'ED'
+    # ENTERTAINMENT = 'EN'
+    # FASION = 'FA'
+    # FINANCE = 'FI'
+    # INFORMATION_TECHNOLOGY = 'IT'
+    # MANUFACTURING = 'MA'
+    # RETAIL = 'RE'
+    # TECHNOLOGY = 'TE'
+    # TRANSPORTATION = 'TR'
 
-    # Levels
-    FEDERAL = 'FE'
-    PROVINCIAL = 'PR'
-    MUNICIPAL = 'MU'
+    # # Levels
+    # LOCAL = 'LO'
+    # STATE = 'ST'
+    # NATIONAL = 'NA'
 
     # General types related to all options
     # 
@@ -93,44 +115,44 @@ class Incident(Model):
     # in drop-down fields in BRIBE_TYPE, BRIBED_BY and INDUSTRY_TYPE drop downs
     # incident and scenario forms
 
-    OTHER = 'OT'
+    # OTHER = 'OT'
 
-    BRIBE_TYPE_CHOICES = [
-        (CASH, 'Cash'),
-        (FAVORS, 'Favors'),
-        (GRATUITY, 'Gratuity'),
-        (GIFTS, 'Gifts'),
-        (OTHER, 'Other Bribe Type'),
-    ]
-    BRIBED_BY_CHOICES = [
-        (AGENT, 'Agent'),
-        (THIRD_PARTY, 'Third Party'),
-        (PUBLIC_OFFICIAL, 'Public Official'),
-        (OTHER, 'Bribed by Other'),
-    ]
-    INDUSTRY_TYPE_CHOICES = [
-        (ADVERTISING, 'Advertising'),
-        (AGRICULTURE, 'Agriculture'),
-        (CONSTRUCTION, 'Construction'),
-        (COMMUNICATIONS, 'Communications'),
-        (EDUCATION, 'Education'),
-        (ENTERTAINMENT, 'Entertainment'),
-        (FASION, 'Fasion'),
-        (FINANCE, 'Finance'),
-        (INFORMATION_TECHNOLOGY, 'Information Technology'),
-        (MANUFACTURING, 'Manufacturing'),
-        (RETAIL, 'Retail'),
-        (TECHNOLOGY, 'Technology'),
-        (TRANSPORTATION, 'Transportation'),
-        (OTHER, 'Other Transportation Type'),
+    # BRIBE_TYPE_CHOICES = [
+    #     (CASH, 'Cash'),
+    #     (FAVORS, 'Favors'),
+    #     (GRATUITY, 'Gratuity'),
+    #     (GIFTS, 'Gifts'),
+    #     (OTHER, 'Other Bribe Type'),
+    # ]
+    # BRIBED_BY_CHOICES = [
+    #     (AGENT, 'Agent'),
+    #     (THIRD_PARTY, 'Third Party'),
+    #     (PUBLIC_OFFICIAL, 'Public Official'),
+    #     (OTHER, 'Bribed by Other'),
+    # ]
+    # INDUSTRY_TYPE_CHOICES = [
+    #     (ADVERTISING, 'Advertising'),
+    #     (AGRICULTURE, 'Agriculture'),
+    #     (CONSTRUCTION, 'Construction'),
+    #     (COMMUNICATIONS, 'Communications'),
+    #     (EDUCATION, 'Education'),
+    #     (ENTERTAINMENT, 'Entertainment'),
+    #     (FASION, 'Fasion'),
+    #     (FINANCE, 'Finance'),
+    #     (INFORMATION_TECHNOLOGY, 'Information Technology'),
+    #     (MANUFACTURING, 'Manufacturing'),
+    #     (RETAIL, 'Retail'),
+    #     (TECHNOLOGY, 'Technology'),
+    #     (TRANSPORTATION, 'Transportation'),
+    #     (OTHER, 'Other Transportation Type'),
 
-    ]
+    # ]
 
-    LEVEL_CHOICES = [
-        (FEDERAL, 'Federal'),
-        (PROVINCIAL, 'Provincial'),
-        (MUNICIPAL, 'Municipal'),
-    ]
+    # LEVEL_CHOICES = [
+    #     (LOCAL, 'Local'),
+    #     (STATE, 'State/Provincial'),
+    #     (NATIONAL, 'National'),
+    # ]
 
     # company_name attribute in incident table as defined
     company_name = models.CharField(
@@ -147,6 +169,17 @@ class Incident(Model):
     incident_details = models.TextField(
         null=True,
     )
+
+    #Describes the risks reported in the incident
+    risks = models.TextField(
+        null=True,
+    )
+
+    # how was the incident resolved?
+    resolution = models.TextField(
+        null=True,
+    )
+
     # country attribute in incident table as defined
     country = models.CharField(
         max_length=60,
@@ -166,49 +199,78 @@ class Incident(Model):
         blank=True,
     )
     # bribed_by attribute in incident table as defined
-    bribed_by = models.CharField(
-        max_length=2,
-        choices=BRIBED_BY_CHOICES,
-        default=OTHER,
-    )
-    # bribed_by_other attribute in incident table as defined
-    bribed_by_other = models.CharField(
-        max_length=100,
-        null=True,
+    bribed_by = models.ForeignKey(
+        BribedBy,
+        models.SET_NULL,
         blank=True,
+        null=True,
     )
+    
+    
+    # bribed_by = models.CharField(
+    #     max_length=2,
+    #     choices=BRIBED_BY_CHOICES,
+    #     default=OTHER,
+    # )
+    # # bribed_by_other attribute in incident table as defined
+    # bribed_by_other = models.CharField(
+    #     max_length=100,
+    #     null=True,
+    #     blank=True,
+    # )
     # bribed_type attribute in incident table as defined
-    bribe_type = models.CharField(
-        max_length=2,
-        choices=BRIBE_TYPE_CHOICES,
-        default=OTHER,
+    bribe_type = models.ForeignKey(
+        BribeType,
+        models.SET_NULL,
+        blank=True,
+        null=True,
     )
+    
+    # bribe_type = models.CharField(
+    #     max_length=2,
+    #     choices=BRIBE_TYPE_CHOICES,
+    #     default=OTHER,
+    # )
     # bribed_type_other attribute in incident table as defined
-    bribe_type_other = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-    )
+    # bribe_type_other = models.CharField(
+    #     max_length=60,
+    #     null=True,
+    #     blank=True,
+    # )
     # industry_type attribute in incident table as defined
-    industry_type = models.CharField(
-        max_length=2,
-        choices=INDUSTRY_TYPE_CHOICES,
-        default=OTHER,
+    industry_type = models.ForeignKey(
+        IndustryType,
+        models.SET_NULL,
+        blank=True,
+        null=True,
     )
+    
+    # industry_type = models.CharField(
+    #     max_length=2,
+    #     choices=INDUSTRY_TYPE_CHOICES,
+    #     default=OTHER,
+    # )
     # industry_type_other attribute in incident table as defined
-    industry_type_other = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-    )
+    # industry_type_other = models.CharField(
+    #     max_length=100,
+    #     null=True,
+    #     blank=True,
+    # )
     # industry_type attribute in incident table as defined
-    level = models.CharField(
-        max_length=2,
-        choices=LEVEL_CHOICES,
-        null=True,
+    levelOfAuthority = models.ForeignKey(
+        LevelOfAuthority,
+        models.SET_NULL,
         blank=True,
-        # default=OTHER,
+        null=True,
     )
+    
+    # level = models.CharField(
+    #     max_length=2,
+    #     choices=LEVEL_CHOICES,
+    #     null=True,
+    #     blank=True,
+    #     # default=OTHER,
+    # )
     # first_occurence attribute in incident table as defined
     first_occurence = models.DateField(
         null=True,
