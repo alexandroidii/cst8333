@@ -19,7 +19,7 @@
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 500,
     "editor.minimap.enabled": false,
-    "python.pythonPath": "C:\\Users\\robert\\envs\\acc\\Scripts\\python.exe",
+    "python.pythonPath": "C:\\Users\\alexr\\envs\\projectvm\\Scripts\\python.exe",
     "editor.fontSize": 16,
     "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
     "workbench.startupEditor": "newUntitledFile",

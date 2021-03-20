@@ -146,8 +146,8 @@ def save_incident(request, id=0):
             print('form submitted - RL')
             context = {}
             context.update(csrf(request))
-            incident = Incident.objects.get(pk=id)
-            files = IncidentDocument.objects.filter(incident=incident)
+            # incident = Incident.objects.get(pk=savedIncident.)
+            files = IncidentDocument.objects.filter(incident=savedIncident)
             context['files'] = files
             incidentForm_html = render_crispy_form(form, context=context)
             # response['files'] = files

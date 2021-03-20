@@ -98,8 +98,8 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'AccCore',
-            'USER': 'accadm',
+            'NAME': 'rlcis',
+            'USER': 'rlcisadm',
             'PASSWORD': '12345678',
             'HOST': 'localhost'
 

@@ -9,7 +9,7 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/acc_core/manage.py",
+            "program": "${workspaceFolder}/manage.py",
             "console": "integratedTerminal",
 			"justMyCode":false,
 			"args": [

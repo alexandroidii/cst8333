@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 #test
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Submit, Row, Column, HTML
+from crispy_forms.layout import Layout, Field, Submit, Row, Column, HTML, Div
 from crispy_forms.bootstrap import FormActions
 
 
@@ -188,37 +188,46 @@ class ProfileUpdateForm(forms.ModelForm):
             self.helper.form_method = 'post'
            # self.helper.attrs = { 'novalidate:' '' }
             self.helper.add_input(Submit('saveprofile', 'Save Profile', css_class='btn btn-success accept-btn'))
-
+            
+            css_class_var = 'col-sm-5 container-fluid  justify-content-center'
+            
             self.helper.layout = Layout(
                   Row(
-                       Column('email', css_class='col-sm-5 container-fluid  justify-content-center'),  
-                       Column('user_name', css_class='col-sm-5 container-fluid  justify-content-center')       
+                       Column('email', css_class=css_class_var),  
+                       Column('user_name', css_class=css_class_var)       
                   ),
                   Row(
-                       Column('first_name', css_class='col-sm-5 container-fluid  justify-content-center'),
-                       Column('last_name', css_class='col-sm-5 container-fluid  justify-content-center')  
+                       Column('first_name', css_class=css_class_var),
+                       Column('last_name', css_class=css_class_var)  
                   ),
                   Row(
-                      Column('company_name',css_class='col-sm-5 container-fluid  ml-4'),
-                  #     HTML(
-                        
-                  #           '<label css_class="control-label">Phone number</label>'
-                                                    
-                  #          ),
-                       Column('phone_number',css_class='col-sm-5 pt-3 form-inline container-fluid  justify-content-center')
+                        Column('company_name',css_class='col-sm-5 container-fluid ml-4'),
+                        Div(
+                              Column(
+                                    Row(
+                                          HTML('<label class="control-label">Phone number</label>'),
+                                    ),
+                                    Row(
+                                          Div(
+                                                'phone_number',css_class='form-inline',
+                                          )
+                                    ),
+                              ),
+                              css_class='form-check'
+                        ),
                   ),
                    Row(
-                       Column('position',css_class='col-sm-5 container-fluid  justify-content-center'),
-                       Column('industry_type',css_class='col-sm-5 container-fluid  justify-content-center')     
+                       Column('position',css_class=css_class_var),
+                       Column('industry_type',css_class=css_class_var)     
                   ),
                   Row(
-                       Column('website',css_class='col-sm-5 container-fluid  justify-content-center'),
-                       Column('address',css_class='col-sm-5 container-fluid  justify-content-center')    
+                       Column('website',css_class=css_class_var),
+                       Column('address',css_class=css_class_var)    
                   ),
       
                   Row(
-                       Column('city',css_class='col-sm-5 container-fluid  justify-content-center'),
-                       Column('province_state',css_class='col-sm-5 container-fluid  justify-content-center')     
+                       Column('city',css_class=css_class_var),
+                       Column('province_state',css_class=css_class_var)     
                   ),
                   Row(
                        Column('country',css_class='col-sm-5 container-fluid  ml-4'),  
