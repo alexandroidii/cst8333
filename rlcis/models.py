@@ -137,7 +137,7 @@ class Incident(Model):
     #     (COMMUNICATIONS, 'Communications'),
     #     (EDUCATION, 'Education'),
     #     (ENTERTAINMENT, 'Entertainment'),
-    #     (FASION, 'Fasion'),
+    #     (FASION, 'Fashion'),
     #     (FINANCE, 'Finance'),
     #     (INFORMATION_TECHNOLOGY, 'Information Technology'),
     #     (MANUFACTURING, 'Manufacturing'),

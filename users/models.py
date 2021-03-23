@@ -55,40 +55,6 @@ class CustomAccountManager(BaseUserManager):
     
 
 class Users(AbstractBaseUser, PermissionsMixin):
-    
-    # OTHER = 'OT'
-    #   #Industry Types
-    # ADVERTISING = 'AD'
-    # AGRICULTURE = 'AG'
-    # CONSTRUCTION = 'CN'
-    # COMMUNICATIONS = 'CM'
-    # EDUCATION = 'ED'
-    # ENTERTAINMENT = 'EN'
-    # FASION = 'FA'
-    # FINANCE = 'FI'
-    # INFORMATION_TECHNOLOGY = 'IT'
-    # MANUFACTURING = 'MA'
-    # RETAIL = 'RE'
-    # TECHNOLOGY = 'TE'
-    # TRANSPORTATION = 'TR'
-
-    # INDUSTRY_TYPE_CHOICES = [
-    #     (ADVERTISING, 'Advertising'),
-    #     (AGRICULTURE, 'Agriculture'),
-    #     (CONSTRUCTION, 'Construction'),
-    #     (COMMUNICATIONS, 'Communications'),
-    #     (EDUCATION, 'Education'),
-    #     (ENTERTAINMENT, 'Entertainment'),
-    #     (FASION, 'Fasion'),
-    #     (FINANCE, 'Finance'),
-    #     (INFORMATION_TECHNOLOGY, 'Information Technology'),
-    #     (MANUFACTURING, 'Manufacturing'),
-    #     (RETAIL, 'Retail'),
-    #     (TECHNOLOGY, 'Technology'),
-    #     (TRANSPORTATION, 'Transportation'),
-    #     (OTHER, 'Other Transportation Type'),
-
-    # ]
 
     email = models.EmailField(_('email address'), unique=True)
     user_name = models.CharField(max_length=150, unique=True)

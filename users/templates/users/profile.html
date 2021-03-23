@@ -11,8 +11,9 @@
 
     }
     #id_phone_number_1 {
-        width: 55px;        
+        width: 55px;                
     }   
+   
 </style>
         <div class="d-flex justify-content-center">
             <div class="col-xs-12 col-sm-5 col-sm-offset-2 profile-main-div">
@@ -22,7 +23,7 @@
                     </div> 
                 {% csrf_token %}
                 {% crispy form %} 
-                <!-- <label for="form.phone_number_1">Phone number*</label>      -->
+                {{ form.errors}}
                 <hr>
             </div>            
         </div>    
