@@ -80,7 +80,7 @@ email               -- Optional field for publicly displayed email for a scenari
 class ScenarioForm(forms.ModelForm):
     anonymous = forms.BooleanField(
         required=False, 
-        label="Submit Anonymously?",
+        label="Would you like to keep your Company Name, Region and Location, and Public Email address private?",
         widget=forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
     )
 
@@ -103,15 +103,17 @@ class ScenarioForm(forms.ModelForm):
             'bribe_initiator',
             'bribe_facilitator',
             'bribe_recipient',
-            # 'bribed_by_other',
+            'bribe_initiator_other',
+            'bribe_facilitator_other',
+            'bribe_recipient_other',
             'bribe_type',
-            # 'bribe_type_other',
+            'bribe_type_other',
             'first_occurence',
             'resolution_date',
             'reviewer',
             'is_training_scenario',
             'industry_type',
-            # 'industry_type_other',
+            'industry_type_other',
             'levelOfAuthority',
             'email',
             'risks',
@@ -120,25 +122,28 @@ class ScenarioForm(forms.ModelForm):
         labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
             'scenario_summary': 'Scenario Summary',
-            'scenario_details': 'Scenario Details',
+            'scenario_details': 'How did it start?',
             'country': 'Country',
             'region': 'Region',
             'bribe_initiator': 'Bribe Initiator',
             'bribe_facilitator': 'Bribe Facilitator',
             'bribe_recipient': 'Bribe Receipient',
-            # 'bribed_by_other': 'Bribed By Other',
+            'bribe_initiator': 'Bribe Initiator Other',
+            'bribe_facilitator': 'Bribe Facilitator Other',
+            'bribe_recipient': 'Bribe Receipient Other',
+            'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
-            # 'bribe_type_other': 'Bribe Type Other',
+            'bribe_type_other': 'Bribe Type Other',
             'first_occurence': 'First Occurence',
             'location': 'Location',
             'resolution_date': 'Resolution Date',
             'reviewer': 'Reviewer',
             'industry_type': 'Industry Type',
-            # 'industry_type_other': 'Industry Type Other',
+            'industry_type_other': 'Industry Type Other',
             'levelOfAuthority':'Level of Authority of Public Official',
             'email':'Public Email',
-            'risks':'What where the risks of this scenario?',
-            'resolution':'How was the scenario resolved?'
+            'risks':'What where the risks?',
+            'resolution':'How was this resolved?'
         }
         widgets = {
             'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
@@ -158,63 +163,86 @@ class ScenarioForm(forms.ModelForm):
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
             Row(
-                Column('anonymous', css_class='form-group col-sm-2 col-md-6'),
-                Column('email', css_class='form-group col-sm-4 col-md-6'),
+                Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
+                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCIS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
             Row(
-                Column('country', css_class='form-group col-sm-2 col-md-4'),
-                Column('region', css_class='form-group col-sm-2 col-md-4'),
-                Column('location', css_class='form-group col-sm-2 col-md-4'),
+                Column('anonymous', css_class='form-group col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
-            Row(
-                Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
-                Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
-                Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-4'),
-                css_class='form-row'
+            Accordion(
+                AccordionGroup('Identification',
+                    Row(
+                        Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-6'),
+                        Column('email', css_class='form-group col-sm-2 col-md-6 anonymous'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('country', css_class='form-group col-sm-2 col-md-4'),
+                        Column('region', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('location', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
+                        Column('industry_type_other', css_class='form-group col-sm-2 col-md-4'),
+                        Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        css_class='form-row'
+                    ),
+                )
             ),
-            Row(
-                Column('scenario_summary', css_class='form-group col-sm-4 col-md-12'),
-                css_class='form-row'
+            Accordion(
+                AccordionGroup('Summary',
+                    Row(
+                        Column('scenario_summary', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('bribe_initiator', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_facilitator', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_recipient', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_type', css_class='form-group col-sm-2 col-md-3'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('bribe_initiator_other', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_facilitator_other', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_recipient_other', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_type_other', css_class='form-group col-sm-2 col-md-3'),
+                        css_class='form-row'
+                    ),
+                )
             ),
-            Row(
-                Column('bribe_initiator', css_class='form-group col-sm-2 col-md-3'),
-                Column('bribe_facilitator', css_class='form-group col-sm-2 col-md-3'),
-                Column('bribe_recipient', css_class='form-group col-sm-2 col-md-3'),
-                Column('bribe_type', css_class='form-group col-sm-2 col-md-3'),
-                css_class='form-row'
+            Accordion(
+                AccordionGroup('Scenario Details',
+                    Row(
+                        Column('scenario_details', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('risks', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('resolution', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('first_occurence', css_class='form-group col-sm-4 col-md-6'),
+                        Column('resolution_date', css_class='form-group col-sm-4 col-md-6'),
+                        css_class='form-row'
+                    ),
+                )
             ),
-            # Row(
-            #     Column('bribed_by_other', css_class='form-group col-sm-4 col-md-6'),
-            #     Column('bribe_type_other', css_class='form-group col-sm-4 col-md-6'),
-            #     css_class='form-row'
-            # ),
-            Row(
-                Column('scenario_details', css_class='form-group col-sm-4 col-md-12'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('risks', css_class='form-group col-sm-4 col-md-12'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('resolution', css_class='form-group col-sm-4 col-md-12'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('first_occurence', css_class='form-group col-sm-4 col-md-6'),
-                Column('resolution_date', css_class='form-group col-sm-4 col-md-6'),
-                css_class='form-row'
-            ),
-            Row(
-                Column(HTML('<input type="file" multiple>'),css_class='col-sm-12 col-md-12'),
-                css_class='form-row'
-            ),
-            Row(
-                Column(
-                    Accordion(
-                        AccordionGroup('Supporting Documents',
+            Accordion(
+                AccordionGroup('Supporting Documents',
+                    Row(
+                        Column(HTML('<input type="file" multiple>'),css_class='col-sm-12 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column(
                             HTML(
                                 '{% for f in files %}'
                                 + '<div class="card card-body d-block" id="file-{{ f.pk }}">'
