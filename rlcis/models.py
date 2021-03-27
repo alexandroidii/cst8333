@@ -22,6 +22,24 @@ class BribedBy(models.Model):
     def __str__(self):
         return self.name
 
+class BribeInitiator(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class BribeFacilitator(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class BribeRecipient(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class IndustryType(models.Model):
     name = models.CharField(max_length=100)
 
@@ -189,7 +207,31 @@ class Scenario(Model):
         null=True,
         blank=True,
     )
-    # bribed_by attribute in scenario table as defined
+    
+    # bribe_initiator attribute in incident table as defined
+    bribe_initiator = models.ForeignKey(
+        BribeInitiator,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    # bribe_facilitator attribute in incident table as defined
+    bribe_facilitator = models.ForeignKey(
+        BribeFacilitator,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    # bribe_recipient attribute in incident table as defined
+    bribe_recipient = models.ForeignKey(
+        BribeRecipient,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    
+    # bribed_by attribute in incident table as defined
+
     bribed_by = models.ForeignKey(
         BribedBy,
         models.SET_NULL,

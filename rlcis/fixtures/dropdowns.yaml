@@ -1,0 +1,139 @@
+# run the following command to load the data in the database
+# py manage.py loaddata dropdowns.yaml
+
+- model: rlcis.bribeinitiator
+  pk: 1
+  fields:
+    name: President
+- model: rlcis.bribeinitiator
+  pk: 2
+  fields:
+    name: CEO
+- model: rlcis.bribeinitiator
+  pk: 3
+  fields:
+    name: Agent
+- model: rlcis.bribefacilitator
+  pk: 1
+  fields:
+    name: President
+- model: rlcis.bribefacilitator
+  pk: 2
+  fields:
+    name: CEO
+- model: rlcis.bribefacilitator
+  pk: 3
+  fields:
+    name: Agent
+- model: rlcis.briberecipient
+  pk: 1
+  fields:
+    name: Polititian
+- model: rlcis.briberecipient
+  pk: 2
+  fields:
+    name: Public Servent
+- model: rlcis.briberecipient
+  pk: 3
+  fields:
+    name: President
+- model: rlcis.briberecipient
+  pk: 4
+  fields:
+    name: Malitia
+- model: rlcis.briberecipient
+  pk: 5
+  fields:
+    name: Gangs
+- model: rlcis.bribetype
+  pk: 1
+  fields:
+    name: Cash
+- model: rlcis.bribetype
+  pk: 2
+  fields:
+    name: Favors
+- model: rlcis.bribetype
+  pk: 3
+  fields:
+    name: Gratuity
+- model: rlcis.bribetype
+  pk: 4
+  fields:
+    name: Gifts
+- model: rlcis.bribetype
+  pk: 5
+  fields:
+    name: Other Bribe Type
+- model: rlcis.industrytype
+  pk: 1
+  fields:
+    name: Cash
+- model: rlcis.industrytype
+  pk: 2
+  fields:
+    name: Advertising
+- model: rlcis.industrytype
+  pk: 3
+  fields:
+    name: Agriculture
+- model: rlcis.industrytype
+  pk: 4
+  fields:
+    name: Construction
+- model: rlcis.industrytype
+  pk: 5
+  fields:
+    name: Communications
+- model: rlcis.industrytype
+  pk: 6
+  fields:
+    name: Education
+- model: rlcis.industrytype
+  pk: 7
+  fields:
+    name: Entertainment
+- model: rlcis.industrytype
+  pk: 8
+  fields:
+    name: Fashion
+- model: rlcis.industrytype
+  pk: 9
+  fields:
+    name: Finance
+- model: rlcis.industrytype
+  pk: 10
+  fields:
+    name: Information Technology
+- model: rlcis.industrytype
+  pk: 11
+  fields:
+    name: Manufacturing
+- model: rlcis.industrytype
+  pk: 12
+  fields:
+    name: Retail
+- model: rlcis.industrytype
+  pk: 13
+  fields:
+    name: Technology
+- model: rlcis.industrytype
+  pk: 14
+  fields:
+    name: Transportation
+- model: rlcis.industrytype
+  pk: 15
+  fields:
+    name: Other Industry Type
+- model: rlcis.levelofauthority
+  pk: 1
+  fields:
+    name: Local
+- model: rlcis.levelofauthority
+  pk: 2
+  fields:
+    name: State/Provincial
+- model: rlcis.levelofauthority
+  pk: 3
+  fields:
+    name: National
