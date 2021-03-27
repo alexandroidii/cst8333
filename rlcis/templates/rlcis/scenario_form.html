@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% comment %}
-RLCIS Template used to display create, update or delete a Scenario
+RLCIS Template used to display create, update or delete an Scenario
 
 Authors: Robert Lange and Alexander Riccio
 Course: CST8333
@@ -11,64 +11,161 @@ Date: 2019-12-19
 
 {% block content %}
 
+{% crispy form %}
+<div class="row">
+    <div class="col-sm-4 col-md-8">
+        <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
+            <i class="fas fa-save"></i> Submit
+        </button>
+    </div>
+    <div class="col-sm-4 col-md-3">
+        <a href="{% url 'rlcis:scenarios' %}" class="btn btn-secondary btn-block btn-sm">
+            <i class="fas fa-stream"></i> Back to list
+        </a>
+    </div>
+    <div class="col-sm-4 col-md-1">
+        <a href="{% url 'rlcis:scenario_delete' id %}" class="btn text-secondary px-0 confirm-delete">
+            <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
+        </a>
+    </div>
+</div>
+<script>
 
-<form action="" method="post">
+    /***
+     * This example was found in the following repo.
+     * https://github.com/raszidzie/Multiple-Images-Template-Django
+     * */
+    document.addEventListener('DOMContentLoaded', function () {
+        var files = []
+        loadFilePond(files);
+        
+        // Ajax call when deleting a supporting document
+        $(document).on('click', '.deleteFileBtn', function (e) {
+            if (confirm("Are you sure you want to delete this file?")){
+                var id = $(this).data('docid');
+                var formData = new FormData();
+                formData.append('id', id)
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "rlcis:delete_document" %}',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    dataType: 'json',
+                    success: function (jsonData) {
+                        console.log(jsonData.filename + " has been delete");
+                        $(".card-body").remove("#file-" + jsonData.id);
+                    },
+                    error: function (xhr, errmsg, err) {
+                        // Todo: Need to add error when the file doesn't delete successfully.
+                        console.log(xhr.status + ":" + xhr.responseText)
+                    }
+                })
+            }
+        })
 
-    {% csrf_token %}
-    {{ form.errors }}
-    {{ form.non_field_errors }}
 
-    <div class="row">
-        <div class="col-sm-4 col-md-5">
-            {{ form.industry_type|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-12">
-            {{ form.incident_summary|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-12">
-            {{ form.incident_details|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribed_by|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribe_type|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribed_by_other|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-6">
-            {{ form.bribe_type_other|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-6">
+        // Ajax call to submit the form wit any documents attached
+        $(document).on('click', '#submitBtn', function (e) {
+            var form = $('#scenarioForm')[0];
+            var formData = new FormData(form);
+            formData.append('fileLength', files.length)
+            formData.append('id', '{{ id }}')
+            for (var i = 0; i < files.length; i++) {
+                formData.append('document' + i, files[i])
+            }
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
 
-            {{ form.first_occurence|as_crispy_field }}
-        </div>
-        <div class="col-sm-4 col-md-6">
-            {{ form.resolution_date|as_crispy_field }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-8">
-            <button type="submit" class="btn btn-success btn-block btn-sm">
-                <i class="fas fa-save"></i> Submit
-            </button>
-        </div>
-        <div class="col-sm-4 col-md-4">
-            <a href="{% url 'rlcis:scenarios' %}" class="btn btn-secondary btn-block btn-sm">
-                <i class="fas fa-stream"></i> Back to list
-            </a>
-        </div>
-    </div>
-</form>
+            $.ajax({
+                type: 'POST',
+                url: '{% url "rlcis:save_scenario"%}',
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                dataType: 'json',
+                success: function (response) {
+                    var success = response['success'];
+                    if(success){
+                        console.log("Scenario has been saved");
+                        alert('scenario has been saved.')
+                        $("#scenarioForm").replaceWith(response['html']);
+                        loadFilePond();
+                    }else{
+                        console.log("Response form with validation errors: " + response['html']);
+                        $("#scenarioForm").replaceWith(response['html']);
+                        loadFilePond();
+                    }
+                    // window.location.href = '{% url "rlcis:scenarios" %}';
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ":" + xhr.responseText);
+                }
+            })
+        })
+    })
+</script>
+
+
+
+<script type='text/javascript'>
+
+function loadFilePond(files){
+
+    FilePond.registerPlugin(FilePondPluginFileMetadata);
+    FilePond.registerPlugin(FilePondPluginFileValidateSize);
+    FilePond.registerPlugin(FilePondPluginFileValidateType);
+    FilePond.setOptions({
+        allowMultiple: true,
+        maxFiles: 10,
+        maxFileSize: '6MB',
+    })
+    const inputElement = document.querySelector('input[type="file"]');
+    const pond = FilePond.create(inputElement, {
+        acceptedFileTypes: [
+            'image/png',
+            'image/jpeg',
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/msword',
+            'audio/mpeg',
+            'text/plain',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel',
+            
+        ],
+        onaddfile: (err, fileItem) => {
+            if (!err) {
+                files.push(fileItem.file)
+            }
+            console.log(files)
+        },
+        onremovefile: (err, fileItem) => {
+            const index = files.indexOf(fileItem.file)
+            if (index > -1) {
+                files.splice(index, 1)
+            }
+            console.log(files)
+        }
+    });
+}
+    
+</script>
+<script type='text/javascript'>
+    $(document).on('click', '.confirm-delete', function () {
+        return confirm('Are you sure you want to delete this? Must be logged in to perform action...');
+    })
+
+    $(".anonymousToggle").change(function () {
+        if ($(".anonymous").is(":hidden")) {
+            $(".anonymous").show();
+        } else {
+            $(".anonymous").hide();
+        }
+    })
+</script>
 {% endblock content %}
