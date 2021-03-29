@@ -68,61 +68,57 @@
 - model: rlcis.industrytype
   pk: 1
   fields:
-    name: Cash
+    name: Advertising
 - model: rlcis.industrytype
   pk: 2
   fields:
-    name: Advertising
+    name: Agriculture
 - model: rlcis.industrytype
   pk: 3
   fields:
-    name: Agriculture
+    name: Construction
 - model: rlcis.industrytype
   pk: 4
   fields:
-    name: Construction
+    name: Communications
 - model: rlcis.industrytype
   pk: 5
   fields:
-    name: Communications
+    name: Education
 - model: rlcis.industrytype
   pk: 6
   fields:
-    name: Education
+    name: Entertainment
 - model: rlcis.industrytype
   pk: 7
   fields:
-    name: Entertainment
+    name: Fashion
 - model: rlcis.industrytype
   pk: 8
   fields:
-    name: Fashion
+    name: Finance
 - model: rlcis.industrytype
   pk: 9
   fields:
-    name: Finance
+    name: Information Technology
 - model: rlcis.industrytype
   pk: 10
   fields:
-    name: Information Technology
+    name: Manufacturing
 - model: rlcis.industrytype
   pk: 11
   fields:
-    name: Manufacturing
+    name: Retail
 - model: rlcis.industrytype
   pk: 12
   fields:
-    name: Retail
+    name: Technology
 - model: rlcis.industrytype
   pk: 13
   fields:
-    name: Technology
-- model: rlcis.industrytype
-  pk: 14
-  fields:
     name: Transportation
 - model: rlcis.industrytype
-  pk: 15
+  pk: 14
   fields:
     name: Other Industry Type
 - model: rlcis.levelofauthority
