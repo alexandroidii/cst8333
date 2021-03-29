@@ -100,7 +100,9 @@ class ScenarioForm(forms.ModelForm):
             'country',
             'region',
             'location',
-            'bribed_by',
+            'bribe_initiator',
+            'bribe_facilitator',
+            'bribe_recipient',
             # 'bribed_by_other',
             'bribe_type',
             # 'bribe_type_other',
@@ -121,7 +123,9 @@ class ScenarioForm(forms.ModelForm):
             'scenario_details': 'Scenario Details',
             'country': 'Country',
             'region': 'Region',
-            'bribed_by': 'Bribed By',
+            'bribe_initiator': 'Bribe Initiator',
+            'bribe_facilitator': 'Bribe Facilitator',
+            'bribe_recipient': 'Bribe Receipient',
             # 'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
             # 'bribe_type_other': 'Bribe Type Other',
@@ -175,8 +179,10 @@ class ScenarioForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('bribed_by', css_class='form-group col-sm-4 col-md-6'),
-                Column('bribe_type', css_class='form-group col-sm-4 col-md-6'),
+                Column('bribe_initiator', css_class='form-group col-sm-2 col-md-3'),
+                Column('bribe_facilitator', css_class='form-group col-sm-2 col-md-3'),
+                Column('bribe_recipient', css_class='form-group col-sm-2 col-md-3'),
+                Column('bribe_type', css_class='form-group col-sm-2 col-md-3'),
                 css_class='form-row'
             ),
             # Row(
