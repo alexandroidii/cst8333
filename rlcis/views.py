@@ -86,7 +86,7 @@ def incidents(request):
         incident_list = __search(query).filter(scenario=False)
 
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 20)
+    paginator = Paginator(incident_list, 5)
     page = request.GET.get('page')
     try:
         incidents = paginator.page(page)
@@ -144,6 +144,7 @@ def save_incident(request, id=0):
                 # files.append(incidentDocument)
 
             print('form submitted - RL')
+            messages.success(request, 'Submission has been accepted for review')  
             context = {}
             context.update(csrf(request))
             incident = Incident.objects.get(pk=id)

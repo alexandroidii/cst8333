@@ -15,17 +15,14 @@ https://youtu.be/Ae7nc1EGv-A
 class CustomAccountManager(BaseUserManager):
 
     def create_superuser(self, email, user_name, first_name, last_name,  password, **other_fields):
-
-        
+       
         other_fields.setdefault('is_staff', True)
         other_fields.setdefault('is_superuser', True)
         other_fields.setdefault('is_active', True)
         
-
-
         if other_fields.get('is_staff') is not True:
             raise ValueError(
-                'Superuser must be assigned to is_active=True.')
+                'Superuser must be assigned to is_staff=True.')
         if other_fields.get('is_superuser') is not True:
             raise ValueError(
                 'Superuser must be assigned to is_superuser=True.')
@@ -111,7 +108,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
 
     class Meta: 
-        verbose_name_plural = "RLCIS Users" #define the name of model displayed. Otherwise Userss will be displayed
+        verbose_name_plural = "RLCIS Users" #define the name of model displayed. Otherwise Users will be displayed
 
     objects = CustomAccountManager()    #define we are using customaccountmanager above 
 
@@ -122,19 +119,5 @@ class Users(AbstractBaseUser, PermissionsMixin):
         return self.user_name
 
     
-    """
-    Create signal for first time login
-    https://stackoverflow.com/questions/49385582/can-i-check-if-a-user-is-logged-in-for-the-first-time-after-this-user-is-logged
-    More info on signals explained in https://youtu.be/FdVuKt_iuSI?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p
-    """    
-    def update_first_login(sender, user, *args, **kwargs):
-        if user.last_login is None:
-            # First time this user has logged in
-            kwargs['request'].session['first_login'] = True #Add first login attribute to session
-    # Update the last_login value as normal
-        update_last_login(sender, user, **kwargs)
-
-    user_logged_in.disconnect(update_last_login)
-    user_logged_in.connect(update_first_login)
-
+   
     

@@ -76,8 +76,16 @@ class LoginForm(forms.Form):
                        Column('email', css_class='col-sm-10 container-fluid  justify-content-center'),    
                   ),
                   Row(
-                       Column('password', css_class='col-sm-10 container-fluid  justify-content-center'),    
-                  )
+
+                       Column('password', css_class='col-sm-10 container-fluid  justify-content-center'),  
+                         HTML('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),                                                                                                       
+                  ),
+                  #test
+                  # Field('email', css_class='col-sm-10 container-fluid  justify-content-center'),
+                  # Field(AppendedText('password',
+                  #       mark_safe('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),
+                  #       css_class='col-sm-10 container-fluid  justify-content-center')
+                  # )                                 
             )
 
       def clean(self, *args,**kwargs):
@@ -251,12 +259,18 @@ class ProfileUpdateForm(forms.ModelForm):
             if '@' in name or '-' in name or '|' in name:
                   raise forms.ValidationError("Names should not have special characters.")
             return name
-      '''      
-      def clean_phone_number(self):
-            phone = self.cleaned_data['phone_number']
-            print(phone)
-            if not phone.isdigit():
-                  raise forms.ValidationError('Phone number can only contains digits')
-            return phone      
-      ''' 
+
+            
+      # def clean_phone_number(self):
+      #       phone = self.cleaned_data.get("phone_number")
+      #       phone_req = "6137624063"
+      #       #print(phone)
+      #       #if not(str(phone).isalpha()):
+      #       # if phone_req != phone:
+      #       #      # print(phone)
+      #       #       raise forms.ValidationError("Phone number doesn't match")
+      #       if not re.sub("['^\+?1?\d{9,15}$']", " ", str(phone)):
+      #             raise forms.ValidationError("Only numbers accepted")
+      #       return phone     
+       
     

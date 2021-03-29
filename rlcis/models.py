@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser
 
 
+
 class Document(models.Model):
     name = models.CharField(max_length=100)
     files = models.FileField(upload_to='incidents/uploads/')
@@ -43,6 +44,8 @@ class LevelOfAuthority(models.Model):
     def __str__(self):
         return self.name
 
+
+
 """ 
 RLCIS models.py define the structure to the underlying database.
 Using python manage.py makemigrations followed by python manage.py migrate
@@ -63,7 +66,7 @@ The reviewer will be used to review the incidents.
 
 """
 
-class Reviewer(Model):
+class Reviewer(models.Model):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
     employee_id = models.IntegerField()
@@ -77,134 +80,35 @@ Class Incident: Attributes describing the incident model.
 The reviewer will be used to review the incidents.
 
 """
-class Incident(Model):
-    # #Bribe Types
-    # CASH = 'CA'
-    # FAVORS = 'FA'
-    # GRATUITY = 'GR'
-    # GIFTS = 'GI'
 
-    # #Bribed By Types
-    # AGENT = 'AG'
-    # THIRD_PARTY = 'TP'
-    # PUBLIC_OFFICIAL = 'PO'
-
-    # #Industry Types
-    # ADVERTISING = 'AD'
-    # AGRICULTURE = 'AG'
-    # CONSTRUCTION = 'CN'
-    # COMMUNICATIONS = 'CM'
-    # EDUCATION = 'ED'
-    # ENTERTAINMENT = 'EN'
-    # FASION = 'FA'
-    # FINANCE = 'FI'
-    # INFORMATION_TECHNOLOGY = 'IT'
-    # MANUFACTURING = 'MA'
-    # RETAIL = 'RE'
-    # TECHNOLOGY = 'TE'
-    # TRANSPORTATION = 'TR'
-
-    # # Levels
-    # LOCAL = 'LO'
-    # STATE = 'ST'
-    # NATIONAL = 'NA'
-
-    # General types related to all options
-    # 
-    # List of dictionaries used to relate to database attribute values used
-    # in drop-down fields in BRIBE_TYPE, BRIBED_BY and INDUSTRY_TYPE drop downs
-    # incident and scenario forms
-
-    # OTHER = 'OT'
-
-    # BRIBE_TYPE_CHOICES = [
-    #     (CASH, 'Cash'),
-    #     (FAVORS, 'Favors'),
-    #     (GRATUITY, 'Gratuity'),
-    #     (GIFTS, 'Gifts'),
-    #     (OTHER, 'Other Bribe Type'),
-    # ]
-    # BRIBED_BY_CHOICES = [
-    #     (AGENT, 'Agent'),
-    #     (THIRD_PARTY, 'Third Party'),
-    #     (PUBLIC_OFFICIAL, 'Public Official'),
-    #     (OTHER, 'Bribed by Other'),
-    # ]
-    # INDUSTRY_TYPE_CHOICES = [
-    #     (ADVERTISING, 'Advertising'),
-    #     (AGRICULTURE, 'Agriculture'),
-    #     (CONSTRUCTION, 'Construction'),
-    #     (COMMUNICATIONS, 'Communications'),
-    #     (EDUCATION, 'Education'),
-    #     (ENTERTAINMENT, 'Entertainment'),
-    #     (FASION, 'Fasion'),
-    #     (FINANCE, 'Finance'),
-    #     (INFORMATION_TECHNOLOGY, 'Information Technology'),
-    #     (MANUFACTURING, 'Manufacturing'),
-    #     (RETAIL, 'Retail'),
-    #     (TECHNOLOGY, 'Technology'),
-    #     (TRANSPORTATION, 'Transportation'),
-    #     (OTHER, 'Other Transportation Type'),
-
-    # ]
-
-    # LEVEL_CHOICES = [
-    #     (LOCAL, 'Local'),
-    #     (STATE, 'State/Provincial'),
-    #     (NATIONAL, 'National'),
-    # ]
+class Incident(models.Model):
 
     # company_name attribute in incident table as defined
-    company_name = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-    )
+    company_name = models.CharField(max_length=100, null=True, blank=True)
+
      # incident_summary attribute in incident table as defined
-    incident_summary = models.CharField(
-        max_length=200,
-        null=True,
-    )
+    incident_summary = models.CharField(max_length=200, null=True)
+    
     # incident_details attribute in incident table as defined
-    incident_details = models.TextField(
-        null=True,
-    )
+    incident_details = models.TextField(null=True)
 
     #Describes the risks reported in the incident
-    risks = models.TextField(
-        null=True,
-    )
+    risks = models.TextField(null=True)
 
     # how was the incident resolved?
-    resolution = models.TextField(
-        null=True,
-    )
+    resolution = models.TextField(null=True)
 
     # country attribute in incident table as defined
-    country = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-)
+    country = models.CharField(max_length=60, null=True, blank=True)
+
     # region attribute in incident table as defined
-    region = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-    )
+    region = models.CharField(max_length=60, null=True, blank=True)
+
     # location attribute in incident table as defined
-    location = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-    )
+    location = models.CharField(max_length=60, null=True, blank=True)
+
     # bribed_by attribute in incident table as defined
-    bribed_by = models.ForeignKey(
-        BribedBy,
-        models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    bribed_by = models.ForeignKey(BribedBy, models.SET_NULL, blank=True, null=True)
     
     
     # bribed_by = models.CharField(
@@ -219,12 +123,7 @@ class Incident(Model):
     #     blank=True,
     # )
     # bribed_type attribute in incident table as defined
-    bribe_type = models.ForeignKey(
-        BribeType,
-        models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    bribe_type = models.ForeignKey(BribeType, models.SET_NULL, blank=True, null=True)
     
     # bribe_type = models.CharField(
     #     max_length=2,
@@ -238,12 +137,7 @@ class Incident(Model):
     #     blank=True,
     # )
     # industry_type attribute in incident table as defined
-    industry_type = models.ForeignKey(
-        IndustryType,
-        models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    industry_type = models.ForeignKey(IndustryType, models.SET_NULL, blank=True, null=True)
     
     # industry_type = models.CharField(
     #     max_length=2,
@@ -257,12 +151,7 @@ class Incident(Model):
     #     blank=True,
     # )
     # industry_type attribute in incident table as defined
-    levelOfAuthority = models.ForeignKey(
-        LevelOfAuthority,
-        models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    levelOfAuthority = models.ForeignKey(LevelOfAuthority, models.SET_NULL, blank=True, null=True)
     
     # level = models.CharField(
     #     max_length=2,
@@ -272,39 +161,22 @@ class Incident(Model):
     #     # default=OTHER,
     # )
     # first_occurence attribute in incident table as defined
-    first_occurence = models.DateField(
-        null=True,
-        blank=True,
-    )
+    first_occurence = models.DateField(null=True, blank=True)
+
     # resolution_date attribute in incident table as defined
-    resolution_date = models.DateField(
-        null=True,
-        blank=True,
-    )
+    resolution_date = models.DateField(null=True, blank=True)
+
     # reviewer attribute in incident table as defined
-    reviewer = models.ForeignKey(
-        Reviewer,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
+    reviewer = models.ForeignKey(Reviewer, on_delete=models.CASCADE, null=True, blank=True)
+
     # anonymous attribute in incident table as defined
-    anonymous = models.BooleanField(
-        null=True,
-        default=False,
-        help_text="Would you like to submit this incident Anonymously?",
-    )
+    anonymous = models.BooleanField(null=True, default=False, help_text="Would you like to submit this incident Anonymously?")
+
     # scenario attribute in incident table as defined
-    scenario = models.BooleanField(
-        default=False,
-        help_text="Is this a real life Incident or a Ficticous Scenario?",
-    )
+    scenario = models.BooleanField(default=False,help_text="Is this a real life Incident or a Ficticous Scenario?")
 
     #public email address that can be contacted
-    email = models.EmailField(
-        null=True,
-        blank=True,
-    )
+    email = models.EmailField(null=True, blank=True)
 
 
     # Return string repesenation of pk and incident summary (used in t/s)
@@ -312,8 +184,16 @@ class Incident(Model):
         return str(self.pk) 
         # + " " + self.incident_summary 
 
+    # def create_incident(sender, instance,**kwargs):
+    #     instance.incident.save()
+    #     print('Incident saved!')
+
+    # post_save.connect(create_incident, sender=Incident)
+
     def get_absolute_url(self):
         return reverse('incident_update', kwargs={'pk': self.pk})
+
+
 
 class IncidentDocument(models.Model):
     incident = models.ForeignKey(Incident, default=None, on_delete=models.CASCADE)
