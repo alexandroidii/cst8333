@@ -1,0 +1,148 @@
+{% extends "rlcis/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<html>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}"/>
+
+<body>
+
+<div class="container container-table">
+    <div class="d-flex justify-content-center">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 profile-main-div">
+            <hr>
+            <div class="row">
+                <div class="col-12 text-center">
+                     <p class="head-msg col-sm-offset-3">Users Profile for User: {{request.user}}</p>
+                <div class="col-xs-2 col-xs-offset-5 text-center column-div">
+                </div>
+            </div>
+        </div>          
+            <form class="form-horizontal profile-sub-form" method=POST>
+                <div class="row">
+                    <div class="col-sm-6">
+                    {% csrf_token %}
+                    </div>
+                </div>
+                <div class="row pt-3">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {{ form.user_name|as_crispy_field }}
+                            </div>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {{ form.first_name|as_crispy_field }}
+                            </div>
+                        </div>
+                <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                </div> 
+                </div>
+                <div class="row">  
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {{ form.company_name|as_crispy_field }}
+                            </div>
+                        </div>
+                <div class="form-check">
+                        <div class="col">
+                            <div class="row">
+                                <label class="control-label" >Phone number</label>
+                            </div>
+                            <div class="row">
+                                <div class="form-inline">
+                                    {{ form.phone_number|as_crispy_field }} 
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.position|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.industry_type|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.website|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.address|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.city|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.province_state|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>                 
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form.country|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="row message-row">
+                            <div class="col-4">
+                               <!-- <input  class="btn btn-success skip-btn pull-right" type="button" value="Return" onclick=location.href="{% url 'users:home' %}" />-->
+                                <button type="submit" class="btn btn-success accept-btn pull-right">Save Profile</button>
+                            </div>
+                            <!-- <div>   
+                                    {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="row justify-content-center">                                       
+                                                <div class="row alert alert-{{ message.tags }}" id="mess_con">
+                                                    {{ message }}
+                                                </div>
+                                        </div>
+                                    {% endfor %}
+                                    {% endif %}                         
+                            </div>                       -->
+                        </div> 
+                    <hr>                  
+                </div>             
+            </form>      
+    </div>
+</div>
+</body>
+</html>
+<!-- <script>
+    var message_ele = document.getElementById("mess_con");
+
+    setTimeout(function(){ 
+       message_ele.style.display = "none"; 
+    }, 3000);
+    // Timeout is 3 sec, you can change it
+</script> -->
+
+{% endblock content %}

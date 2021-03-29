@@ -6,6 +6,7 @@ __pycache__
 db.sqlite3
 media
 incidents
+scenarios
 
 # Backup files # 
 *.bak 
@@ -116,3 +117,4 @@ GitHub.sublime-settings
 !.vscode/extensions.json 
 .history
 *.ini
+.vscode/settings.json

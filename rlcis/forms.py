@@ -7,26 +7,17 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils import formats
 
-from .models import BribedBy, Incident, Document, IncidentDocument
-
-class DocumentForm(forms.ModelForm):
-    class Meta:
-        model = Document
-        fields = ('name','files','images')
-        widgets = {
-            'file': forms.ClearableFileInput(attrs={'multiple':True}),
-        }
+from .models import BribedBy, Scenario, ScenarioDocument
 
 
-    
 
 """ 
 RLCIS forms used when populating the template fields.  
 
 Functions:
 DateInput -- Used to set the input type of a field to 'date'
-SearchForm -- form used for the search function of both Incidents and Scenarios
-IncidentForm -- form used for both incidents and scenarios when populating templates
+SearchForm -- form used for the search function of both Scenarios and Scenarios
+ScenarioForm -- form used for both scenarios and scenarios when populating templates
 
 Authors: Robert Lange and Alexander Riccio
 Course: CST8333
@@ -39,8 +30,8 @@ class DateInput(forms.DateInput):
 
 """
 The Search Form uses the 'q' field to take in a users query
-which is used to search through the incident objects.  
-Both Incidents and Scenarios go through this search
+which is used to search through the scenario objects.  
+Both Scenarios and Scenarios go through this search
     
 Fields:
 
@@ -58,18 +49,18 @@ class SearchForm(forms.Form):
         helper.form_show_labels = False #removes the label for the query field when it is initialized
 
 """
-The Incident form is used to populate the templates for CrUD operations
-on the Incident Object.  Both Incidents and Scenarios use this form.  
+The Scenario form is used to populate the templates for CrUD operations
+on the Scenario Object.  Both Scenarios and Scenarios use this form.  
 The different is when the 'scenario' Boolean is set to true, then 
-then object is considered to be a Scenario instead of an Incident.
+then object is considered to be a Scenario instead of an Scenario.
     
 Fields:
 
 anonymous           -- Boolean field to set the submission as anonymous.  This 
                         disables the country, region, location and company name fields
 company_name        -- Optional field 
-incident_summary    -- Required
-incident_details    -- Required
+scenario_summary    -- Required
+scenario_details    -- Required
 country             -- Optional
 region              -- Optional
 location            -- Optional
@@ -80,12 +71,13 @@ bribe_type_other    -- Optional field only if bribe_type is set to Other
 first_occurence     -- Optional
 resolution_date     -- Optional
 reviewer            -- Optional
-scenario            -- Required but hidden.  This determines if the Incident is actually a Scenario
+is_training_scenario-- Optional.  This determines if the Scenario is actually a Scenario or a training version
 industry_type       -- Required
 industry_type_other -- Optional field only if industry_type is set to Other
 level               -- Optional field
+email               -- Optional field for publicly displayed email for a scenario
 """
-class IncidentForm(forms.ModelForm):
+class ScenarioForm(forms.ModelForm):
     anonymous = forms.BooleanField(
         required=False, 
         label="Submit Anonymously?",
@@ -99,23 +91,25 @@ class IncidentForm(forms.ModelForm):
     # )
 
     class Meta:
-        model = Incident
+        model = Scenario
         fields = [
             'company_name',
             'anonymous',
-            'incident_summary',
-            'incident_details',
+            'scenario_summary',
+            'scenario_details',
             'country',
             'region',
             'location',
-            'bribed_by',
+            'bribe_initiator',
+            'bribe_facilitator',
+            'bribe_recipient',
             # 'bribed_by_other',
             'bribe_type',
             # 'bribe_type_other',
             'first_occurence',
             'resolution_date',
             'reviewer',
-            'scenario',
+            'is_training_scenario',
             'industry_type',
             # 'industry_type_other',
             'levelOfAuthority',
@@ -125,11 +119,13 @@ class IncidentForm(forms.ModelForm):
         ]
         labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
-            'incident_summary': 'Incident Summary',
-            'incident_details': 'Incident Details',
+            'scenario_summary': 'Scenario Summary',
+            'scenario_details': 'Scenario Details',
             'country': 'Country',
             'region': 'Region',
-            'bribed_by': 'Bribed By',
+            'bribe_initiator': 'Bribe Initiator',
+            'bribe_facilitator': 'Bribe Facilitator',
+            'bribe_recipient': 'Bribe Receipient',
             # 'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
             # 'bribe_type_other': 'Bribe Type Other',
@@ -141,15 +137,15 @@ class IncidentForm(forms.ModelForm):
             # 'industry_type_other': 'Industry Type Other',
             'levelOfAuthority':'Level of Authority of Public Official',
             'email':'Public Email',
-            'risks':'What where the risks of this incident?',
-            'resolution':'How was the incident resolved?'
+            'risks':'What where the risks of this scenario?',
+            'resolution':'How was the scenario resolved?'
         }
         widgets = {
             'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
             'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
-            'incident_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
-            'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
-            'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the incident_details to 2
+            'scenario_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
+            'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
+            'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
             # 'bribed_by': ChoiceTextField(queryset=BribedBy.objects.all()),
             # 'bribe_type': ChoiceTextField(queryset=BribedBy.objects.all()),
             # 'industry_type': ChoiceTextField(queryset=BribedBy.objects.all()),
@@ -159,7 +155,7 @@ class IncidentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'incidentForm'
+        self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
             Row(
                 Column('anonymous', css_class='form-group col-sm-2 col-md-6'),
@@ -179,12 +175,14 @@ class IncidentForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('incident_summary', css_class='form-group col-sm-4 col-md-12'),
+                Column('scenario_summary', css_class='form-group col-sm-4 col-md-12'),
                 css_class='form-row'
             ),
             Row(
-                Column('bribed_by', css_class='form-group col-sm-4 col-md-6'),
-                Column('bribe_type', css_class='form-group col-sm-4 col-md-6'),
+                Column('bribe_initiator', css_class='form-group col-sm-2 col-md-3'),
+                Column('bribe_facilitator', css_class='form-group col-sm-2 col-md-3'),
+                Column('bribe_recipient', css_class='form-group col-sm-2 col-md-3'),
+                Column('bribe_type', css_class='form-group col-sm-2 col-md-3'),
                 css_class='form-row'
             ),
             # Row(
@@ -193,7 +191,7 @@ class IncidentForm(forms.ModelForm):
             #     css_class='form-row'
             # ),
             Row(
-                Column('incident_details', css_class='form-group col-sm-4 col-md-12'),
+                Column('scenario_details', css_class='form-group col-sm-4 col-md-12'),
                 css_class='form-row'
             ),
             Row(
@@ -247,12 +245,12 @@ class IncidentForm(forms.ModelForm):
         self.fields['risks'].required = False
         self.fields['resolution'].required = False
 
-class IncidentDocumentForm(forms.ModelForm):
+class ScenarioDocumentForm(forms.ModelForm):
     
     class Meta:
-        model = IncidentDocument
+        model = ScenarioDocument
         fields = [
-            'incident',
+            'scenario',
             'document',
         ]
 

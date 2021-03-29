@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import BribeType, BribedBy, Incident, IndustryType, LevelOfAuthority, Reviewer, IncidentDocument
+from .models import BribeFacilitator, BribeInitiator, BribeRecipient, BribeType, BribedBy, Scenario, IndustryType, LevelOfAuthority, Reviewer, ScenarioDocument
 
 """ 
 RLCIS admin.py - used to display models for admin pannel.
 
-Models Incident, Reviewer defined as input.
+Models Scenario, Reviewer defined as input.
 
 Customizations include:
 site_header
@@ -21,24 +21,26 @@ admin.site.site_header = "RLCIS Admin"
 admin.site.site_title = "RLCIS Admin Area"
 admin.site.index_title = "Welcome to the RLCIS Admin area"
 
-# admin.site.register(Incident)
+# admin.site.register(Scenario)
 admin.site.register(Reviewer)
 admin.site.register(BribeType)
-admin.site.register(BribedBy)
+admin.site.register(BribeInitiator)
+admin.site.register(BribeFacilitator)
+admin.site.register(BribeRecipient)
 admin.site.register(IndustryType)
 admin.site.register(LevelOfAuthority)
 admin.site.site_url= "/"
 
-class IncidentDocumentAdmin(admin.StackedInline):
-    model = IncidentDocument
+class ScenarioDocumentAdmin(admin.StackedInline):
+    model = ScenarioDocument
 
-@admin.register(Incident)
-class IncidentAdmin(admin.ModelAdmin):
-    inlines = [IncidentDocumentAdmin]
+@admin.register(Scenario)
+class ScenarioAdmin(admin.ModelAdmin):
+    inlines = [ScenarioDocumentAdmin]
 
     class Meta:
-        model = Incident
+        model = Scenario
 
-@admin.register(IncidentDocument)
-class IncidentDocumentAdmin(admin.ModelAdmin):
+@admin.register(ScenarioDocument)
+class ScenarioDocumentAdmin(admin.ModelAdmin):
     pass

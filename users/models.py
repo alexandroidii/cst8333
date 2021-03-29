@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.signals import user_logged_in
 from phone_field import PhoneField
-
+from rlcis.models import IndustryType
 
 """
 Ref:https://www.codingforentrepreneurs.com/blog/how-to-create-a-custom-django-user-model/
@@ -52,40 +52,6 @@ class CustomAccountManager(BaseUserManager):
     
 
 class Users(AbstractBaseUser, PermissionsMixin):
-    
-    OTHER = 'OT'
-      #Industry Types
-    ADVERTISING = 'AD'
-    AGRICULTURE = 'AG'
-    CONSTRUCTION = 'CN'
-    COMMUNICATIONS = 'CM'
-    EDUCATION = 'ED'
-    ENTERTAINMENT = 'EN'
-    FASION = 'FA'
-    FINANCE = 'FI'
-    INFORMATION_TECHNOLOGY = 'IT'
-    MANUFACTURING = 'MA'
-    RETAIL = 'RE'
-    TECHNOLOGY = 'TE'
-    TRANSPORTATION = 'TR'
-
-    INDUSTRY_TYPE_CHOICES = [
-        (ADVERTISING, 'Advertising'),
-        (AGRICULTURE, 'Agriculture'),
-        (CONSTRUCTION, 'Construction'),
-        (COMMUNICATIONS, 'Communications'),
-        (EDUCATION, 'Education'),
-        (ENTERTAINMENT, 'Entertainment'),
-        (FASION, 'Fasion'),
-        (FINANCE, 'Finance'),
-        (INFORMATION_TECHNOLOGY, 'Information Technology'),
-        (MANUFACTURING, 'Manufacturing'),
-        (RETAIL, 'Retail'),
-        (TECHNOLOGY, 'Technology'),
-        (TRANSPORTATION, 'Transportation'),
-        (OTHER, 'Other Transportation Type'),
-
-    ]
 
     email = models.EmailField(_('email address'), unique=True)
     user_name = models.CharField(max_length=150, unique=True)
@@ -93,7 +59,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=25)
     phone_number = PhoneField(_('phone number'), max_length=25, blank=True) #changed from CharField to PhoneField
     company_name = models.CharField(_('company name'),max_length=50, blank=True)
-    industry_type = models.CharField(_('industry type'),max_length=2, choices=INDUSTRY_TYPE_CHOICES,default=OTHER)
+    industry_type = models.ForeignKey(IndustryType, models.SET_NULL, blank=True, null=True)
     position = models.CharField(_('position'),max_length=50, blank=True)
     website = models.CharField(_('website'), max_length=50, blank=True)
     address = models.CharField(_('address'),max_length=50, blank=True)

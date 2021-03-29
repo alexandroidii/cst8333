@@ -10,16 +10,6 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser
 
 
-
-class Document(models.Model):
-    name = models.CharField(max_length=100)
-    files = models.FileField(upload_to='incidents/uploads/')
-    images = models.ImageField(upload_to='incidents/images/', null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class BribeType(models.Model):
     name = models.CharField(max_length=100)
 
@@ -27,6 +17,24 @@ class BribeType(models.Model):
         return self.name
 
 class BribedBy(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class BribeInitiator(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class BribeFacilitator(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class BribeRecipient(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -62,7 +70,7 @@ Date: 2019-12-19
 
 Class Reviewer: Attributes describing the Reviewer model.
 
-The reviewer will be used to review the incidents.
+The reviewer will be used to review the scenarios.
 
 """
 
@@ -75,9 +83,9 @@ class Reviewer(models.Model):
         return self.first_name + ' ' + self.last_name
 
 """
-Class Incident: Attributes describing the incident model.
+Class Scenario: Attributes describing the scenario model.
 
-The reviewer will be used to review the incidents.
+The reviewer will be used to review the scenarios.
 
 """
 
@@ -109,14 +117,34 @@ class Incident(models.Model):
 
     # bribed_by attribute in incident table as defined
     bribed_by = models.ForeignKey(BribedBy, models.SET_NULL, blank=True, null=True)
-    
+    # bribe_initiator attribute in incident table as defined
+    bribe_initiator = models.ForeignKey(
+        BribeInitiator,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    # bribe_facilitator attribute in incident table as defined
+    bribe_facilitator = models.ForeignKey(
+        BribeFacilitator,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    # bribe_recipient attribute in incident table as defined
+    bribe_recipient = models.ForeignKey(
+        BribeRecipient,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     
     # bribed_by = models.CharField(
     #     max_length=2,
     #     choices=BRIBED_BY_CHOICES,
     #     default=OTHER,
     # )
-    # # bribed_by_other attribute in incident table as defined
+    # # bribed_by_other attribute in scenario table as defined
     # bribed_by_other = models.CharField(
     #     max_length=100,
     #     null=True,
@@ -130,7 +158,7 @@ class Incident(models.Model):
     #     choices=BRIBE_TYPE_CHOICES,
     #     default=OTHER,
     # )
-    # bribed_type_other attribute in incident table as defined
+    # bribed_type_other attribute in scenario table as defined
     # bribe_type_other = models.CharField(
     #     max_length=60,
     #     null=True,
@@ -144,7 +172,7 @@ class Incident(models.Model):
     #     choices=INDUSTRY_TYPE_CHOICES,
     #     default=OTHER,
     # )
-    # industry_type_other attribute in incident table as defined
+    # industry_type_other attribute in scenario table as defined
     # industry_type_other = models.CharField(
     #     max_length=100,
     #     null=True,
@@ -172,17 +200,20 @@ class Incident(models.Model):
     # anonymous attribute in incident table as defined
     anonymous = models.BooleanField(null=True, default=False, help_text="Would you like to submit this incident Anonymously?")
 
-    # scenario attribute in incident table as defined
-    scenario = models.BooleanField(default=False,help_text="Is this a real life Incident or a Ficticous Scenario?")
+    # scenario attribute in scenario table as defined
+    is_training_scenario = models.BooleanField(
+        default=False,
+        help_text="Is this a real life Scenario or a Ficticous Scenario?",
+    )
 
     #public email address that can be contacted
     email = models.EmailField(null=True, blank=True)
 
 
-    # Return string repesenation of pk and incident summary (used in t/s)
+    # Return string repesenation of pk and scenario summary (used in t/s)
     def __str__(self):
         return str(self.pk) 
-        # + " " + self.incident_summary 
+        # + " " + self.scenario_summary 
 
     # def create_incident(sender, instance,**kwargs):
     #     instance.incident.save()
@@ -191,24 +222,15 @@ class Incident(models.Model):
     # post_save.connect(create_incident, sender=Incident)
 
     def get_absolute_url(self):
-        return reverse('incident_update', kwargs={'pk': self.pk})
+        return reverse('scenario_update', kwargs={'pk': self.pk})
 
-
-
-class IncidentDocument(models.Model):
-    incident = models.ForeignKey(Incident, default=None, on_delete=models.CASCADE)
+class ScenarioDocument(models.Model):
+    scenario = models.ForeignKey(Scenario, default=None, on_delete=models.CASCADE)
  
-    document = models.FileField(upload_to='incidents/uploads/')
+    document = models.FileField(upload_to='scenarios/uploads/')
     
     def __str__(self):
-        return self.incident.incident_summary
+        return self.scenario.scenario_summary
 
     def filename(self):
         return os.path.basename(self.document.name)
-
-
-"""
-class NewContributer(AbstractBaseUser):
-    email = models.EmailField(_('email address'), unique=True)
-    user_name models.CharField(max_length=150, unique=True)
-    """
