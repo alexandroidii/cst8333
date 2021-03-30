@@ -1,7 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Users
-
+from django.contrib.auth.models import update_last_login
+from django.contrib.auth.signals import user_logged_in
     
 # Create signal for first time login
 # https://stackoverflow.com/questions/49385582/can-i-check-if-a-user-is-logged-in-for-the-first-time-after-this-user-is-logged
