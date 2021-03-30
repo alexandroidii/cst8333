@@ -89,16 +89,16 @@ The reviewer will be used to review the scenarios.
 
 """
 
-class Incident(models.Model):
+class Scenario(models.Model):
 
     # company_name attribute in incident table as defined
     company_name = models.CharField(max_length=100, null=True, blank=True)
 
      # incident_summary attribute in incident table as defined
-    incident_summary = models.CharField(max_length=200, null=True)
+    scenario_summary = models.CharField(max_length=200, null=True)
     
     # incident_details attribute in incident table as defined
-    incident_details = models.TextField(null=True)
+    scenario_details = models.TextField(null=True)
 
     #Describes the risks reported in the incident
     risks = models.TextField(null=True)

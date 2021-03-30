@@ -122,18 +122,6 @@ class LoginForm(forms.Form):
             self.cleaned_data["user_obj"] = user_obj
             return super(LoginForm, self).clean(*args,**kwargs)
 
-      
-      def clean_email(self):
-            email = self.cleaned_data.get('email')
-
-            with open("users/disposable_email_providers.txt",'r') as f:
-                  blacklist = f.read().splitlines()
-
-            for disposable_email in blacklist:
-                  if disposable_email in email:
-                        raise forms.ValidationError(_("Email not allowed using domain: %s" % disposable_email), code='invalid')
-            return email
-
 
 
 class UserRegisterForm(UserCreationForm):
@@ -256,24 +244,18 @@ class ProfileUpdateForm(forms.ModelForm):
       #       return phone_number
 
 
-      # def clean_email(self):
-      #       email = self.cleaned_data.get('email')
+      
+      def clean_email(self):
+            email = self.cleaned_data.get('email')
 
-      #       with open("users/disposable_email_providers.txt",'r') as f:
-      #             blacklist = f.read().splitlines()
+            with open("cst8333/users/disposable_email_providers.txt",'r') as f:
+                  blacklist = f.read().splitlines()
 
-      #       for disposable_email in blacklist:
-      #             if disposable_email in email:
-      #                   raise forms.ValidationError("Email not allowed using domain: %s" % disposable_email)
-      #       return email
-
-
-
-      # def clean_first_name(self):
-      #       name = self.cleaned_data.get("first_name")
-      #       if '@' in name or '-' in name or '|' in name:
-      #             raise forms.ValidationError("Names should not have special characters.")
-      #       return name
+            for disposable_email in blacklist:
+                  if disposable_email in email:
+                        raise forms.ValidationError(_("Email not allowed using domain: %s" % disposable_email), code='invalid')
+            return email
+            
 
       def clean_last_name(self):
             name = self.cleaned_data.get("last_name")

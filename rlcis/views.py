@@ -84,7 +84,7 @@ def scenarios(request):
         scenario_list = __search(query).filter(scenario=True)
 
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 5)
+    paginator = Paginator(scenario_list, 5)
     page = request.GET.get('page')
     try:
         scenarios = paginator.page(page)

@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Incident
+from .models import Scenario
 from django.contrib.auth import get_user_model
 import threading
 from django.core.mail import EmailMessage, BadHeaderError
@@ -17,22 +17,22 @@ class EmailThread(threading.Thread):
 
 UserModel = get_user_model()
 
-@receiver(post_save, sender=Incident)
+@receiver(post_save, sender=Scenario)
 def notify_reviewer(sender, instance, created, **kwargs):
-    incident = instance
-    incidNum = str(incident.pk)
-    incidSum = incident.incident_summary
+    scenario = instance
+    scenNum = str(scenario.pk)
+    scenSum = scenario.scenario_summary
 
     if created:     
-        print("New Incident created")
+        print("New Scenario created")
     else:
-        print("Incident " + incidNum +  " updated!")
+        print("Scenario " + scenNum +  " updated!")
 
     reviewers = UserModel.objects.filter(is_reviewer=True)
     recipients = list(i for i in UserModel.objects.filter(is_reviewer=True).values_list('email', flat=True) if bool(i))
     print(recipients)
-    email_subject = ("Please review incident number: " + incidNum)
-    message = ("Please review Incident.\n\nHere's the summary: " + incidSum + "\n\nSubmitted by " + incident.email)
+    email_subject = ("Please review scenario number: " + scenNum)
+    message = ("Please review Scenario.\n\nHere's the summary: " + scenSum + "\n\nSubmitted by " + scenario.email)
 
     for reviewer in recipients:
         email = EmailMessage(email_subject, message, to=[reviewer])
