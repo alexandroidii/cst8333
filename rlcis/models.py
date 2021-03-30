@@ -124,6 +124,14 @@ class Scenario(models.Model):
         blank=True,
         null=True,
     )
+
+    # bribe_initiator_other attribute in scenario table as defined
+    bribe_initiator_other = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+
     # bribe_facilitator attribute in incident table as defined
     bribe_facilitator = models.ForeignKey(
         BribeFacilitator,
@@ -131,6 +139,14 @@ class Scenario(models.Model):
         blank=True,
         null=True,
     )
+    
+    # bribe_facilitator_other attribute in scenario table as defined
+    bribe_facilitator_other = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+
     # bribe_recipient attribute in incident table as defined
     bribe_recipient = models.ForeignKey(
         BribeRecipient,
@@ -138,6 +154,23 @@ class Scenario(models.Model):
         blank=True,
         null=True,
     )
+    
+    # bribe_recipient_other attribute in scenario table as defined
+    bribe_recipient_other = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+    
+    # bribed_by attribute in incident table as defined
+
+    bribed_by = models.ForeignKey(
+        BribedBy,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    
     
     # bribed_by = models.CharField(
     #     max_length=2,
@@ -150,36 +183,48 @@ class Scenario(models.Model):
     #     null=True,
     #     blank=True,
     # )
-    # bribed_type attribute in incident table as defined
-    bribe_type = models.ForeignKey(BribeType, models.SET_NULL, blank=True, null=True)
+    # bribed_type attribute in scenario table as defined
+    bribe_type = models.ForeignKey(
+        BribeType,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    # bribed_type_other attribute in scenario table as defined
+    bribe_type_other = models.CharField(
+        max_length=60,
+        null=True,
+        blank=True,
+    )
     
     # bribe_type = models.CharField(
     #     max_length=2,
     #     choices=BRIBE_TYPE_CHOICES,
     #     default=OTHER,
     # )
-    # bribed_type_other attribute in scenario table as defined
-    # bribe_type_other = models.CharField(
-    #     max_length=60,
-    #     null=True,
-    #     blank=True,
-    # )
-    # industry_type attribute in incident table as defined
-    industry_type = models.ForeignKey(IndustryType, models.SET_NULL, blank=True, null=True)
-    
-    # industry_type = models.CharField(
-    #     max_length=2,
-    #     choices=INDUSTRY_TYPE_CHOICES,
-    #     default=OTHER,
-    # )
+    # industry_type attribute in scenario table as defined
+    industry_type = models.ForeignKey(
+        IndustryType,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
     # industry_type_other attribute in scenario table as defined
-    # industry_type_other = models.CharField(
-    #     max_length=100,
-    #     null=True,
-    #     blank=True,
-    # )
-    # industry_type attribute in incident table as defined
-    levelOfAuthority = models.ForeignKey(LevelOfAuthority, models.SET_NULL, blank=True, null=True)
+    industry_type_other = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+
+    # levelOfAuthority attribute in scenario table as defined
+    levelOfAuthority = models.ForeignKey(
+        LevelOfAuthority,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     
     # level = models.CharField(
     #     max_length=2,

@@ -1,6 +1,7 @@
 # run the following command to load the data in the database
 # py manage.py loaddata dropdowns.yaml
 
+
 - model: rlcis.bribeinitiator
   pk: 1
   fields:
