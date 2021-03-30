@@ -21,16 +21,24 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&m+iv9)krc8p4dsf^8s*e+_c702%j$@38rumo_2_rd$6ra%li='
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = [
-    'rlcis-env-dev.us-west-2.elasticbeanstalk.com',
-    '127.0.0.1',
-    ]
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = '&m+iv9)krc8p4dsf^8s*e+_c702%j$@38rumo_2_rd$6ra%li='
+
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+
+# ALLOWED_HOSTS = [
+#     'rlcis-env-dev.us-west-2.elasticbeanstalk.com',
+#     '127.0.0.1',
+#     ]
 
 # Application definition
 
@@ -96,15 +104,28 @@ if 'RDS_DB_NAME' in os.environ:
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'rlcis',
-            'USER': 'rlcisadm',
-            'PASSWORD': '12345678',
-            'HOST': 'localhost'
-
-        }
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
+}
+
+    
+    
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql',
+    #         'NAME': 'rlcis',
+    #         'USER': 'rlcisadm',
+    #         'PASSWORD': '12345678',
+    #         'HOST': 'localhost'
+
+    #     }
+    # }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
