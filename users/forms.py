@@ -92,16 +92,16 @@ class LoginForm(forms.Form):
                        Column('email', css_class='col-sm-10 container-fluid  justify-content-center'),    
                   ),
                   Row(
+
                        Column('password', css_class='col-sm-10 container-fluid  justify-content-center'),  
-                         HTML('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),   
-                                                        
-                                                    
+                         HTML('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),                                                                                                       
                   ),
+                  #test
                   # Field('email', css_class='col-sm-10 container-fluid  justify-content-center'),
-                  # AppendedText('password',
+                  # Field(AppendedText('password',
                   #       mark_safe('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),
                   #       css_class='col-sm-10 container-fluid  justify-content-center')
-                                                   
+                  # )                                 
             )
 
       def clean(self, *args,**kwargs):
@@ -121,18 +121,6 @@ class LoginForm(forms.Form):
 
             self.cleaned_data["user_obj"] = user_obj
             return super(LoginForm, self).clean(*args,**kwargs)
-
-      
-      def clean_email(self):
-            email = self.cleaned_data.get('email')
-
-            with open("users/disposable_email_providers.txt",'r') as f:
-                  blacklist = f.read().splitlines()
-
-            for disposable_email in blacklist:
-                  if disposable_email in email:
-                        raise forms.ValidationError(_("Email not allowed using domain: %s" % disposable_email), code='invalid')
-            return email
 
 
 
@@ -186,8 +174,8 @@ class ProfileUpdateForm(forms.ModelForm):
             self.fields['user_name'].required = False
             self.fields['first_name'].widget.attrs['readonly'] = True
             self.fields['first_name'].required = False
-            # self.fields['last_name'].widget.attrs['readonly'] = True
-            # self.fields['last_name'].required = False
+            self.fields['last_name'].widget.attrs['readonly'] = True
+            self.fields['last_name'].required = False
             # set which fields are required
             self.fields['company_name']
             self.fields['industry_type'].required = True
@@ -256,30 +244,25 @@ class ProfileUpdateForm(forms.ModelForm):
       #       return phone_number
 
 
-      # def clean_email(self):
-      #       email = self.cleaned_data.get('email')
+      
+      def clean_email(self):
+            email = self.cleaned_data.get('email')
 
-      #       with open("users/disposable_email_providers.txt",'r') as f:
-      #             blacklist = f.read().splitlines()
+            with open("cst8333/users/disposable_email_providers.txt",'r') as f:
+                  blacklist = f.read().splitlines()
 
-      #       for disposable_email in blacklist:
-      #             if disposable_email in email:
-      #                   raise forms.ValidationError("Email not allowed using domain: %s" % disposable_email)
-      #       return email
-
-
-
-      # def clean_first_name(self):
-      #       name = self.cleaned_data.get("first_name")
-      #       if '@' in name or '-' in name or '|' in name:
-      #             raise forms.ValidationError("Names should not have special characters.")
-      #       return name
+            for disposable_email in blacklist:
+                  if disposable_email in email:
+                        raise forms.ValidationError(_("Email not allowed using domain: %s" % disposable_email), code='invalid')
+            return email
+            
 
       def clean_last_name(self):
             name = self.cleaned_data.get("last_name")
             if '@' in name or '-' in name or '|' in name:
                   raise forms.ValidationError("Names should not have special characters.")
             return name
+
             
       # def clean_phone_number(self):
       #       phone = self.cleaned_data.get("phone_number")

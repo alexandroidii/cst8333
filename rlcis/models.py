@@ -52,6 +52,8 @@ class LevelOfAuthority(models.Model):
     def __str__(self):
         return self.name
 
+
+
 """ 
 RLCIS models.py define the structure to the underlying database.
 Using python manage.py makemigrations followed by python manage.py migrate
@@ -72,7 +74,7 @@ The reviewer will be used to review the scenarios.
 
 """
 
-class Reviewer(Model):
+class Reviewer(models.Model):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
     employee_id = models.IntegerField()
@@ -86,128 +88,35 @@ Class Scenario: Attributes describing the scenario model.
 The reviewer will be used to review the scenarios.
 
 """
-class Scenario(Model):
-    # #Bribe Types
-    # CASH = 'CA'
-    # FAVORS = 'FA'
-    # GRATUITY = 'GR'
-    # GIFTS = 'GI'
 
-    # #Bribed By Types
-    # AGENT = 'AG'
-    # THIRD_PARTY = 'TP'
-    # PUBLIC_OFFICIAL = 'PO'
+class Scenario(models.Model):
 
-    # #Industry Types
-    # ADVERTISING = 'AD'
-    # AGRICULTURE = 'AG'
-    # CONSTRUCTION = 'CN'
-    # COMMUNICATIONS = 'CM'
-    # EDUCATION = 'ED'
-    # ENTERTAINMENT = 'EN'
-    # FASION = 'FA'
-    # FINANCE = 'FI'
-    # INFORMATION_TECHNOLOGY = 'IT'
-    # MANUFACTURING = 'MA'
-    # RETAIL = 'RE'
-    # TECHNOLOGY = 'TE'
-    # TRANSPORTATION = 'TR'
+    # company_name attribute in incident table as defined
+    company_name = models.CharField(max_length=100, null=True, blank=True)
 
-    # # Levels
-    # LOCAL = 'LO'
-    # STATE = 'ST'
-    # NATIONAL = 'NA'
-
-    # General types related to all options
-    # 
-    # List of dictionaries used to relate to database attribute values used
-    # in drop-down fields in BRIBE_TYPE, BRIBED_BY and INDUSTRY_TYPE drop downs
-    # scenario and scenario forms
-
-    # OTHER = 'OT'
-
-    # BRIBE_TYPE_CHOICES = [
-    #     (CASH, 'Cash'),
-    #     (FAVORS, 'Favors'),
-    #     (GRATUITY, 'Gratuity'),
-    #     (GIFTS, 'Gifts'),
-    #     (OTHER, 'Other Bribe Type'),
-    # ]
-    # BRIBED_BY_CHOICES = [
-    #     (AGENT, 'Agent'),
-    #     (THIRD_PARTY, 'Third Party'),
-    #     (PUBLIC_OFFICIAL, 'Public Official'),
-    #     (OTHER, 'Bribed by Other'),
-    # ]
-    # INDUSTRY_TYPE_CHOICES = [
-    #     (ADVERTISING, 'Advertising'),
-    #     (AGRICULTURE, 'Agriculture'),
-    #     (CONSTRUCTION, 'Construction'),
-    #     (COMMUNICATIONS, 'Communications'),
-    #     (EDUCATION, 'Education'),
-    #     (ENTERTAINMENT, 'Entertainment'),
-    #     (FASION, 'Fashion'),
-    #     (FINANCE, 'Finance'),
-    #     (INFORMATION_TECHNOLOGY, 'Information Technology'),
-    #     (MANUFACTURING, 'Manufacturing'),
-    #     (RETAIL, 'Retail'),
-    #     (TECHNOLOGY, 'Technology'),
-    #     (TRANSPORTATION, 'Transportation'),
-    #     (OTHER, 'Other Transportation Type'),
-
-    # ]
-
-    # LEVEL_CHOICES = [
-    #     (LOCAL, 'Local'),
-    #     (STATE, 'State/Provincial'),
-    #     (NATIONAL, 'National'),
-    # ]
-
-    # company_name attribute in scenario table as defined
-    company_name = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-    )
-     # scenario_summary attribute in scenario table as defined
-    scenario_summary = models.CharField(
-        max_length=200,
-        null=True,
-    )
-    # scenario_details attribute in scenario table as defined
-    scenario_details = models.TextField(
-        null=True,
-    )
-
-    #Describes the risks reported in the scenario
-    risks = models.TextField(
-        null=True,
-    )
-
-    # how was the scenario resolved?
-    resolution = models.TextField(
-        null=True,
-    )
-
-    # country attribute in scenario table as defined
-    country = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-)
-    # region attribute in scenario table as defined
-    region = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-    )
-    # location attribute in scenario table as defined
-    location = models.CharField(
-        max_length=60,
-        null=True,
-        blank=True,
-    )
+     # incident_summary attribute in incident table as defined
+    scenario_summary = models.CharField(max_length=200, null=True)
     
+    # incident_details attribute in incident table as defined
+    scenario_details = models.TextField(null=True)
+
+    #Describes the risks reported in the incident
+    risks = models.TextField(null=True)
+
+    # how was the incident resolved?
+    resolution = models.TextField(null=True)
+
+    # country attribute in incident table as defined
+    country = models.CharField(max_length=60, null=True, blank=True)
+
+    # region attribute in incident table as defined
+    region = models.CharField(max_length=60, null=True, blank=True)
+
+    # location attribute in incident table as defined
+    location = models.CharField(max_length=60, null=True, blank=True)
+
+    # bribed_by attribute in incident table as defined
+    bribed_by = models.ForeignKey(BribedBy, models.SET_NULL, blank=True, null=True)
     # bribe_initiator attribute in incident table as defined
     bribe_initiator = models.ForeignKey(
         BribeInitiator,
@@ -367,16 +276,19 @@ class Scenario(Model):
     )
 
     #public email address that can be contacted
-    email = models.EmailField(
-        null=True,
-        blank=True,
-    )
+    email = models.EmailField(null=True, blank=True)
 
 
     # Return string repesenation of pk and scenario summary (used in t/s)
     def __str__(self):
         return str(self.pk) 
         # + " " + self.scenario_summary 
+
+    # def create_incident(sender, instance,**kwargs):
+    #     instance.incident.save()
+    #     print('Incident saved!')
+
+    # post_save.connect(create_incident, sender=Incident)
 
     def get_absolute_url(self):
         return reverse('scenario_update', kwargs={'pk': self.pk})
