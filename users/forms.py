@@ -267,13 +267,13 @@ class ProfileUpdateForm(forms.ModelForm):
       # def clean_phone_number(self):
       #       phone = self.cleaned_data.get("phone_number")
       #       phone_req = "6137624063"
-      #       #print(phone)
-      #       #if not(str(phone).isalpha()):
-      #       # if phone_req != phone:
-      #       #      # print(phone)
-      #       #       raise forms.ValidationError("Phone number doesn't match")
-      #       if not re.sub("['^\+?1?\d{9,15}$']", " ", str(phone)):
-      #             raise forms.ValidationError("Only numbers accepted")
+      #       print(phone)
+      #       if not(str(phone).isalpha()):
+      #       #if phone_req != phone:
+      #            # print(phone)
+      #             raise forms.ValidationError("Phone number doesn't match")
+      #       # if not re.sub("['^\+?1?\d{9,15}$']", " ", str(phone)):
+      #       #       raise forms.ValidationError("Only numbers accepted")
       #       return phone     
        
     
