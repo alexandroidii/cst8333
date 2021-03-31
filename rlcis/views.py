@@ -84,7 +84,7 @@ def scenarios(request):
         scenario_list = __search(query).filter(scenario=True)
 
     searchForm = SearchForm()
-    paginator = Paginator(scenario_list, 20)
+    paginator = Paginator(scenario_list, 5)
     page = request.GET.get('page')
     try:
         scenarios = paginator.page(page)
@@ -142,6 +142,7 @@ def save_scenario(request, id=0):
                 # files.append(scenarioDocument)
 
             print('form submitted - RL')
+            messages.success(request, 'Submission has been accepted for review')  
             context = {}
             context.update(csrf(request))
             # scenario = Scenario.objects.get(pk=savedScenario.)

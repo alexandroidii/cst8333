@@ -1,18 +1,26 @@
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User
 from django.dispatch import receiver
-from .models import Profile
+from django.contrib.auth import get_user_model
+    
 
-"""
-Example followed at:
-Python Django Tutorial: Full-Featured Web App Part 8 - User Profile and Picture 
-https://youtu.be/FdVuKt_iuSI?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p
-"""
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
+User = get_user_model()
+
+@receiver(post_save, sender=User, dispatch_uid="update_superuser")
+def update_supervisor_handler(sender, instance, created, **kwargs):
+    
+    if hasattr(instance,'_dirty'): #prevent recursion
+        return
+
     if created:
-        Profile.objects.create(user=instance)
+        instance.is_staff = True
+    else:    
+        if instance.is_superuser:
+            instance.is_staff = True
+        else:
+            instance.is_staff = False
 
-@receiver(post_save, sender=User)
-def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    try:
+        instance._dirty = True
+        instance.save()
+    finally:
+        del instance._dirty     #done - now remove
