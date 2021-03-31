@@ -321,6 +321,19 @@ class Scenario(Model):
         null=True,
         blank=True,
     )
+
+    # This will be used to determine if a scenario has been reviewed and can be public
+    is_reviewed = models.BooleanField(null=True,default=False,help_text="Has this been reviewed?",)
+
+    # resolution_date attribute in scenario table as defined
+    reviewed_date = models.DateField(null=True,blank=True,)
+
+    # submitter of the scenario
+    submitter = models.ForeignKey(Reviewer,on_delete=models.CASCADE,null=True,blank=True,)
+
+    # resolution_date attribute in scenario table as defined
+    submitted_date = models.DateField(null=True,blank=True,)
+
     # anonymous attribute in scenario table as defined
     anonymous = models.BooleanField(
         null=True,

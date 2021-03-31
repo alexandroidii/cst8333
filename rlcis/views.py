@@ -78,8 +78,20 @@ def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
 
+
+    
+    
     if not query:
-        scenario_list = Scenario.objects.order_by('-id')
+        # Verify if the user is logged in
+        if request.user:
+            # make sure they are a reviewer
+            if request.session.get('is_reviewer'):
+                # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
+                scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
+                scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
+                scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
+            else:
+                scenario_list = Scenario.objects.order_by('-id')
     else:
         scenario_list = __search(query).filter(scenario=True)
 
