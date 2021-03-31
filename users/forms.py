@@ -174,8 +174,8 @@ class ProfileUpdateForm(forms.ModelForm):
             self.fields['user_name'].required = False
             self.fields['first_name'].widget.attrs['readonly'] = True
             self.fields['first_name'].required = False
-            # self.fields['last_name'].widget.attrs['readonly'] = True
-            # self.fields['last_name'].required = False
+            self.fields['last_name'].widget.attrs['readonly'] = True
+            self.fields['last_name'].required = False
             # set which fields are required
             self.fields['company_name']
             self.fields['industry_type'].required = True

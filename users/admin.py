@@ -18,7 +18,7 @@ class UserAdminConfig(UserAdmin):
         (None, {'fields': ('email', 'user_name', 'first_name', 'last_name', 'phone_number', 'company_name', 'industry_type', 
                 'position','website', 'address', 'city', 'province_state','country', 'last_login', 'start_date')}),
         ('Additional Info', {'fields': ('about',)}),
-        ('Permissions', {'fields': ('is_active', 'is_reviewer', 'is_staff', 'is_superuser')}),
+        ('Permissions', {'fields': ('is_active', 'is_reviewer', 'is_superuser')}),
       
     )
     formfield_overrides = {
@@ -27,7 +27,7 @@ class UserAdminConfig(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'user_name', 'first_name', 'last_name', 'password1', 'password2', 'is_active', 'is_reviewer', 'is_staff','is_superuser')}
+            'fields': ('email', 'user_name', 'first_name', 'last_name', 'password1', 'password2', 'is_reviewer','is_superuser')}
          ),
     )   
 admin.site.register(Users,UserAdminConfig)
