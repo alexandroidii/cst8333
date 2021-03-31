@@ -44,6 +44,11 @@ def register(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
+            email_address = form.cleaned_data.get('email').lower()
+             # Check to see if any users already exist with this email as a username.
+            if User.objects.filter(email=email_address).exists():
+                messages.error(request, 'This email address is already in use.e')
+                return render(request, 'users/register.html', {'form': form, 'activePage': 'register'})
             user.save()
             current_site = get_current_site(request)
             email_subject = 'Activate Your Account'
@@ -53,8 +58,7 @@ def register(request):
                 'domain': current_site.domain,
                 'uid': uid,
                 'token': token_generator.make_token(user),
-            })
-            email_address = form.cleaned_data.get('email')
+            })           
             email = EmailMessage(email_subject, message, to=[email_address])
             EmailThread(email).start()
             messages.success(request, f'Account created for {user}. Check your inbox to activate')
@@ -80,7 +84,7 @@ class RequestPasswordResetEmail(View):
 
     def post(self,request):
         form = self.form(request.POST)
-        email_address = request.POST['email']
+        email_address = request.POST['email'].lower()
 
         context = {
             'values':request.POST
