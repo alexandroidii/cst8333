@@ -11,15 +11,13 @@ from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.decorators import login_required
 
-from .forms import IncidentForm, SearchForm, DocumentForm
-from .models import Incident, Document
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import IncidentForm, SearchForm, IncidentDocumentForm
-from .models import Incident, IncidentDocument
+from .forms import ScenarioForm, SearchForm, ScenarioDocumentForm
+from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
@@ -30,10 +28,10 @@ RLCIS Views that control the flow of information
 from the page to the database and back.
 
 Functions:
-incident_list -- a list of Incidents
-incident_search -- a QuerySet list of Incidents
-incident_form -- create and update Incident form
-incident_delete -- deletes an Incident
+scenario_list -- a list of Scenarios
+scenario_search -- a QuerySet list of Scenarios
+scenario_form -- create and update Scenario form
+scenario_delete -- deletes an Scenario
 index -- Home page for RLCIS
 
 Authors: Robert Lange and Alexander Riccio
@@ -58,7 +56,7 @@ def deleteDocument(request):
         raise Http404
 
     docId = request.POST.get('id', None)
-    docToDel = get_object_or_404(IncidentDocument, pk = docId)
+    docToDel = get_object_or_404(ScenarioDocument, pk = docId)
     jsonData = json.dumps({
         'filename': docToDel.filename(),
         'id': docToDel.pk
@@ -70,34 +68,34 @@ def deleteDocument(request):
 
 """
 
-Return all Incidents or search based on the returned Query from persistance.
+Return all Scenarios or search based on the returned Query from persistance.
 
 Fields:
 q -- Query returned from the user
 
 """
-def incidents(request):
-    template = 'rlcis/incident_list.html'
+def scenarios(request):
+    template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
 
     if not query:
-        incident_list = Incident.objects.filter(scenario=False).order_by('-id')
+        scenario_list = Scenario.objects.order_by('-id')
     else:
-        incident_list = __search(query).filter(scenario=False)
+        scenario_list = __search(query).filter(scenario=True)
 
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 20)
+    paginator = Paginator(scenario_list, 20)
     page = request.GET.get('page')
     try:
-        incidents = paginator.page(page)
+        scenarios = paginator.page(page)
     except PageNotAnInteger:
-        incidents = paginator.page(1)
+        scenarios = paginator.page(1)
     except EmptyPage:
-        incidents = paginator.page(paginator.num_pages)
+        scenarios = paginator.page(paginator.num_pages)
 
     context = {
-        'incident_list': incidents,
-        'activePage': 'incident',
+        'scenario_list': scenarios,
+        'activePage': 'scenario',
         'searchForm': searchForm,
         'query': query,
     }
@@ -105,54 +103,54 @@ def incidents(request):
 
 
 """
-Save an incident form using ajax
+Save an scenario form using ajax
 """
-def save_incident(request, id=0):
-    logger.debug("Saving Incident form")
+def save_scenario(request, id=0):
+    logger.debug("Saving Scenario form")
     if request.method == 'POST' and request.is_ajax():
-        form = IncidentForm(request.POST)
+        form = ScenarioForm(request.POST)
         response = {}
         id = int(request.POST.get('id'))
         # print(fileLength)
         # logger.debug("fileLength = " + fileLength)
         if id == 0:
-            logger.debug("starting incident_form - id = 0 POST")
-            form = IncidentForm(request.POST)
+            logger.debug("starting scenario_form - id = 0 POST")
+            form = ScenarioForm(request.POST)
         else:
-            logger.debug("starting incident_form - id exist POST")
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(request.POST, instance=incident)
+            logger.debug("starting scenario_form - id exist POST")
+            scenario = Scenario.objects.get(pk=id)
+            form = ScenarioForm(request.POST, instance=scenario)
         print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
            
-            logger.debug("starting incident_form - is valid save() POST")
+            logger.debug("starting scenario_form - is valid save() POST")
 
             # First save the form
-            savedIncident = form.save()
+            savedScenario = form.save()
 
             fileLength = request.POST.get('fileLength')
             
             files = {}
-            # Then loop through any files and save them with a link to the incident.
+            # Then loop through any files and save them with a link to the scenario.
             for file_num in range(0, int(fileLength)):
-                incidentDocument = IncidentDocument.objects.create(
-                    incident=savedIncident,
+                scenarioDocument = ScenarioDocument.objects.create(
+                    scenario=savedScenario,
                     document=request.FILES.get(f'document{file_num}')
                 )
-                # form.files.update(incidentDocument)
-                # files.append(incidentDocument)
+                # form.files.update(scenarioDocument)
+                # files.append(scenarioDocument)
 
             print('form submitted - RL')
             context = {}
             context.update(csrf(request))
-            # incident = Incident.objects.get(pk=savedIncident.)
-            files = IncidentDocument.objects.filter(incident=savedIncident)
+            # scenario = Scenario.objects.get(pk=savedScenario.)
+            files = ScenarioDocument.objects.filter(scenario=savedScenario)
             context['files'] = files
-            incidentForm_html = render_crispy_form(form, context=context)
+            scenarioForm_html = render_crispy_form(form, context=context)
             # response['files'] = files
-            response['activePage'] = 'incidents'
-            response['html'] = incidentForm_html
+            response['activePage'] = 'scenarios'
+            response['html'] = scenarioForm_html
             response['success'] = True
 
         else:
@@ -161,72 +159,72 @@ def save_incident(request, id=0):
             response['success'] = False
             context = {}
             context.update(csrf(request))
-            incidentForm_html = render_crispy_form(form, context=context)
-            response['html'] = incidentForm_html
+            scenarioForm_html = render_crispy_form(form, context=context)
+            response['html'] = scenarioForm_html
             response['id'] = id
             
         return HttpResponse(json.dumps(response), content_type='application/json')
             
-    form = IncidentForm()
-    return render(request, 'incident_form.html', {'form': form})
+    form = ScenarioForm()
+    return render(request, 'scenario_form.html', {'form': form})
 
 
 """
-Incident Form used to create and update and Incident and persist.
+Scenario Form used to create and update and Scenario and persist.
 
 Fields:
-If id=0, this is a new Incident to be added to the database
-If id>0, this incident is being updated
+If id=0, this is a new Scenario to be added to the database
+If id>0, this scenario is being updated
 
 """
-def incident_form(request, id=0):
-    logger.debug("starting incident_form")
+def scenario_form(request, id=0):
+    logger.debug("starting scenario_form")
     if request.method == "GET":
         if id == 0:
-            logger.debug("starting incident_form - id = 0")
-            form = IncidentForm()
+            logger.debug("starting scenario_form - id = 0")
+            form = ScenarioForm()
             context = {
                 'form': form,
-                'activePage': 'incidents',
+                'activePage': 'scenarios',
                 'id': id,
             }
         else:
-            logger.debug("starting incident_form - id exists")
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(instance=incident)
-            files = IncidentDocument.objects.filter(incident=incident)
+            logger.debug("starting scenario_form - id exists")
+            scenario = Scenario.objects.get(pk=id)
+            form = ScenarioForm(instance=scenario)
+            files = ScenarioDocument.objects.filter(scenario=scenario)
             context = {
                 'form': form,
                 'files': files,
-                'activePage': 'incidents',
+                'activePage': 'scenarios',
                 'id': id,
             }
-        return render(request, 'rlcis/incident_form.html', context)
+        return render(request, 'rlcis/scenario_form.html', context)
     else:
         fileLength = request.POST.get('fileLength')
         id = int(request.POST.get('id'))
         print(fileLength)
         logger.debug("fileLength = " + fileLength)
         if id == 0:
-            logger.debug("starting incident_form - id = 0 POST")
-            form = IncidentForm(request.POST)
+            logger.debug("starting scenario_form - id = 0 POST")
+            form = ScenarioForm(request.POST)
         else:
-            logger.debug("starting incident_form - id exist POST")
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(request.POST, instance=incident)
+            logger.debug("starting scenario_form - id exist POST")
+            scenario = Scenario.objects.get(pk=id)
+            form = ScenarioForm(request.POST, instance=scenario)
         print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
-            logger.debug("starting incident_form - is valid save() POST")
+            logger.debug("starting scenario_form - is valid save() POST")
             print('test')
-            messages.info(request, f'New incident from was submitted successfully')
+            messages.info(request, f'New scenario from was submitted successfully')
             # First save the form
-            savedIncident = form.save()
+            savedScenario = form.save()
             
-            # Then loop through any files and save them with a link to the incident.
+            # Then loop through any files and save them with a link to the scenario.
             for file_num in range(0, int(fileLength)):
-                IncidentDocument.objects.create(
-                    incident=savedIncident,
+                ScenarioDocument.objects.create(
+                    scenario=savedScenario,
                     document=request.FILES.get(f'document{file_num}')
                 )
         else:
@@ -234,12 +232,12 @@ def incident_form(request, id=0):
             logger.debug(form.errors)
             logger.debug("form.is_valid() failed")
             # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(instance=incident)
-            files = IncidentDocument.objects.filter(incident=incident)
+            scenario = Scenario.objects.get(pk=id)
+            form = ScenarioForm(instance=scenario)
+            files = ScenarioDocument.objects.filter(scenario=scenario)
 
             # The problem is this is triggered from an Ajax call so it goes into the 
-            # success portion of the Ajax callback which calls the incidents. 
+            # success portion of the Ajax callback which calls the scenarios. 
             #  need to find a way to reload the page with the incorrect data and validation
             # jsonData = json.dumps({
             #     'filename': docToDel.filename(),
@@ -253,35 +251,35 @@ def incident_form(request, id=0):
             context = {
                 'form': form,
                 'files': request.FILES,
-                'activePage': 'incidents',
+                'activePage': 'scenarios',
                 'id': id,
             }
-            return render(request, 'rlcis/incident_form.html', context)
+            return render(request, 'rlcis/scenario_form.html', context)
 
         # ToDo: Maybe we don't redirect but show a successfully saved message and just reload the form?   
-        return redirect('rlcis:incidents')
+        return redirect('rlcis:scenarios')
 
 
 """
-Incident delete method used to remove an Incident from persisted store.
+Scenario delete method used to remove an Scenario from persisted store.
 
 Fields:
-id = incident id,  pk of incident to delete
+id = scenario id,  pk of scenario to delete
 """
 
 @login_required #login required decorator
-def incident_delete(request, id):
+def scenario_delete(request, id):
     logger.debug("trying to delete ")
 
-    incident = Incident.objects.get(pk=id)
-    files = IncidentDocument.objects.filter(incident=incident)
+    scenario = Scenario.objects.get(pk=id)
+    files = ScenarioDocument.objects.filter(scenario=scenario)
     for file in files:
         logger.debug(file)
         file.delete()
 
-    logger.debug(incident)
-    incident.delete()
-    return redirect('rlcis:incidents')
+    logger.debug(scenario)
+    scenario.delete()
+    return redirect('rlcis:scenarios')
 
 
 """
@@ -292,26 +290,26 @@ Fields:
 q -- Query returned from the user
 """
 
-def scenarios(request):
+def scenarios_old(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
 
     if not query:
-        incident_list = Incident.objects.filter(scenario=True).order_by('-id')
+        scenario_list = Scenario.objects.filter(scenario=True).order_by('-id')
     else:
-        incident_list = __search(query).filter(scenario=True)
+        scenario_list = __search(query).filter(scenario=True)
     searchForm = SearchForm()
-    paginator = Paginator(incident_list, 2)
+    paginator = Paginator(scenario_list, 2)
     page = request.GET.get('page')
     try:
-        incidents = paginator.page(page)
+        scenarios = paginator.page(page)
     except PageNotAnInteger:
-        incidents = paginator.page(1)
+        scenarios = paginator.page(1)
     except EmptyPage:
-        incidents = paginator.page(paginator.num_pages)
+        scenarios = paginator.page(paginator.num_pages)
 
     context = {
-        'incident_list': incidents,
+        'scenario_list': scenarios,
         'activePage': 'scenarios',
         'searchForm': searchForm,
         'query': query,
@@ -327,25 +325,25 @@ id = scenario id,  pk of scenario to display
 
 """
 @login_required #login required decorator
-def scenario_form(request, id=0):
+def scenario_form_old(request, id=0):
     logger.debug("starting scenario_form")
     if request.method == "GET":
         if id == 0:
             logger.debug("starting scenario_form - id = 0")
-            form = IncidentForm()
+            form = ScenarioForm()
         else:
             logger.debug("starting scenario_form - id exists")
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(instance=incident)
+            scenario = Scenario.objects.get(pk=id)
+            form = ScenarioForm(instance=scenario)
         return render(request, 'rlcis/scenario_form.html', {'form': form, 'activePage': 'scenarios'})
     else:
         if id == 0:
             logger.debug("starting scenario_form - id = 0 POST")
-            form = IncidentForm(request.POST)
+            form = ScenarioForm(request.POST)
         else:
             logger.debug("starting scenario_form - id exist POST")
-            incident = Incident.objects.get(pk=id)
-            form = IncidentForm(request.POST, instance=incident)
+            scenario = Scenario.objects.get(pk=id)
+            form = ScenarioForm(request.POST, instance=scenario)
         if form.is_valid():
             tempObj = form.save(commit=False)
             tempObj.scenario = True
@@ -357,52 +355,40 @@ def scenario_form(request, id=0):
             logger.debug("form.is_valid() failed")
         return redirect('rlcis:scenarios')
 
-"""
-Scenario delete method used to remove a scenario from persisted store.
-
-Fields:
-id = incident id,  pk of incident to delete
-"""
-def scenario_delete(request, id):
-    logger.debug("trying to delete scenario")
-    incident = Incident.objects.get(pk=id)
-    logger.debug(incident)
-    incident.delete()
-    return redirect('rlcis:scenarios')
 
 """
-private method used to search multiple Incident columns utilizing postgres SearchVector.
+private method used to search multiple Scenario columns utilizing postgres SearchVector.
 
 fields:
 
-query -- contains the query to search Incidents against
+query -- contains the query to search Scenarios against
 
 """
 def __search(query):
 
     logger.debug("Query = " + query)
-    incident_list = Incident.objects.annotate(
+    scenario_list = Scenario.objects.annotate(
         industry_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
             *[When(industry_type=i, then=Value(v))
-                   for i, v in Incident.INDUSTRY_TYPE_CHOICES],
+                   for i, v in Scenario.INDUSTRY_TYPE_CHOICES],
             default=Value(''),
             output_field=CharField()
         ),
         bribed_by_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
             *[When(bribed_by=bb, then=Value(v))
-                   for bb, v in Incident.BRIBED_BY_CHOICES],
+                   for bb, v in Scenario.BRIBED_BY_CHOICES],
             default=Value(''),
             output_field=CharField()
         ),
         bribe_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
             *[When(bribe_type=bt, then=Value(v))
-                   for bt, v in Incident.BRIBE_TYPE_CHOICES],
+                   for bt, v in Scenario.BRIBE_TYPE_CHOICES],
             default=Value(''),
             output_field=CharField()
         ),
         search=SearchVector(
-            'incident_summary',
-            'incident_details',
+            'scenario_summary',
+            'scenario_details',
             'country',
             'region',
             'location',
@@ -412,7 +398,7 @@ def __search(query):
             'bribe_type_text',
         ),
     ).filter(search=query).order_by('-id')
-    return incident_list
+    return scenario_list
 
 """
 Index method used to render index.html (home page)

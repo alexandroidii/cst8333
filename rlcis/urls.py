@@ -24,15 +24,10 @@ urlpatterns = [
 
     # root path for the home page
     path('', views.index, name='home'),
-    path('add_incident/', views.incident_form, name="incident_insert"),
+    path('add_scenario/', views.scenario_form, name="scenario_insert"),
     path('delete_document/', views.deleteDocument, name='delete_document'),
-    path('incident/<int:id>', views.incident_form, name='incident_update'),
-    path('save_incident/', views.save_incident, name='save_incident'),
-    path('delete_incident/<int:id>/', views.incident_delete, name='incident_delete'),
-    # return a list of incidents
-    path('incidents/', views.incidents, name='incidents'),
-    path('add_scenario/', views.scenario_form, name='scenario_insert'),
     path('scenario/<int:id>', views.scenario_form, name='scenario_update'),
+    path('save_scenario/', views.save_scenario, name='save_scenario'),
     path('delete_scenario/<int:id>/', views.scenario_delete, name='scenario_delete'),
     # return a list of Scenarios
     path('scenarios/', views.scenarios, name='scenarios'),
