@@ -1,3 +1,4 @@
+from django.contrib.sites.shortcuts import get_current_site
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Scenario
@@ -22,7 +23,8 @@ def notify_reviewer(sender, instance, created, **kwargs):
     scenario = instance
     scenNum = str(scenario.pk)
     scenSum = scenario.scenario_summary
-
+    print(kwargs)
+    link = kwargs['domain'] + "/rlcis/scenario/" + scenNum
     if created:     
         print("New Scenario created")
     else:
@@ -32,7 +34,7 @@ def notify_reviewer(sender, instance, created, **kwargs):
     recipients = list(i for i in UserModel.objects.filter(is_reviewer=True).values_list('email', flat=True) if bool(i))
     print(recipients)
     email_subject = ("Please review scenario number: " + scenNum)
-    message = ("Please review Scenario.\n\nHere's the summary: " + scenSum + "\n\nSubmitted by " + scenario.email)
+    message = ("Please review Scenario <a href='" + link + "'>#" + scenNum + "</a>.\n\nHere's the summary: " + scenSum + "\n\nSubmitted by " + scenario.email)
 
     for reviewer in recipients:
         email = EmailMessage(email_subject, message, to=[reviewer])

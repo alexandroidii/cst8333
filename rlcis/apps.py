@@ -6,4 +6,3 @@ class RlcisConfig(AppConfig):
 
     def ready(self):
         import rlcis.signals
-

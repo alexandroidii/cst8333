@@ -18,7 +18,7 @@ class UserAdminConfig(UserAdmin):
         (None, {'fields': ('email', 'user_name', 'first_name', 'last_name', 'phone_number', 'company_name', 'industry_type', 
                 'position','website', 'address', 'city', 'province_state','country', 'last_login', 'start_date')}),
         ('Additional Info', {'fields': ('about',)}),
-        ('Permissions', {'fields': ('is_active', 'is_reviewer', 'is_superuser')}),
+        ('Permissions', {'fields': ('is_active', 'is_reviewer', 'is_superuser', 'groups')}),
       
     )
     formfield_overrides = {

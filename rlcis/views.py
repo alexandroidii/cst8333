@@ -1,6 +1,8 @@
 import logging, json
 
+from django.contrib.auth.decorators import permission_required
 from django.contrib.postgres.search import SearchVector
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Case, CharField, Value, When
 from django.http import HttpResponse, Http404
@@ -10,6 +12,7 @@ from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.decorators import login_required
+from users.models import Users
 
 
 from django.contrib.auth.forms import UserCreationForm
@@ -21,7 +24,7 @@ from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
-import json
+from rlcis.decorator import already_authenticated_user, allowed_users
 
 """
 RLCIS Views that control the flow of information
@@ -66,6 +69,12 @@ def deleteDocument(request):
 
     return HttpResponse(jsonData, content_type='json')
 
+@permission_required('users.is_reviewer')
+def publish_scenario(request):
+    print("you are a reviewer")
+    pass
+
+
 """
 
 Return all Scenarios or search based on the returned Query from persistance.
@@ -74,6 +83,8 @@ Fields:
 q -- Query returned from the user
 
 """
+@already_authenticated_user
+@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
@@ -83,15 +94,15 @@ def scenarios(request):
     
     if not query:
         # Verify if the user is logged in
-        if request.user:
-            # make sure they are a reviewer
-            if request.session.get('is_reviewer'):
-                # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
-                scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
-                scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
-                scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
-            else:
-                scenario_list = Scenario.objects.order_by('-id')
+        # if request.user:
+        #     # make sure they are a reviewer
+        #     if request.user.has_perm('users.is_reviewer'):
+        #         # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
+        #         scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
+        #         scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
+        #         scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
+        #     else:
+        scenario_list = Scenario.objects.order_by('-id')
     else:
         scenario_list = __search(query).filter(scenario=True)
 
@@ -117,7 +128,7 @@ def scenarios(request):
 """
 Save an scenario form using ajax
 """
-def save_scenario(request, id=0):
+def save_scenario(request, id=0, **kwargs):
     logger.debug("Saving Scenario form")
     if request.method == 'POST' and request.is_ajax():
         form = ScenarioForm(request.POST)
@@ -137,6 +148,8 @@ def save_scenario(request, id=0):
         if form.is_valid():
            
             logger.debug("starting scenario_form - is valid save() POST")
+
+            kwargs['domain'] = get_current_site(request)
 
             # First save the form
             savedScenario = form.save()
@@ -190,6 +203,8 @@ If id=0, this is a new Scenario to be added to the database
 If id>0, this scenario is being updated
 
 """
+@already_authenticated_user
+@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenario_form(request, id=0):
     logger.debug("starting scenario_form")
     if request.method == "GET":

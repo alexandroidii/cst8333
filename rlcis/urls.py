@@ -31,6 +31,7 @@ urlpatterns = [
     path('delete_scenario/<int:id>/', views.scenario_delete, name='scenario_delete'),
     # return a list of Scenarios
     path('scenarios/', views.scenarios, name='scenarios'),
+    path('publish/', views.publish_scenario, name='publish'),
 
    
 ]

@@ -7,7 +7,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils import formats
 
-from .models import BribedBy, Scenario, ScenarioDocument
+from .models import Scenario, ScenarioDocument
+from .models_dropdown import BribedBy
 
 
 

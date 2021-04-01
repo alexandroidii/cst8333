@@ -1,5 +1,9 @@
 import datetime
 import os
+import rlcis.models_dropdown as dropDowns
+
+from django.contrib.auth.forms import UserModel
+import users.models as Users
 
 from django.db import models
 from django.db.models import Model
@@ -7,50 +11,51 @@ from django.forms import ModelForm
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import AbstractBaseUser
+from django.apps import apps
 
 
-class BribeType(models.Model):
-    name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.name
+# class BribeType(models.Model):
+#     name = models.CharField(max_length=100)
 
-class BribedBy(models.Model):
-    name = models.CharField(max_length=100)
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
+# class BribedBy(models.Model):
+#     name = models.CharField(max_length=100)
 
-class BribeInitiator(models.Model):
-    name = models.CharField(max_length=100)
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
+# class BribeInitiator(models.Model):
+#     name = models.CharField(max_length=100)
 
-class BribeFacilitator(models.Model):
-    name = models.CharField(max_length=100)
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
+# class BribeFacilitator(models.Model):
+#     name = models.CharField(max_length=100)
 
-class BribeRecipient(models.Model):
-    name = models.CharField(max_length=100)
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
+# class BribeRecipient(models.Model):
+#     name = models.CharField(max_length=100)
 
-class IndustryType(models.Model):
-    name = models.CharField(max_length=100)
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
+# class IndustryType(models.Model):
+#     name = models.CharField(max_length=100)
 
-class LevelOfAuthority(models.Model):
-    name = models.CharField(max_length=100)
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
+# class LevelOfAuthority(models.Model):
+#     name = models.CharField(max_length=100)
+
+#     def __str__(self):
+#         return self.name
 
 
 
@@ -115,11 +120,11 @@ class Scenario(models.Model):
     # location attribute in incident table as defined
     location = models.CharField(max_length=60, null=True, blank=True)
 
-    # bribed_by attribute in incident table as defined
-    bribed_by = models.ForeignKey(BribedBy, models.SET_NULL, blank=True, null=True)
+    # # bribed_by attribute in incident table as defined
+    # bribed_by = models.ForeignKey(BribedBy, models.SET_NULL, blank=True, null=True)
     # bribe_initiator attribute in incident table as defined
     bribe_initiator = models.ForeignKey(
-        BribeInitiator,
+        dropDowns.BribeInitiator,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -134,7 +139,7 @@ class Scenario(models.Model):
 
     # bribe_facilitator attribute in incident table as defined
     bribe_facilitator = models.ForeignKey(
-        BribeFacilitator,
+        dropDowns.BribeFacilitator,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -149,7 +154,7 @@ class Scenario(models.Model):
 
     # bribe_recipient attribute in incident table as defined
     bribe_recipient = models.ForeignKey(
-        BribeRecipient,
+        dropDowns.BribeRecipient,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -165,7 +170,7 @@ class Scenario(models.Model):
     # bribed_by attribute in incident table as defined
 
     bribed_by = models.ForeignKey(
-        BribedBy,
+        dropDowns.BribedBy,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -185,7 +190,7 @@ class Scenario(models.Model):
     # )
     # bribed_type attribute in scenario table as defined
     bribe_type = models.ForeignKey(
-        BribeType,
+        dropDowns.BribeType,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -205,7 +210,7 @@ class Scenario(models.Model):
     # )
     # industry_type attribute in scenario table as defined
     industry_type = models.ForeignKey(
-        IndustryType,
+        dropDowns.IndustryType,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -220,7 +225,7 @@ class Scenario(models.Model):
 
     # levelOfAuthority attribute in scenario table as defined
     levelOfAuthority = models.ForeignKey(
-        LevelOfAuthority,
+        dropDowns.LevelOfAuthority,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -245,10 +250,11 @@ class Scenario(models.Model):
     )
     # reviewer attribute in scenario table as defined
     reviewer = models.ForeignKey(
-        Reviewer,
+        Users.Users,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="reviewer"
     )
 
     # This will be used to determine if a scenario has been reviewed and can be public
@@ -258,7 +264,7 @@ class Scenario(models.Model):
     reviewed_date = models.DateField(null=True,blank=True,)
 
     # submitter of the scenario
-    submitter = models.ForeignKey(Reviewer,on_delete=models.CASCADE,null=True,blank=True,)
+    submitter = models.ForeignKey(Users.Users,on_delete=models.CASCADE,null=True,blank=True,related_name="submitter")
 
     # resolution_date attribute in scenario table as defined
     submitted_date = models.DateField(null=True,blank=True,)
