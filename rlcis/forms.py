@@ -118,7 +118,8 @@ class ScenarioForm(forms.ModelForm):
             'levelOfAuthority',
             'email',
             'risks',
-            'resolution'
+            'resolution',
+            'reviewer'
         ]
         labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',

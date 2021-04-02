@@ -83,8 +83,6 @@ Fields:
 q -- Query returned from the user
 
 """
-@already_authenticated_user
-@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
@@ -192,6 +190,9 @@ def save_scenario(request, id=0, **kwargs):
         return HttpResponse(json.dumps(response), content_type='application/json')
             
     form = ScenarioForm()
+
+    if user.is_reviewer:
+        template = ''
     return render(request, 'scenario_form.html', {'form': form})
 
 
