@@ -18,7 +18,7 @@ import threading
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models.query_utils import Q
 from django.views.generic.edit import FormView
-
+from rlcis.decorator import already_authenticated_user
 
 """
 Speed up email sending
@@ -244,19 +244,30 @@ def index(request):
     else:
         return redirect('users:login')
 
-
 class LoginView(View):
     form = LoginForm
     template_name = 'users/login.html'
     
     def get(self, request):
         form = self.form(None)
+        # request.session['referer_link'] = request.path_info
         return render(request, self.template_name, {'form': form})
 
+    
     def post(self, request):
         user = None
         form = self.form(request.POST)
-        referer = request.session['referer_link']
+        
+        try:
+            referer = request.session['referer_link']
+            request.session['referer_link'] = None
+            # This is because when you are going to the login link directly, there is no request.path_info
+            if referer == None:
+                referer = '/'
+        except:
+            referer = '/'
+
+
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
