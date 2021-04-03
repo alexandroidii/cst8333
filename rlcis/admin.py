@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import BribeFacilitator, BribeInitiator, BribeRecipient, BribeType, BribedBy, Scenario, IndustryType, LevelOfAuthority, Reviewer, ScenarioDocument
-
+from .models import  Scenario, Reviewer, ScenarioDocument
+from .models_dropdown import BribeFacilitator, BribeInitiator, BribeRecipient, BribeType, BribedBy,IndustryType, LevelOfAuthority
 """ 
 RLCIS admin.py - used to display models for admin pannel.
 

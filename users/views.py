@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
@@ -17,8 +18,7 @@ import threading
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models.query_utils import Q
 from django.views.generic.edit import FormView
-from .decorators import unauthenticated_user
-
+from rlcis.decorator import already_authenticated_user
 
 """
 Speed up email sending
@@ -244,11 +244,10 @@ def index(request):
     else:
         return redirect('users:login')
 
-
 class LoginView(View):
     form = LoginForm
     template_name = 'users/login.html'
-
+    
     def get(self, request):
         form = self.form(None)
         return render(request, self.template_name, {'form': form})
@@ -256,6 +255,15 @@ class LoginView(View):
     def post(self, request):
         user = None
         form = self.form(request.POST)
+        
+        try:
+            referer = request.session['referer_link']
+            
+            # This is because when you are going to the login link directly, there is no request.path_info
+            if referer == None:
+                referer = '/'
+        except:
+            referer = '/'
 
         if form.is_valid():
             email = form.cleaned_data['email']
@@ -267,9 +275,7 @@ class LoginView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('/')
-        # else:
-        #     messages.error(request, ('Email Address and/or Password are not correct'))
+                return HttpResponseRedirect(referer)
 
         return render(request, self.template_name, {'form': form})
     

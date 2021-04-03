@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'phone_field',
+    'django.contrib.sites',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -182,6 +183,11 @@ CRISPY_CLASS_CONVERTERS = {
     'passwordinput': "form-control cst__radius",
     'select': "form-control cst__radius",
 }
+
+SITE_ID=1   #for 127.0.0.1
+#SITE_ID=2  #for rlcis.com
+#SITE_ID=3  #for rlcis.comS
+
 
 CRISPY_FAIL_SILENTLY = not DEBUG
 

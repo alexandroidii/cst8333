@@ -72,6 +72,11 @@
               <a class="nav-item nav-link disabled text-info font-weight-bold">Reviewer</a>
               <a href="/rlcis/scenarios/"><img alt="Reviewer" src="{% static '/images/settings.png' %}" title="RLCIS Reviewer" class="img"/>
               {% endif %}
+              {% if request.user.is_reviewer %}
+              <a class="nav-item nav-link disabled text-info font-weight-bold">Reviewer</a>
+              <a href="/rlcis/scenarios"><img alt="Reviewer" src="{% static '/images/settings.png' %}" title="RLCIS Reviewer" class="img"/>
+              {% endif %}
+
               <li class="nav-item {% if activePage == 'profile' %} active {% endif %}"></li>
                   <a class="nav-item nav-link" href="{% url 'users:profile' %}">Profile</a>
                   <a class="nav-item nav-link" href="{% url 'users:logout' %}">Logout</a>

@@ -1,3 +1,6 @@
+# import  rlcis.models
+import rlcis.models_dropdown as dropDowns
+
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -5,7 +8,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.signals import user_logged_in
 from phone_field import PhoneField
-from rlcis.models import IndustryType
+from django.apps import apps
 
 
 """
@@ -54,13 +57,15 @@ class CustomAccountManager(BaseUserManager):
 
 class Users(AbstractBaseUser, PermissionsMixin):
 
+    # IndustryType = apps.get_model(app_label='rlcis', model_name='IndustryType')
+
     email = models.EmailField(_('email address'), unique=True)
     user_name = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(_('first name'), max_length=25)
     last_name = models.CharField(_('last name'), max_length=25)
     phone_number = PhoneField(_('phone number'), max_length=25, blank=True) #changed from CharField to PhoneField
     company_name = models.CharField(_('company name'),max_length=50, blank=True)
-    industry_type = models.ForeignKey(IndustryType, models.SET_NULL, blank=True, null=True)
+    industry_type = models.ForeignKey(dropDowns.IndustryType, models.SET_NULL, blank=True, null=True)
     position = models.CharField(_('position'),max_length=50, blank=True)
     website = models.CharField(_('website'), max_length=50, blank=True)
     address = models.CharField(_('address'),max_length=50, blank=True)
