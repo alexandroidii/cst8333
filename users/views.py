@@ -250,23 +250,20 @@ class LoginView(View):
     
     def get(self, request):
         form = self.form(None)
-        # request.session['referer_link'] = request.path_info
         return render(request, self.template_name, {'form': form})
 
-    
     def post(self, request):
         user = None
         form = self.form(request.POST)
         
         try:
             referer = request.session['referer_link']
-            request.session['referer_link'] = None
+            #request.session['referer_link'] = None
             # This is because when you are going to the login link directly, there is no request.path_info
             if referer == None:
                 referer = '/'
         except:
             referer = '/'
-
 
         if form.is_valid():
             email = form.cleaned_data['email']
@@ -279,8 +276,6 @@ class LoginView(View):
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect(referer)
-        # else:
-        #     messages.error(request, ('Email Address and/or Password are not correct'))
 
         return render(request, self.template_name, {'form': form})
     

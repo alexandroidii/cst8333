@@ -5,6 +5,8 @@ from .models import Scenario
 from django.contrib.auth import get_user_model
 import threading
 from django.core.mail import EmailMessage, BadHeaderError
+from django.conf import settings
+
 
 class EmailThread(threading.Thread):
      
@@ -23,18 +25,22 @@ def notify_reviewer(sender, instance, created, **kwargs):
     scenario = instance
     scenNum = str(scenario.pk)
     scenSum = scenario.scenario_summary
-    print(kwargs)
-    link = kwargs['domain'] + "/rlcis/scenario/" + scenNum
-    if created:     
-        print("New Scenario created")
-    else:
-        print("Scenario " + scenNum +  " updated!")
+    current_site = get_current_site(request=None)
+    domain = current_site.domain
+    link = domain + '/rlcis/scenario/' + scenNum
+    if settings.DEBUG:
+        if created:     
+            print("New Scenario created")
+        else:
+            print("Scenario " + scenNum +  " updated!")
 
     reviewers = UserModel.objects.filter(is_reviewer=True)
     recipients = list(i for i in UserModel.objects.filter(is_reviewer=True).values_list('email', flat=True) if bool(i))
-    print(recipients)
+    if settings.DEBUG:
+        print(recipients)
+        
     email_subject = ("Please review scenario number: " + scenNum)
-    message = ("Please review Scenario <a href='" + link + "'>#" + scenNum + "</a>.\n\nHere's the summary: " + scenSum + "\n\nSubmitted by " + scenario.email)
+    message = ("Please review Scenario at: http://" + link + "\n\nHere's the summary: '" + scenSum + "'" +  "\n\nSubmitted by: " + scenario.email)
 
     for reviewer in recipients:
         email = EmailMessage(email_subject, message, to=[reviewer])

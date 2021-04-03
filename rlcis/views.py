@@ -166,7 +166,6 @@ def save_scenario(request, id=0, **kwargs):
                 # form.files.update(scenarioDocument)
                 # files.append(scenarioDocument)
 
-            print('form submitted - RL')
             messages.success(request, 'Submission has been accepted for review')  
             context = {}
             context.update(csrf(request))
