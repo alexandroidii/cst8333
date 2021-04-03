@@ -19,7 +19,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import ScenarioForm, SearchForm, ScenarioDocumentForm
+from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm
 from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
@@ -83,8 +83,6 @@ Fields:
 q -- Query returned from the user
 
 """
-@already_authenticated_user
-@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
@@ -130,19 +128,31 @@ Save an scenario form using ajax
 """
 def save_scenario(request, id=0, **kwargs):
     logger.debug("Saving Scenario form")
+    
+    is_reviewer = request.user.groups.filter(name='reviewer').exists()
+    is_submitter = request.user.groups.filter(name='submitter').exists()
+    
     if request.method == 'POST' and request.is_ajax():
-        form = ScenarioForm(request.POST)
+        if is_reviewer:
+            form = ScenarioFormReviewer(request.POST)
+        else:
+            form = ScenarioFormSubmitter(request.POST)
+
         response = {}
         id = int(request.POST.get('id'))
-        # print(fileLength)
-        # logger.debug("fileLength = " + fileLength)
         if id == 0:
             logger.debug("starting scenario_form - id = 0 POST")
-            form = ScenarioForm(request.POST)
+            if is_reviewer:
+                form = ScenarioFormReviewer(request.POST)
+            else:
+                form = ScenarioFormSubmitter(request.POST)
         else:
             logger.debug("starting scenario_form - id exist POST")
             scenario = Scenario.objects.get(pk=id)
-            form = ScenarioForm(request.POST, instance=scenario)
+            if is_reviewer:
+                form = ScenarioFormReviewer(request.POST, instance=scenario)
+            else:
+                form = ScenarioFormSubmitter(request.POST, instance=scenario)
         print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
@@ -163,17 +173,13 @@ def save_scenario(request, id=0, **kwargs):
                     scenario=savedScenario,
                     document=request.FILES.get(f'document{file_num}')
                 )
-                # form.files.update(scenarioDocument)
-                # files.append(scenarioDocument)
 
             messages.success(request, 'Submission has been accepted for review')  
             context = {}
             context.update(csrf(request))
-            # scenario = Scenario.objects.get(pk=savedScenario.)
             files = ScenarioDocument.objects.filter(scenario=savedScenario)
             context['files'] = files
             scenarioForm_html = render_crispy_form(form, context=context)
-            # response['files'] = files
             response['activePage'] = 'scenarios'
             response['html'] = scenarioForm_html
             response['success'] = True
@@ -189,8 +195,12 @@ def save_scenario(request, id=0, **kwargs):
             response['id'] = id
             
         return HttpResponse(json.dumps(response), content_type='application/json')
-            
-    form = ScenarioForm()
+
+    if is_reviewer:
+        form = ScenarioFormReviewer()
+    else:
+        form = ScenarioFormSubmitter()
+
     return render(request, 'scenario_form.html', {'form': form})
 
 
@@ -206,10 +216,17 @@ If id>0, this scenario is being updated
 @allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenario_form(request, id=0):
     logger.debug("starting scenario_form")
+    is_reviewer = request.user.groups.filter(name='reviewer').exists()
+    is_submitter = request.user.groups.filter(name='submitter').exists()
+
     if request.method == "GET":
         if id == 0:
             logger.debug("starting scenario_form - id = 0")
-            form = ScenarioForm()
+            if is_reviewer:
+                form = ScenarioFormReviewer()
+            else:
+                form = ScenarioFormSubmitter()
+
             context = {
                 'form': form,
                 'activePage': 'scenarios',
@@ -218,7 +235,10 @@ def scenario_form(request, id=0):
         else:
             logger.debug("starting scenario_form - id exists")
             scenario = Scenario.objects.get(pk=id)
-            form = ScenarioForm(instance=scenario)
+            if is_reviewer:
+                form = ScenarioFormReviewer(instance=scenario)
+            else:
+                form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
             context = {
                 'form': form,
@@ -234,11 +254,17 @@ def scenario_form(request, id=0):
         logger.debug("fileLength = " + fileLength)
         if id == 0:
             logger.debug("starting scenario_form - id = 0 POST")
-            form = ScenarioForm(request.POST)
+            if is_reviewer:
+                form = ScenarioFormReviewer(request.POST)
+            else:
+                form = ScenarioFormSubmitter(request.POST)
         else:
             logger.debug("starting scenario_form - id exist POST")
             scenario = Scenario.objects.get(pk=id)
-            form = ScenarioForm(request.POST, instance=scenario)
+            if is_reviewer:
+                form = ScenarioFormReviewer(request.POST, instance=scenario)
+            else:
+                form = ScenarioFormSubmitter(request.POST, instance=scenario)
         print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
@@ -260,21 +286,12 @@ def scenario_form(request, id=0):
             logger.debug("form.is_valid() failed")
             # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
             scenario = Scenario.objects.get(pk=id)
-            form = ScenarioForm(instance=scenario)
+
+            if is_reviewer:
+                form = ScenarioFormReviewer(instance=scenario)
+            else:
+                form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
-
-            # The problem is this is triggered from an Ajax call so it goes into the 
-            # success portion of the Ajax callback which calls the scenarios. 
-            #  need to find a way to reload the page with the incorrect data and validation
-            # jsonData = json.dumps({
-            #     'filename': docToDel.filename(),
-            #     'id': docToDel.pk
-            # })
-
- 
-
-            # return HttpResponse( content_type='json')
-    # will try to follow this: https://www.codingforentrepreneurs.com/blog/ajaxify-django-forms
             context = {
                 'form': form,
                 'files': request.FILES,
@@ -357,20 +374,20 @@ def scenario_form_old(request, id=0):
     if request.method == "GET":
         if id == 0:
             logger.debug("starting scenario_form - id = 0")
-            form = ScenarioForm()
+            form = ScenarioFormReviewer()
         else:
             logger.debug("starting scenario_form - id exists")
             scenario = Scenario.objects.get(pk=id)
-            form = ScenarioForm(instance=scenario)
+            form = ScenarioFormReviewer(instance=scenario)
         return render(request, 'rlcis/scenario_form.html', {'form': form, 'activePage': 'scenarios'})
     else:
         if id == 0:
             logger.debug("starting scenario_form - id = 0 POST")
-            form = ScenarioForm(request.POST)
+            form = ScenarioFormReviewer(request.POST)
         else:
             logger.debug("starting scenario_form - id exist POST")
             scenario = Scenario.objects.get(pk=id)
-            form = ScenarioForm(request.POST, instance=scenario)
+            form = ScenarioFormReviewer(request.POST, instance=scenario)
         if form.is_valid():
             tempObj = form.save(commit=False)
             tempObj.scenario = True

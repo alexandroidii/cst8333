@@ -11,23 +11,33 @@ Date: 2019-12-19
 
 {% block content %}
 
+
+
 {% crispy form %}
 <div class="row">
-    <div class="col-sm-4 col-md-8">
+    <div class="col-sm-4 col-md-4">
         <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
             <i class="fas fa-save"></i> Submit
         </button>
     </div>
-    <div class="col-sm-4 col-md-3">
+    <div class="col-sm-4 col-md-4">
         <a href="{% url 'rlcis:scenarios' %}" class="btn btn-secondary btn-block btn-sm">
             <i class="fas fa-stream"></i> Back to list
         </a>
     </div>
-    <div class="col-sm-4 col-md-1">
-        <a href="{% url 'rlcis:scenario_delete' id %}" class="btn text-secondary px-0 confirm-delete">
-            <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
-        </a>
-    </div>
+    {% if request.user.is_reviewer %}
+        <div class="col-sm-4 col-md-4">
+            <button type="button" id="publishBtn" class="btn btn-secondary btn-block btn-sm">
+                <i class="fas fa-save"></i> Publish
+            </button>
+        </div>
+        
+        <div class="col-sm-4 col-md-1">
+            <a href="{% url 'rlcis:scenario_delete' id %}" class="btn text-secondary px-0 confirm-delete">
+                <i class="fas fa-trash-alt fa-lg text-danger float-right"></i>
+            </a>
+        </div>
+    {% endif %}
 </div>
 <script>
 

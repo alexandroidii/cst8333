@@ -258,7 +258,7 @@ class LoginView(View):
         
         try:
             referer = request.session['referer_link']
-            #request.session['referer_link'] = None
+            
             # This is because when you are going to the login link directly, there is no request.path_info
             if referer == None:
                 referer = '/'
