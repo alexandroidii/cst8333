@@ -11,10 +11,7 @@ Date: 2019-12-19
 
 {% block content %}
 
-{{ form.reviewer|as_crispy_field }}
-{% if request.user.is_reviewer %}
-Hello Reviewer
-{% endif %}
+
 
 {% crispy form %}
 <div class="row">

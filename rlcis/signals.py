@@ -18,26 +18,26 @@ class EmailThread(threading.Thread):
 
 UserModel = get_user_model()
 
-@receiver(post_save, sender=Scenario)
-def notify_reviewer(sender, instance, created, **kwargs):
-    scenario = instance
-    scenNum = str(scenario.pk)
-    scenSum = scenario.scenario_summary
-    print(kwargs)
-    link = kwargs['domain'] + "/rlcis/scenario/" + scenNum
-    if created:     
-        print("New Scenario created")
-    else:
-        print("Scenario " + scenNum +  " updated!")
+# @receiver(post_save, sender=Scenario)
+# def notify_reviewer(sender, instance, created, **kwargs):
+#     scenario = instance
+#     scenNum = str(scenario.pk)
+#     scenSum = scenario.scenario_summary
+#     # print(kwargs)
+#     link = kwargs['domain'] + "/rlcis/scenario/" + scenNum
+#     if created:     
+#         print("New Scenario created")
+#     else:
+#         print("Scenario " + scenNum +  " updated!")
 
-    reviewers = UserModel.objects.filter(is_reviewer=True)
-    recipients = list(i for i in UserModel.objects.filter(is_reviewer=True).values_list('email', flat=True) if bool(i))
-    print(recipients)
-    email_subject = ("Please review scenario number: " + scenNum)
-    message = ("Please review Scenario <a href='" + link + "'>#" + scenNum + "</a>.\n\nHere's the summary: " + scenSum + "\n\nSubmitted by " + scenario.email)
+#     reviewers = UserModel.objects.filter(is_reviewer=True)
+#     recipients = list(i for i in UserModel.objects.filter(is_reviewer=True).values_list('email', flat=True) if bool(i))
+#     print(recipients)
+#     email_subject = ("Please review scenario number: " + scenNum)
+#     message = ("Please review Scenario <a href='" + link + "'>#" + scenNum + "</a>.\n\nHere's the summary: " + scenSum + "\n\nSubmitted by " + scenario.email)
 
-    for reviewer in recipients:
-        email = EmailMessage(email_subject, message, to=[reviewer])
-        EmailThread(email).start()
+#     for reviewer in recipients:
+#         email = EmailMessage(email_subject, message, to=[reviewer])
+#         EmailThread(email).start()
 
   

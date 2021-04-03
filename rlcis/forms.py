@@ -5,6 +5,7 @@ from crispy_forms.bootstrap import Accordion, AccordionGroup
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import widgets
 from django.utils import formats
 
 from .models import Scenario, ScenarioDocument
@@ -29,6 +30,79 @@ Date: 2019-12-19
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+def BaseScenarioFields():
+    fields=[
+            'company_name',
+            'anonymous',
+            'scenario_summary',
+            'scenario_details',
+            'country',
+            'region',
+            'location',
+            'bribe_initiator',
+            'bribe_facilitator',
+            'bribe_recipient',
+            'bribe_initiator_other',
+            'bribe_facilitator_other',
+            'bribe_recipient_other',
+            'bribe_type',
+            'bribe_type_other',
+            'first_occurence',
+            'resolution_date',
+            'reviewer',
+            'is_training_scenario',
+            'industry_type',
+            'industry_type_other',
+            'levelOfAuthority',
+            'email',
+            'risks',
+            'resolution',
+        ]
+    return fields
+
+def BaseScenarioLabels():
+    labels = { # assign all the labels for the fields used in the template automatically
+            'company_name': 'Company Name',
+            'scenario_summary': 'Scenario Summary',
+            'scenario_details': 'How did it start?',
+            'country': 'Country',
+            'region': 'Region',
+            'bribe_initiator': 'Bribe Initiator',
+            'bribe_facilitator': 'Bribe Facilitator',
+            'bribe_recipient': 'Bribe Receipient',
+            'bribe_initiator': 'Bribe Initiator Other',
+            'bribe_facilitator': 'Bribe Facilitator Other',
+            'bribe_recipient': 'Bribe Receipient Other',
+            'bribed_by_other': 'Bribed By Other',
+            'bribe_type': 'Bribe Type',
+            'bribe_type_other': 'Bribe Type Other',
+            'first_occurence': 'First Occurence',
+            'location': 'Location',
+            'resolution_date': 'Resolution Date',
+            'reviewer': 'Reviewer',
+            'industry_type': 'Industry Type',
+            'industry_type_other': 'Industry Type Other',
+            'levelOfAuthority':'Level of Authority of Public Official',
+            'email':'Public Email',
+            'risks':'What where the risks?',
+            'resolution':'How was this resolved?'
+        }
+    return labels
+
+def BaseScenarioWidgets():
+    widgets = {
+            'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
+            'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
+            'scenario_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
+            'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
+            'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
+            'anonymous': forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
+            # 'bribed_by': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'bribe_type': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'industry_type': ChoiceTextField(queryset=BribedBy.objects.all()),
+            # 'levelOfAuthority': ChoiceTextField(queryset=BribedBy.objects.all()),
+        }
+    return widgets
 """
 The Search Form uses the 'q' field to take in a users query
 which is used to search through the scenario objects.  
@@ -78,92 +152,91 @@ industry_type_other -- Optional field only if industry_type is set to Other
 level               -- Optional field
 email               -- Optional field for publicly displayed email for a scenario
 """
-class ScenarioForm(forms.ModelForm):
-    anonymous = forms.BooleanField(
-        required=False, 
-        label="Would you like to keep your Company Name, Region and Location, and Public Email address private?",
-        widget=forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
-    )
-
-    # file = forms.FileField(
-    #     required=False, 
-    #     label="Supporting Documents",
-    #     widget=forms.FileInput(attrs={'multiple':'true'})
-    # )
-
+class ScenarioFormReviewer(forms.ModelForm):
+    
     class Meta:
         model = Scenario
-        fields = [
-            'company_name',
-            'anonymous',
-            'scenario_summary',
-            'scenario_details',
-            'country',
-            'region',
-            'location',
-            'bribe_initiator',
-            'bribe_facilitator',
-            'bribe_recipient',
-            'bribe_initiator_other',
-            'bribe_facilitator_other',
-            'bribe_recipient_other',
-            'bribe_type',
-            'bribe_type_other',
-            'first_occurence',
-            'resolution_date',
-            'reviewer',
-            'is_training_scenario',
-            'industry_type',
-            'industry_type_other',
-            'levelOfAuthority',
-            'email',
-            'risks',
-            'resolution',
-            'reviewer'
-        ]
-        labels = { # assign all the labels for the fields used in the template automatically
-            'company_name': 'Company Name',
-            'scenario_summary': 'Scenario Summary',
-            'scenario_details': 'How did it start?',
-            'country': 'Country',
-            'region': 'Region',
-            'bribe_initiator': 'Bribe Initiator',
-            'bribe_facilitator': 'Bribe Facilitator',
-            'bribe_recipient': 'Bribe Receipient',
-            'bribe_initiator': 'Bribe Initiator Other',
-            'bribe_facilitator': 'Bribe Facilitator Other',
-            'bribe_recipient': 'Bribe Receipient Other',
-            'bribed_by_other': 'Bribed By Other',
-            'bribe_type': 'Bribe Type',
-            'bribe_type_other': 'Bribe Type Other',
-            'first_occurence': 'First Occurence',
-            'location': 'Location',
-            'resolution_date': 'Resolution Date',
-            'reviewer': 'Reviewer',
-            'industry_type': 'Industry Type',
-            'industry_type_other': 'Industry Type Other',
-            'levelOfAuthority':'Level of Authority of Public Official',
-            'email':'Public Email',
-            'risks':'What where the risks?',
-            'resolution':'How was this resolved?'
-        }
-        widgets = {
-            'first_occurence': DateInput(), # set the first_occurent input_type to 'date'
-            'resolution_date': DateInput(), # set the resolution_date input_type to 'date'
-            'scenario_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
-            'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
-            'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
-            # 'bribed_by': ChoiceTextField(queryset=BribedBy.objects.all()),
-            # 'bribe_type': ChoiceTextField(queryset=BribedBy.objects.all()),
-            # 'industry_type': ChoiceTextField(queryset=BribedBy.objects.all()),
-            # 'levelOfAuthority': ChoiceTextField(queryset=BribedBy.objects.all()),
-        }
+        fields = BaseScenarioFields()
+        labels = BaseScenarioLabels()
+        widgets = BaseScenarioWidgets()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
+            Row(
+                Column('reviewer',css_class='col-sm-12 col-md-12 text-center'),
+                css_class='form-row'
+            ),
+            BaseScenarioLayout()
+        )
+
+class ScenarioFormSubmitter(forms.ModelForm):
+    
+    class Meta:
+        model = Scenario
+        fields = BaseScenarioFields()
+        labels = BaseScenarioLabels()
+        widgets = BaseScenarioWidgets()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'scenarioForm'
+        self.helper.layout = Layout(
+            BaseScenarioLayout()
+        )
+
+
+
+        # set which fields are not required.
+        # # self.fields['bribed_by_other'].required = False
+        # # self.fields['bribe_type_other'].required = False
+        # # self.fields['industry_type_other'].required = False
+        # # self.fields['level'].required = False
+        # self.fields['company_name'].required = False
+        # self.fields['anonymous'].required = False
+        # self.fields['first_occurence'].required = False
+        # self.fields['resolution_date'].required = False
+        # self.fields['reviewer'].required = False
+        # self.fields['email'].required = False
+        # # self.fields['level'].required = False
+        # self.fields['risks'].required = False
+        # self.fields['resolution'].required = False
+
+class ScenarioDocumentForm(forms.ModelForm):
+    
+    class Meta:
+        model = ScenarioDocument
+        fields = [
+            'scenario',
+            'document',
+        ]
+
+# class CreateUserForm(UserCreationForm):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'email','password1', 'password2']
+
+class ListTextWidget(forms.Select):
+    template_name = 'listtxt.html'
+
+    def format_value(self, value):
+        if value == '' or value is None:
+            return ''
+        if self.is_localized:
+            return formats.localize_input(value)
+            return str(value)
+
+class ChoiceTextField(forms.ModelChoiceField):
+    widget=ListTextWidget()      
+
+
+class BaseScenarioLayout(Layout):
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+
             Row(
                 Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
                 Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCIS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
@@ -260,44 +333,4 @@ class ScenarioForm(forms.ModelForm):
                 )
             )
         )
-        # set which fields are not required.
-        # self.fields['bribed_by_other'].required = False
-        # self.fields['bribe_type_other'].required = False
-        # self.fields['industry_type_other'].required = False
-        # self.fields['level'].required = False
-        self.fields['company_name'].required = False
-        self.fields['anonymous'].required = False
-        self.fields['first_occurence'].required = False
-        self.fields['resolution_date'].required = False
-        self.fields['reviewer'].required = False
-        self.fields['email'].required = False
-        # self.fields['level'].required = False
-        self.fields['risks'].required = False
-        self.fields['resolution'].required = False
 
-class ScenarioDocumentForm(forms.ModelForm):
-    
-    class Meta:
-        model = ScenarioDocument
-        fields = [
-            'scenario',
-            'document',
-        ]
-
-# class CreateUserForm(UserCreationForm):
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email','password1', 'password2']
-
-class ListTextWidget(forms.Select):
-    template_name = 'listtxt.html'
-
-    def format_value(self, value):
-        if value == '' or value is None:
-            return ''
-        if self.is_localized:
-            return formats.localize_input(value)
-            return str(value)
-
-class ChoiceTextField(forms.ModelChoiceField):
-    widget=ListTextWidget()      

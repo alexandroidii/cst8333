@@ -256,7 +256,7 @@ class LoginView(View):
     def post(self, request):
         user = None
         form = self.form(request.POST)
-        referer = request.session['referer_link']
+        # referer = request.session['referer_link']
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -267,7 +267,7 @@ class LoginView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(referer)
+                return HttpResponseRedirect("/")
         # else:
         #     messages.error(request, ('Email Address and/or Password are not correct'))
 
