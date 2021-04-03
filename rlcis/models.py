@@ -178,7 +178,7 @@ class Scenario(models.Model):
     submitted_date = models.DateField(null=True,blank=True,)
 
     # anonymous attribute in scenario table as defined
-    anonymous = models.BooleanField(null=True,default=False,help_text="Would you like to keep your Company Name, Region and Location, and Public Email address private?",)
+    anonymous = models.BooleanField(null=True,default=False)
     
     # is_training_scenario attribute in scenario table as defined
     is_training_scenario = models.BooleanField(default=False,help_text="Is this a real life Scenario or a Ficticous Scenario?",)

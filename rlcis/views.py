@@ -293,19 +293,6 @@ def scenario_form(request, id=0):
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
-
-            # The problem is this is triggered from an Ajax call so it goes into the 
-            # success portion of the Ajax callback which calls the scenarios. 
-            #  need to find a way to reload the page with the incorrect data and validation
-            # jsonData = json.dumps({
-            #     'filename': docToDel.filename(),
-            #     'id': docToDel.pk
-            # })
-
- 
-
-            # return HttpResponse( content_type='json')
-    # will try to follow this: https://www.codingforentrepreneurs.com/blog/ajaxify-django-forms
             context = {
                 'form': form,
                 'files': request.FILES,

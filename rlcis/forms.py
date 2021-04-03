@@ -85,7 +85,8 @@ def BaseScenarioLabels():
             'levelOfAuthority':'Level of Authority of Public Official',
             'email':'Public Email',
             'risks':'What where the risks?',
-            'resolution':'How was this resolved?'
+            'resolution':'How was this resolved?',
+            'anonymous':'Would you like to keep your Company Name, Region and Location, and Public Email address private?'
         }
     return labels
 
