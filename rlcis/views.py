@@ -24,6 +24,9 @@ from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
+from django_tables2 import RequestConfig
+from .tables import ScenarioTable
+
 from rlcis.decorator import already_authenticated_user, allowed_users
 
 """
@@ -75,6 +78,13 @@ def publish_scenario(request):
     pass
 
 
+
+def ScenariosTableView(request):
+    scenario_table = ScenarioTable(Scenario.objects.all())
+    RequestConfig(request).configure(scenario_table)
+    return HttpResponse(scenario_table.as_html(request))
+
+
 """
 
 Return all Scenarios or search based on the returned Query from persistance.
@@ -86,7 +96,6 @@ q -- Query returned from the user
 def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
-
 
     
     

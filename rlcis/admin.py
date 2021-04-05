@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import  Scenario, Reviewer, ScenarioDocument
+from .models import  Scenario,  ScenarioDocument
 from .models_dropdown import BribeFacilitator, BribeInitiator, BribeRecipient, BribeType, BribedBy,IndustryType, LevelOfAuthority
 """ 
 RLCIS admin.py - used to display models for admin pannel.
@@ -22,7 +22,6 @@ admin.site.site_title = "RLCIS Admin Area"
 admin.site.index_title = "Welcome to the RLCIS Admin area"
 
 # admin.site.register(Scenario)
-admin.site.register(Reviewer)
 admin.site.register(BribeType)
 admin.site.register(BribeInitiator)
 admin.site.register(BribeFacilitator)

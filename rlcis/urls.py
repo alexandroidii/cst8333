@@ -32,6 +32,7 @@ urlpatterns = [
     # return a list of Scenarios
     path('scenarios/', views.scenarios, name='scenarios'),
     path('publish/', views.publish_scenario, name='publish'),
+    path(r'^scenarios_table$', views.ScenariosTableView, name='scenarios_table'),
 
    
 ]
