@@ -144,9 +144,8 @@
 /* Used by User App */
 .content-section {
   background: #ffffff;
-  padding: 0px;
+  padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
-  margin-bottom: 0px;
+  margin-bottom: 20px;
 }
-
