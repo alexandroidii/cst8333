@@ -119,7 +119,7 @@ class Scenario(models.Model):
         return str(self.pk) 
 
     def get_absolute_url(self):
-        return reverse('scenario_update', kwargs={'pk': self.pk})
+        return reverse('rlcis:scenario_update', kwargs={'id': self.pk})
 
 class ScenarioDocument(models.Model):
     scenario = models.ForeignKey(Scenario, default=None, on_delete=models.CASCADE)

@@ -122,10 +122,8 @@ Date: 2019-12-19
 
 <script type='text/javascript'>
     // jquery used to make each row of the table clickable
-    $(document).ready(function ($) {
-        $(".clickable-row").click(function () {
-            window.location = $(this).data("href");
-        });
+    $("#scenariosTable").on("click",".clickable-row", function(){
+        window.location = $(this).data("href");
     });
 </script>
 {% endblock content %}

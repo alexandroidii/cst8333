@@ -6,9 +6,11 @@ class ScenarioTable(tables.Table):
     class Meta:
         model = Scenario
         attrs = {"class": "table table-hover table-striped table-bordered"}
-        row_attrs = {"class":"clickable-row",
-                    "data-href":"{% url 'rlcis:scenario_update' scenario.id %}"
-                    }
+        #Clickable Row - Add class clickable-row and data-href=url
+        row_attrs = {
+            'data-href': lambda record: record.get_absolute_url,
+            'class': 'clickable-row',
+        }
         sequence = (
             "id",
             "country",
