@@ -186,7 +186,7 @@ CRISPY_CLASS_CONVERTERS = {
 
 SITE_ID=1   #for 127.0.0.1
 #SITE_ID=2  #for rlcis.com
-#SITE_ID=3  #for rlcis.comS
+
 
 
 CRISPY_FAIL_SILENTLY = not DEBUG

@@ -233,14 +233,14 @@ def profile(request):
 Check if logging in the first time
 https://stackoverflow.com/questions/49385582/can-i-check-if-a-user-is-logged-in-for-the-first-time-after-this-user-is-logged
 """
-def index(request):
+def landing(request):
     context={}
     if request.user:
         if request.session.get('first_login'):
-          #  return render(request, 'users/profile.html', context)
             return redirect('users:profile')
         else:
-            return render(request, 'rlcis/index.html', {'activePage': 'home'})
+            #return render(request, 'rlcis/landing.html', {'activePage': 'home'})
+            return redirect('rlcis:home')
     else:
         return redirect('users:login')
 

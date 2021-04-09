@@ -248,7 +248,7 @@ class ProfileUpdateForm(forms.ModelForm):
       def clean_email(self):
             email = self.cleaned_data.get('email')
 
-            with open("cst8333/users/disposable_email_providers.txt",'r') as f:
+            with open("./users/disposable_email_providers.txt",'r') as f:
                   blacklist = f.read().splitlines()
 
             for disposable_email in blacklist:

@@ -1,5 +1,5 @@
 import logging, json
-
+import calendar
 from django.contrib.auth.decorators import permission_required
 from django.contrib.postgres.search import SearchVector
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,7 +13,8 @@ from django.core.files.storage import FileSystemStorage
 from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.decorators import login_required
 from users.models import Users
-
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -449,5 +450,24 @@ Index method used to render index.html (home page)
 
 """
 def index(request):
-    return render(request, 'rlcis/index.html', {'activePage': 'home'})
+    scenarios = Scenario.objects.order_by('-id')[:3]
+    monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by()
+    resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id')).order_by()
+    month = calendar.month_name[monthly_stats[0]['month'].month]
+    year = monthly_stats[0]['month'].year
+    total = monthly_stats[0]['total']
+    resolved = resolved_stats[0]['total']
 
+    context = {
+        'scenarios': scenarios,
+        'activePage': 'home',
+        'month': month,
+        'year': year,
+        'total': total,
+        'monthly_stats': monthly_stats,
+        'resolved':resolved,
+    }
+    return render(request, 'rlcis/landing.html', context)
+
+def about(request):
+    return render(request, 'rlcis/about.html', {'activePage': 'about'})

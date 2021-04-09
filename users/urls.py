@@ -8,9 +8,8 @@ from django.contrib.auth import views as auth_views
 app_name = 'users'
 urlpatterns = [
 
- path('', user_views.index, name='home'),
+ path('', user_views.landing, name='landing'),
  path('register/', user_views.register, name='register'),
- #path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'), #default Django
  path('login/', user_views.LoginView.as_view(), name='login'),
  path('logout/', user_views.LogoutView.as_view(), name='logout'),
  path('activate_account/<uidb64>/<token>', VerificationView.as_view(), name='activate_account'),

@@ -24,6 +24,7 @@ urlpatterns = [
 
     # root path for the home page
     path('', views.index, name='home'),
+    path('about', views.about, name='about'),
     path('add_scenario/', views.scenario_form, name="scenario_insert"),
     path('delete_document/', views.deleteDocument, name='delete_document'),
     path('scenario/<int:id>', views.scenario_form, name='scenario_update'),
