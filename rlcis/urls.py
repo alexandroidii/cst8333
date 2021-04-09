@@ -27,12 +27,13 @@ urlpatterns = [
     path('about', views.about, name='about'),
     path('add_scenario/', views.scenario_form, name="scenario_insert"),
     path('delete_document/', views.deleteDocument, name='delete_document'),
-    path('scenario/<int:id>', views.scenario_form, name='scenario_update'),
+    path('scenarios/<int:id>/', views.scenario_form, name='scenario_update'),
     path('save_scenario/', views.save_scenario, name='save_scenario'),
     path('delete_scenario/<int:id>/', views.scenario_delete, name='scenario_delete'),
     # return a list of Scenarios
     path('scenarios/', views.scenarios, name='scenarios'),
     path('publish/', views.publish_scenario, name='publish'),
+    path(r'^scenarios_table$', views.ScenariosTableView, name='scenarios_table'),
 
    
 ]
