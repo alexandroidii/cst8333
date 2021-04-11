@@ -464,26 +464,25 @@ Index method used to render index.html (home page)
 def index(request):
     tot_subs = Scenario.objects.count()
     scenarios = Scenario.objects.order_by('id')[:3]
-    cmon = datetime.now().month
-    #monthly_stats = Scenario.objects.filter(submitted_date__month=cmon).annotate(total=Count('id'))
-    monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by('-id')
+    current_date = datetime.now()
     resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id'))
-    month = calendar.month_name[monthly_stats[0]['month'].month]
-    year = monthly_stats[0]['month'].year
-    total = monthly_stats[0]['total']
+    month = calendar.month_name[current_date.month]
+    year = current_date.year
     resolved = resolved_stats[0]['total']
+
+    scenarios_this_month = Scenario.objects.filter(submitted_date__month=current_date.month,submitted_date__year=current_date.year ).count()
 
     context = {
         'scenarios': scenarios,
         'activePage': 'home',
         'month': month,
         'year': year,
-        'total': total,
-        'monthly_stats': monthly_stats,
+        'total': scenarios_this_month,
         'resolved':resolved,
         'tot_subs':tot_subs
     }
     return render(request, 'rlcis/landing.html', context)
+
 
 def about(request):
     return render(request, 'rlcis/about.html', {'activePage': 'about'})
