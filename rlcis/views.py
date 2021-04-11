@@ -1,5 +1,6 @@
 import logging, json
 import calendar
+from datetime import datetime
 from django.contrib.auth.decorators import permission_required
 from django.contrib.postgres.search import SearchVector
 from django.contrib.sites.shortcuts import get_current_site
@@ -14,7 +15,7 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.decorators import login_required
 from users.models import Users
 from django.db.models import Count
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncDay
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -83,7 +84,7 @@ def publish_scenario(request):
 def ScenariosTableView(request):
     scenario_table = ScenarioTable(Scenario.objects.all())
     # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
-    RequestConfig(request, paginate={"per_page": 25}).configure(scenario_table)
+    RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
     # paginator_class = LazyPaginator
     return HttpResponse(scenario_table.as_html(request))
 
@@ -461,9 +462,12 @@ Index method used to render index.html (home page)
 
 """
 def index(request):
-    scenarios = Scenario.objects.order_by('-id')[:3]
-    monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by()
-    resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id')).order_by()
+    tot_subs = Scenario.objects.count()
+    scenarios = Scenario.objects.order_by('id')[:3]
+    cmon = datetime.now().month
+    #monthly_stats = Scenario.objects.filter(submitted_date__month=cmon).annotate(total=Count('id'))
+    monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by('-id')
+    resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id'))
     month = calendar.month_name[monthly_stats[0]['month'].month]
     year = monthly_stats[0]['month'].year
     total = monthly_stats[0]['total']
@@ -477,6 +481,7 @@ def index(request):
         'total': total,
         'monthly_stats': monthly_stats,
         'resolved':resolved,
+        'tot_subs':tot_subs
     }
     return render(request, 'rlcis/landing.html', context)
 
