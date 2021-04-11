@@ -82,8 +82,7 @@ def publish_scenario(request):
 
 def ScenariosTableView(request):
     scenario_table = ScenarioTable(Scenario.objects.all())
-    # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
-    RequestConfig(request, paginate={"per_page": 25}).configure(scenario_table)
+    RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
     # paginator_class = LazyPaginator
     return HttpResponse(scenario_table.as_html(request))
 
