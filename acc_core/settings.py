@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django_tables2',
     'django_ajax_tables',
+    'django_filters',
+    'bootstrap4',
+
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

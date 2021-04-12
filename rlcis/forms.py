@@ -97,7 +97,8 @@ def BaseScenarioWidgets():
             'scenario_details': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
             'risks': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
             'resolution': forms.Textarea(attrs={'rows':2}), # sets the number of rows in the scenario_details to 2
-            'anonymous': forms.CheckboxInput(attrs={'class': 'anonymousToggle'})
+            'anonymous': forms.CheckboxInput(attrs={'class': 'anonymousToggle'}),
+            'reviewer': forms.Select(attrs={'disbaled':'disabled'}),
             # 'bribed_by': ChoiceTextField(queryset=BribedBy.objects.all()),
             # 'bribe_type': ChoiceTextField(queryset=BribedBy.objects.all()),
             # 'industry_type': ChoiceTextField(queryset=BribedBy.objects.all()),
@@ -159,10 +160,11 @@ class ScenarioFormReviewer(forms.ModelForm):
         model = Scenario
         fields = BaseScenarioFields()
         labels = BaseScenarioLabels()
-        widgets = BaseScenarioWidgets()
+        widgets = BaseScenarioWidgets() 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # self.fields['reviewer'].widget.select.attrs['disabled'] = True
         self.helper = FormHelper()
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
@@ -200,7 +202,6 @@ class ScenarioFormSubmitter(forms.ModelForm):
         # self.fields['anonymous'].required = False
         # self.fields['first_occurence'].required = False
         # self.fields['resolution_date'].required = False
-        # self.fields['reviewer'].required = False
         # self.fields['email'].required = False
         # # self.fields['level'].required = False
         # self.fields['risks'].required = False
