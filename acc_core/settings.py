@@ -23,14 +23,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&m+iv9)krc8p4dsf^8s*e+_c702%j$@38rumo_2_rd$6ra%li='
+#SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = [
     'rlcis-env-dev.us-west-2.elasticbeanstalk.com',
     '127.0.0.1',
     ]
+
+#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -105,8 +109,13 @@ else:
             'NAME': 'rlcis',
             'USER': 'rlcisadm',
             'PASSWORD': '12345678',
-            'HOST': 'localhost'
-
+            'HOST': 'localhost',
+            # 'ENGINE': os.environ("PG_ENGINE","django.db.backends.postgresql_psycopg2"),
+            # 'NAME': os.environ("PG_DATABASE"),
+            # 'USER': os.environ("PG_USERNAME"),
+            # 'PASSWORD': os.environ("PG_PASSWORD"),
+            # 'HOST': os.environ("PG_HOSTNAME"),
+            # 'PORT': os.environ("PG_PORT"),
         }
     }
 

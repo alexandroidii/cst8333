@@ -23,3 +23,9 @@ Clear the migration history
 3 python manage.py migrate --fake users zero
 4. Create the initial migrations
 python manage.py makemigrations
+
+
+{DOCKER}
+
+docker build --tag rlcis .
+docker run -- publish 8000:8000 python-django
