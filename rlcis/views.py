@@ -104,7 +104,16 @@ def publish_scenario(request, id):
 
 
 def ScenariosTableView(request):
-    scenario_table = ScenarioTable(Scenario.objects.all())
+
+    is_reviewer = request.user.groups.filter(name='reviewer').exists()
+    is_submitter = request.user.groups.filter(name='submitter').exists()
+
+    scenario_table = None
+    if is_reviewer:
+        scenario_table = ScenarioTable(Scenario.objects.all().order_by("-id"))
+    else:
+        scenario_table = ScenarioTable(Scenario.objects.filter(is_reviewed=True).order_by("-id"))
+    
     # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
     RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
     # paginator_class = LazyPaginator
