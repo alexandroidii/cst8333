@@ -217,7 +217,7 @@ If id>0, this scenario is being updated
 """
 @already_authenticated_user
 @allowed_users(allowed_roles=['submitter','reviewer','admin'])
-def scenario_form(request, id=0):
+def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
     is_reviewer = request.user.groups.filter(name='reviewer').exists()
     is_submitter = request.user.groups.filter(name='submitter').exists()
@@ -238,8 +238,11 @@ def scenario_form(request, id=0):
         else:
             logger.debug("starting scenario_form - id exists")
             scenario = Scenario.objects.get(pk=id)
+            reviewer_name = None
             if is_reviewer:
-                form = ScenarioFormReviewer(instance=scenario)
+                instance = (scenario)
+                form = ScenarioFormReviewer(instance=instance)
+                reviewer_name = scenario.reviewer.user_name
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
@@ -248,6 +251,7 @@ def scenario_form(request, id=0):
                 'files': files,
                 'activePage': 'scenarios',
                 'id': id,
+                'reviewer_name': reviewer_name,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:
