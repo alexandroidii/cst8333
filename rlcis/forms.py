@@ -235,19 +235,19 @@ class BaseScenarioLayout(Layout):
                 AccordionGroup('Identification',
                     Row(
                         Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-6'),
-                        Column('email', css_class='form-group col-sm-2 col-md-6 anonymous'),
+                        Column('email', css_class='form-group col-sm-2 col-md-6'),
                         css_class='form-row'
                     ),
                     Row(
                         Column('country', css_class='form-group col-sm-2 col-md-4'),
-                        Column('region', css_class='form-group col-sm-2 col-md-4 anonymous'),
-                        Column('location', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('region', css_class='form-group col-sm-2 col-md-4'),
+                        Column('location', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                     Row(
                         Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
                         Column('industry_type_other', css_class='form-group col-sm-2 col-md-4'),
-                        Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('company_name', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                 )
