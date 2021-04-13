@@ -216,21 +216,19 @@ class BaseScenarioLayout(Layout):
 
             Row(
                 Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
-                Column(HTML(
-                            '{% if request.user.is_reviewer %}' +
-                                '<div class="row">' +
-                                    '<div class="col-sm-12 col-md-12 text-center">' +
-                                    'Reviewer:  {{ reviewer_name }}' +
-                                    '</div>' +
-                                '</div>' +
-                            '{% endif %}' 
-                        ), 
-                    css_class='form-group col-sm-12 col-md-12'),
+            ),
+            Row(
                 Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCIS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
             Row(
-                Column('anonymous', css_class='form-group col-sm-12 col-md-12'),
+                Column('anonymous', css_class='form-group col-sm-8 col-md-8'),
+                Column(HTML(
+                            '{% if request.user.is_reviewer %}' +
+                                    'Reviewer:  {{ reviewer_name }}' +
+                            '{% endif %}' 
+                        ), 
+                    css_class='form-group col-sm-4 col-md-4'),
                 css_class='form-row'
             ),
             Accordion(
