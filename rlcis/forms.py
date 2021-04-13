@@ -7,7 +7,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import widgets
 from django.utils import formats
-
 from .models import Scenario, ScenarioDocument
 from .models_dropdown import BribedBy
 
@@ -164,17 +163,11 @@ class ScenarioFormReviewer(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         print(kwargs)
-        #self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-       # self.fields['reviewer'].widget.attrs['readonly'] = True
-        self.fields['reviewer'].widget=forms.Select(attrs={'disabled':'disabled'})
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
-            Row(
-                Column('reviewer',css_class='col-sm-12 col-md-12 text-center'),
-                css_class='form-row'
-            ),
+
             BaseScenarioLayout()
         )
 

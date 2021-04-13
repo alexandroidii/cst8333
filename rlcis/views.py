@@ -248,9 +248,11 @@ def scenario_form(request, id=0, *args, **kwargs):
         else:
             logger.debug("starting scenario_form - id exists")
             scenario = Scenario.objects.get(pk=id)
+            reviewer_name = None
             if is_reviewer:
-                instance_tuple = (scenario,request.user)
-                form = ScenarioFormReviewer(instance=instance_tuple)
+                instance = (scenario)
+                form = ScenarioFormReviewer(instance=instance)
+                reviewer_name = scenario.reviewer.user_name
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
@@ -259,6 +261,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'files': files,
                 'activePage': 'scenarios',
                 'id': id,
+                'reviewer_name': reviewer_name,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:
