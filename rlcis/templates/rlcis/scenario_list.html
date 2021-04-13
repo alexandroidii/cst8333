@@ -18,6 +18,30 @@ Date: 2019-12-19
         <h3>Scenarios</h3>
     </div>
 </div>
+
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+
+            <form method="GET">
+                {{myFilter.form}}
+
+                <button class="btn btn-primary" type="submit">
+                    Search
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% comment %}
+
 <form method="GET" action="{% url 'rlcis:scenarios' %}">
     <div class="row">
         {% csrf_token %}
@@ -37,7 +61,6 @@ Date: 2019-12-19
 
 
 
-{% comment %}
 
     <div class="row">
         <table class="table table-borderless table-hover table-striped">

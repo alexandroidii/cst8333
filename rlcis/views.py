@@ -28,6 +28,7 @@ from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
 from django_tables2 import RequestConfig, LazyPaginator
 from .tables import ScenarioTable
+from .filters import ScenarioFilter
 
 from rlcis.decorator import already_authenticated_user, allowed_users
 
@@ -99,39 +100,44 @@ q -- Query returned from the user
 """
 def scenarios(request):
     template = 'rlcis/scenario_list.html'
-    query = request.GET.get('q')
+    scenario_list = Scenario.objects.order_by('-id')
+    myFilter = ScenarioFilter(request.GET, queryset=scenario_list)
+    scenario_list = myFilter.qs
+
+    # query = request.GET.get('q')
 
     
+    # if not query:
+    #     # Verify if the user is logged in
+    #     # if request.user:
+    #     #     # make sure they are a reviewer
+    #     #     if request.user.has_perm('users.is_reviewer'):
+    #     #         # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
+    #     #         scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
+    #     #         scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
+    #     #         scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
+    #     #     else:
+    #     scenario_list = Scenario.objects.order_by('-id')
+    # else:
+    #     scenario_list = __search(query).filter(scenario=True)
     
-    if not query:
-        # Verify if the user is logged in
-        # if request.user:
-        #     # make sure they are a reviewer
-        #     if request.user.has_perm('users.is_reviewer'):
-        #         # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
-        #         scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
-        #         scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
-        #         scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
-        #     else:
-        scenario_list = Scenario.objects.order_by('-id')
-    else:
-        scenario_list = __search(query).filter(scenario=True)
 
-    searchForm = SearchForm()
-    paginator = Paginator(scenario_list, 5)
-    page = request.GET.get('page')
-    try:
-        scenarios = paginator.page(page)
-    except PageNotAnInteger:
-        scenarios = paginator.page(1)
-    except EmptyPage:
-        scenarios = paginator.page(paginator.num_pages)
+    # searchForm = SearchForm()
+    # paginator = Paginator(scenario_list, 5)
+    # page = request.GET.get('page')
+    # try:
+    #     scenarios = paginator.page(page)
+    # except PageNotAnInteger:
+    #     scenarios = paginator.page(1)
+    # except EmptyPage:
+    #     scenarios = paginator.page(paginator.num_pages)
 
     context = {
         'scenario_list': scenarios,
         'activePage': 'scenario',
-        'searchForm': searchForm,
-        'query': query,
+        # 'searchForm': searchForm,
+        # 'query': query,
+        'myFilter':myFilter,
     }
     return render(request, template, context)
 
