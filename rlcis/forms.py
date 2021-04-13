@@ -69,9 +69,9 @@ def BaseScenarioLabels():
             'bribe_initiator': 'Bribe Initiator',
             'bribe_facilitator': 'Bribe Facilitator',
             'bribe_recipient': 'Bribe Receipient',
-            'bribe_initiator': 'Bribe Initiator Other',
-            'bribe_facilitator': 'Bribe Facilitator Other',
-            'bribe_recipient': 'Bribe Receipient Other',
+            'bribe_initiator_other': 'Bribe Initiator Other',
+            'bribe_facilitator_other': 'Bribe Facilitator Other',
+            'bribe_recipient_other': 'Bribe Receipient Other',
             'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
             'bribe_type_other': 'Bribe Type Other',
@@ -224,7 +224,8 @@ class BaseScenarioLayout(Layout):
                 Column('anonymous', css_class='form-group col-sm-8 col-md-8'),
                 Column(HTML(
                             '{% if request.user.is_reviewer %}' +
-                                    'Reviewer:  {{ reviewer_name }}' +
+                                    'Reviewer:  {{ reviewer_name }} <br/>' +
+                                    'Submitter:  {{ submitter_name }}' +
                             '{% endif %}' 
                         ), 
                     css_class='form-group col-sm-4 col-md-4'),
@@ -234,19 +235,19 @@ class BaseScenarioLayout(Layout):
                 AccordionGroup('Identification',
                     Row(
                         Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-6'),
-                        Column('email', css_class='form-group col-sm-2 col-md-6 anonymous'),
+                        Column('email', css_class='form-group col-sm-2 col-md-6'),
                         css_class='form-row'
                     ),
                     Row(
                         Column('country', css_class='form-group col-sm-2 col-md-4'),
-                        Column('region', css_class='form-group col-sm-2 col-md-4 anonymous'),
-                        Column('location', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('region', css_class='form-group col-sm-2 col-md-4'),
+                        Column('location', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                     Row(
                         Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
                         Column('industry_type_other', css_class='form-group col-sm-2 col-md-4'),
-                        Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('company_name', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                 )

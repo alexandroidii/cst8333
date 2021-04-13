@@ -16,9 +16,11 @@ Date: 2019-12-19
 {% crispy form %}
 <div class="row">
     <div class="col-sm-4 col-md-4">
-        <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
-            <i class="fas fa-save"></i> Submit
-        </button>
+        {% if is_author or request.user.is_reviewer or id == 0 %}
+            <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm" data-href="{% url 'rlcis:save_scenario'%}">
+                <i class="fas fa-save"></i> Submit
+            </button>
+        {% endif %}
     </div>
     <div class="col-sm-4 col-md-4">
         <a href="{% url 'rlcis:scenarios' %}" class="btn btn-secondary btn-block btn-sm">
@@ -27,7 +29,7 @@ Date: 2019-12-19
     </div>
     {% if request.user.is_reviewer %}
         <div class="col-sm-4 col-md-4">
-            <button type="button" id="publishBtn" class="btn btn-secondary btn-block btn-sm">
+            <button type="button" id="publishBtn" class="btn btn-secondary btn-block btn-sm" data-href="{% url 'rlcis:publish' id  %}">
                 <i class="fas fa-save"></i> Publish
             </button>
         </div>
@@ -79,9 +81,10 @@ Date: 2019-12-19
 
 
         // Ajax call to submit the form wit any documents attached
-        $(document).on('click', '#submitBtn', function (e) {
+        $(document).on('click', '#submitBtn, #publishBtn', function (e) {
             var form = $('#scenarioForm')[0];
             var formData = new FormData(form);
+            var url = $(this).data('href');
             formData.append('fileLength', files.length)
             formData.append('id', '{{ id }}')
             for (var i = 0; i < files.length; i++) {
@@ -91,7 +94,7 @@ Date: 2019-12-19
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "rlcis:save_scenario"%}',
+                url: url,
                 data: formData,
                 cache: false,
                 processData: false,
@@ -102,15 +105,15 @@ Date: 2019-12-19
                     var success = response['success'];
                     if(success){
                         console.log("Scenario has been saved");
-                        alert('scenario has been saved.')
                         $("#scenarioForm").replaceWith(response['html']);
                         loadFilePond();
+                        $(window).scrollTop(0);
                     }else{
                         console.log("Response form with validation errors: " + response['html']);
                         $("#scenarioForm").replaceWith(response['html']);
                         loadFilePond();
+                        $(window).scrollTop(0);
                     }
-                    // window.location.href = '{% url "rlcis:scenarios" %}';
                 },
                 error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ":" + xhr.responseText);
@@ -168,14 +171,6 @@ function loadFilePond(files){
 <script type='text/javascript'>
     $(document).on('click', '.confirm-delete', function () {
         return confirm('Are you sure you want to delete this? Must be logged in to perform action...');
-    })
-
-    $(".anonymousToggle").change(function () {
-        if ($(".anonymous").is(":hidden")) {
-            $(".anonymous").show();
-        } else {
-            $(".anonymous").hide();
-        }
     })
 </script>
 {% endblock content %}

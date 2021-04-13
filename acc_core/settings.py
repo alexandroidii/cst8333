@@ -160,7 +160,7 @@ AUTHENTICATION_BACKENDS = (
 
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LdWwV8aAAAAAAmPYinqHliRCDFGvQamTEuYbg2n'
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
+MEDIA_ROOT = os.path.join(BASE_DIR,'media/') 
 
 MEDIA_URL = 'rlcis/media/'
 
@@ -171,8 +171,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'ns.lange.ca'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
