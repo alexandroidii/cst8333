@@ -170,6 +170,8 @@ def scenarios(request):
 """
 Save an scenario form using ajax
 """
+@already_authenticated_user
+@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def save_scenario(request, id=0, **kwargs):
     logger.debug("Saving Scenario form")
     
@@ -294,6 +296,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 submitter_name = scenario.submitter
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
+                submitter_name = scenario.submitter
             files = ScenarioDocument.objects.filter(scenario=scenario)
             context = {
                 'form': form,
@@ -302,6 +305,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'id': id,
                 'reviewer_name': reviewer_name,
                 'submitter_name': submitter_name,
+                'is_author': submitter_name == request.user.user_name,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:
@@ -509,12 +513,15 @@ def index(request):
     tot_subs = Scenario.objects.count()
     scenarios = Scenario.objects.order_by('id')[:3]
     current_date = datetime.now()
-    resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id'))
     month = calendar.month_name[current_date.month]
     year = current_date.year
-    resolved = resolved_stats[0]['total']
-
-    scenarios_this_month = Scenario.objects.filter(submitted_date__month=current_date.month,submitted_date__year=current_date.year ).count()
+    if scenarios:
+        resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id'))
+        resolved = resolved_stats[0]['total']
+        scenarios_this_month = Scenario.objects.filter(submitted_date__month=current_date.month,submitted_date__year=current_date.year ).count()
+    else:
+        resolved = 0
+        scenarios_this_month = 0
 
     context = {
         'scenarios': scenarios,
