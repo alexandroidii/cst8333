@@ -224,7 +224,8 @@ class BaseScenarioLayout(Layout):
                 Column('anonymous', css_class='form-group col-sm-8 col-md-8'),
                 Column(HTML(
                             '{% if request.user.is_reviewer %}' +
-                                    'Reviewer:  {{ reviewer_name }}' +
+                                    'Reviewer:  {{ reviewer_name }} <br/>' +
+                                    'Submitter:  {{ submitter_name }}' +
                             '{% endif %}' 
                         ), 
                     css_class='form-group col-sm-4 col-md-4'),
