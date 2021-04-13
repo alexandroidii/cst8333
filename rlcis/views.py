@@ -173,9 +173,15 @@ def save_scenario(request, id=0, **kwargs):
             logger.debug("starting scenario_form - is valid save() POST")
 
             kwargs['domain'] = get_current_site(request)
+            savedScenario = form.save(commit=False)
+            if is_reviewer:
+                savedScenario.reviewer = request.user
+            else:
+                savedScenario.submitter = request.user
+
+            savedScenario.save()
 
             # First save the form
-            savedScenario = form.save()
 
             fileLength = request.POST.get('fileLength')
             
@@ -252,7 +258,7 @@ def scenario_form(request, id=0, *args, **kwargs):
             if is_reviewer:
                 instance = (scenario)
                 form = ScenarioFormReviewer(instance=instance)
-                reviewer_name = scenario.reviewer.user_name
+                reviewer_name = scenario.reviewer
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
