@@ -158,9 +158,9 @@ AUTHENTICATION_BACKENDS = (
 
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LdWwV8aAAAAAAmPYinqHliRCDFGvQamTEuYbg2n'
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
+MEDIA_ROOT = os.path.join(BASE_DIR,'media/') 
 
-MEDIA_URL = 'media/'
+MEDIA_URL = 'rlcis/media/'
 
 LOGIN_REDIRECT_URL = 'users:home'
 LOGIN_URL = 'users:login'
