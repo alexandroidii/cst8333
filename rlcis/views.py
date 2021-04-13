@@ -305,7 +305,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'id': id,
                 'reviewer_name': reviewer_name,
                 'submitter_name': submitter_name,
-                'is_author': submitter_name == request.user.user_name,
+                'is_author': submitter_name.user_name == request.user.user_name,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:

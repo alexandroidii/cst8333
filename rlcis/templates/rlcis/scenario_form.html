@@ -16,9 +16,11 @@ Date: 2019-12-19
 {% crispy form %}
 <div class="row">
     <div class="col-sm-4 col-md-4">
-        <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm" data-href="{% url 'rlcis:save_scenario'%}">
-            <i class="fas fa-save"></i> Submit
-        </button>
+        {% if is_author or request.user.is_reviewer %}
+            <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm" data-href="{% url 'rlcis:save_scenario'%}">
+                <i class="fas fa-save"></i> Submit
+            </button>
+        {% endif %}
     </div>
     <div class="col-sm-4 col-md-4">
         <a href="{% url 'rlcis:scenarios' %}" class="btn btn-secondary btn-block btn-sm">
