@@ -61,7 +61,7 @@ Date: 2019-12-19
             <div class="carousel-item {% if forloop.first %} active {% endif %}">
                 <div class="overlay-image" style="background-image:url(/static/images/slide{{forloop.counter}}.jpg);"></div>
                 <div class="container">
-                <h2>{{scenario.scenario_summary}}</h2> 
+                <h2 class="white-text">{{scenario.scenario_summary}}</h2> 
                     <p>{{scenario.scenario_details}}</p>
                     <p>Submitted in {{scenario.country}} on: {{scenario.submitted_date}}</p>
                             <a href="add_scenario/" class="btn btn-lg btn-primary">
