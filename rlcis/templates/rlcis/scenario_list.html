@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 {% load django_tables2 %}
 {% load ajax_table %}
+{% load bootstrap4 %}
+{% load render_table from django_tables2 %}
 
 {% comment %}
 RLCIS Template used to display a list of Scenarios in a Table test
@@ -19,6 +21,19 @@ Date: 2019-12-19
     </div>
 </div>
 
+
+
+
+{% if filter %}
+    <form action="" method="get" class="form form-inline">
+        {% bootstrap_form filter.form layout='inline' %}
+        {% bootstrap_button 'filter' %}
+    </form>
+{% endif %}
+{% render_table table-html 'django_tables2/bootstrap4.html' %}
+
+
+<!-- 
 <div class="row">
     <div class="col">
         <div class="card card-body">
@@ -33,97 +48,10 @@ Date: 2019-12-19
 
         </div>
     </div>
-</div>
+</div> -->
 
-
-
-
-
-
-{% comment %}
-
-<form method="GET" action="{% url 'rlcis:scenarios' %}">
-    <div class="row">
-        {% csrf_token %}
-        <div class="col-sm-1 col-md-3">
-            <a href="{% url 'rlcis:scenario_insert' %}" class="btn btn-outline-success">
-                <i class="fas fa-plus"> Submit a new Scenario</i>
-            </a>
-        </div>
-        <div class="col-sm-4 col-md-7">
-            {{ searchForm.q|as_crispy_field }}
-        </div>
-        <div class="col-sm-1 col-md-1">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </div>
-    </div>
-</form>
-
-
-
-
-    <div class="row">
-        <table class="table table-borderless table-hover table-striped">
-            <thead class="border-bottom font-weight-bold">
-                <tr>
-                    <td>ID</td>
-                    <td>Company</td>
-                    <td>Industry Type</td>
-                    <td>Summary</td>
-                    <td>Country<br>Region<br>Location</td>
-                <td>Bribed By</td>
-                <td>Bribe Type</td>
-                <td>First Occurence</td>
-                <td>Resolution Date</td>
-                <td>Reviewer</td>
-            </tr>
-            
-        </thead>
-        <tbody>
-            {% for scenario in scenario_list %}
-            <tr class='clickable-row' data-href="{% url 'rlcis:scenario_update' scenario.id %}">
-                <td>
-                    {{scenario.id}}
-                </td>
-                <td>{{scenario.company_name}}</td>
-                <td>
-                    <!-- {% if scenario.industry_type_other %}
-                    {{scenario.industry_type_other}}
-                    {% else %} -->
-                    {{ scenario.industry_type}}
-                    <!-- {% endif %} -->
-                </td>
-                <td>{{scenario.scenario_summary}}</td>
-                <td>{{scenario.country}}<br>{{scenario.region}}<br>{{scenario.location}}</td>
-
-                <td>
-                    <!-- {% if scenario.bribed_by_other %}
-                    {{scenario.bribed_by_other}}
-                    {% else %} -->
-                    {{ scenario.bribed_by}}
-                    <!-- {% endif %} -->
-                </td>
-                
-                <td>
-                    <!-- {% if scenario.bribe_type_other %}
-                    {{scenario.bribe_type_other}}
-                    {% else %} -->
-                    {{ scenario.bribe_type}}
-                    <!-- {% endif %} -->
-                </td>
-                <td>{{scenario.first_occurence}}</td>
-                <td>{{scenario.resolution_date}}</td>
-                <td>{{scenario.reviewer}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-{%  endcomment %}
-
-
-{% ajax_table "scenariosTable" "rlcis:scenarios_table" %}
+<!-- 
+{% ajax_table "scenariosTable" "rlcis:scenarios_table" filter=myFilter %} -->
 
 
 <hr class="md-4">

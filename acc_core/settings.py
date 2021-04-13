@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_ajax_tables',
     'django_filters',
+    'bootstrap4',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -161,7 +162,7 @@ GOOGLE_RECAPTCHA_SECRET_KEY = '6LdWwV8aAAAAAAmPYinqHliRCDFGvQamTEuYbg2n'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
-MEDIA_URL = 'media/'
+MEDIA_URL = 'rlcis/media/'
 
 LOGIN_REDIRECT_URL = 'users:home'
 LOGIN_URL = 'users:login'

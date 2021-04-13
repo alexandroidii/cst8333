@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from users.models import Users
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, TruncDay
+from django.template.loader import render_to_string
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -29,6 +30,9 @@ from django.http import HttpResponse
 from django_tables2 import RequestConfig, LazyPaginator
 from .tables import ScenarioTable
 from .filters import ScenarioFilter
+
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
 
 from rlcis.decorator import already_authenticated_user, allowed_users
 
@@ -81,14 +85,33 @@ def publish_scenario(request):
     pass
 
 
+class FilteredScenarioListView(SingleTableMixin, FilterView):
+    table_class = ScenarioTable
+    model = Scenario
+    template_name = "rlcis/scenario_list.html"
+
+    filterset_class = ScenarioFilter
+
+
 
 def ScenariosTableView(request):
-    scenario_table = ScenarioTable(Scenario.objects.all())
+    scenario_list = Scenario.objects.all()
+    
+    myFilter = ScenarioFilter(request.GET, queryset=scenario_list)
+    scenario_table = ScenarioTable(myFilter)
+    
+    
+    # context = {
+    #     'myFilter':myFilter,
+    # }
+
     # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
     RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
     # paginator_class = LazyPaginator
-    return HttpResponse(scenario_table.as_html(request))
 
+    # rendered = render_to_string(scenario_table.as_html(request),{'myFilter':myFilter})
+    return HttpResponse(scenario_table.as_html(request))
+    # return render(request, scenario_table.as_html(request), context)
 
 """
 
@@ -103,41 +126,16 @@ def scenarios(request):
     scenario_list = Scenario.objects.order_by('-id')
     myFilter = ScenarioFilter(request.GET, queryset=scenario_list)
     scenario_list = myFilter.qs
-
-    # query = request.GET.get('q')
-
+    scenario_table = ScenarioTable(myFilter)
+    RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
     
-    # if not query:
-    #     # Verify if the user is logged in
-    #     # if request.user:
-    #     #     # make sure they are a reviewer
-    #     #     if request.user.has_perm('users.is_reviewer'):
-    #     #         # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
-    #     #         scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
-    #     #         scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
-    #     #         scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
-    #     #     else:
-    #     scenario_list = Scenario.objects.order_by('-id')
-    # else:
-    #     scenario_list = __search(query).filter(scenario=True)
-    
-
-    # searchForm = SearchForm()
-    # paginator = Paginator(scenario_list, 5)
-    # page = request.GET.get('page')
-    # try:
-    #     scenarios = paginator.page(page)
-    # except PageNotAnInteger:
-    #     scenarios = paginator.page(1)
-    # except EmptyPage:
-    #     scenarios = paginator.page(paginator.num_pages)
-
     context = {
         'scenario_list': scenarios,
         'activePage': 'scenario',
         # 'searchForm': searchForm,
         # 'query': query,
-        'myFilter':myFilter,
+        'filter':myFilter,
+        'table-html':scenario_table.as_html(request),
     }
     return render(request, template, context)
 
