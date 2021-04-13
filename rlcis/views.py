@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.postgres.search import SearchVector
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Case, CharField, Value, When
+from django.db.models import Case, CharField, Value, When, Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
@@ -112,7 +112,8 @@ def ScenariosTableView(request):
     if is_reviewer:
         scenario_table = ScenarioTable(Scenario.objects.all().order_by("-id"))
     else:
-        scenario_table = ScenarioTable(Scenario.objects.filter(is_reviewed=True).order_by("-id"))
+        # need to display scenarios that aren't reviewed if it's they belong to the submitter.
+        scenario_table = ScenarioTable(Scenario.objects.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id"))
     
     # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
     RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
@@ -211,6 +212,8 @@ def save_scenario(request, id=0, **kwargs):
                 savedScenario.reviewer = request.user
             else:
                 savedScenario.submitter = request.user
+                if savedScenario.is_reviewed:
+                    savedScenario.is_reviewed = False
 
             savedScenario.save()
 
