@@ -161,9 +161,14 @@ class ScenarioFormReviewer(forms.ModelForm):
         labels = BaseScenarioLabels()
         widgets = BaseScenarioWidgets()
 
+        
     def __init__(self, *args, **kwargs):
+        print(kwargs)
+        #self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+       # self.fields['reviewer'].widget.attrs['readonly'] = True
+        self.fields['reviewer'].widget=forms.Select(attrs={'disabled':'disabled'})
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
             Row(

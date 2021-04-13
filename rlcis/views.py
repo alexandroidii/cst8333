@@ -227,7 +227,7 @@ If id>0, this scenario is being updated
 """
 @already_authenticated_user
 @allowed_users(allowed_roles=['submitter','reviewer','admin'])
-def scenario_form(request, id=0):
+def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
     is_reviewer = request.user.groups.filter(name='reviewer').exists()
     is_submitter = request.user.groups.filter(name='submitter').exists()
@@ -249,7 +249,8 @@ def scenario_form(request, id=0):
             logger.debug("starting scenario_form - id exists")
             scenario = Scenario.objects.get(pk=id)
             if is_reviewer:
-                form = ScenarioFormReviewer(instance=scenario)
+                instance_tuple = (scenario,request.user)
+                form = ScenarioFormReviewer(instance=instance_tuple)
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
             files = ScenarioDocument.objects.filter(scenario=scenario)
