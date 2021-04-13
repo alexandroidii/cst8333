@@ -16,7 +16,7 @@ Date: 2019-12-19
 {% crispy form %}
 <div class="row">
     <div class="col-sm-4 col-md-4">
-        <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm">
+        <button type="button" id="submitBtn" class="btn btn-success btn-block btn-sm" data-href="{% url 'rlcis:save_scenario'%}">
             <i class="fas fa-save"></i> Submit
         </button>
     </div>
@@ -27,7 +27,7 @@ Date: 2019-12-19
     </div>
     {% if request.user.is_reviewer %}
         <div class="col-sm-4 col-md-4">
-            <button type="button" id="publishBtn" class="btn btn-secondary btn-block btn-sm">
+            <button type="button" id="publishBtn" class="btn btn-secondary btn-block btn-sm" data-href="{% url 'rlcis:publish' id  %}">
                 <i class="fas fa-save"></i> Publish
             </button>
         </div>
@@ -79,9 +79,10 @@ Date: 2019-12-19
 
 
         // Ajax call to submit the form wit any documents attached
-        $(document).on('click', '#submitBtn', function (e) {
+        $(document).on('click', '#submitBtn, #publishBtn', function (e) {
             var form = $('#scenarioForm')[0];
             var formData = new FormData(form);
+            var url = $(this).data('href');
             formData.append('fileLength', files.length)
             formData.append('id', '{{ id }}')
             for (var i = 0; i < files.length; i++) {
@@ -91,7 +92,7 @@ Date: 2019-12-19
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "rlcis:save_scenario"%}',
+                url: url,
                 data: formData,
                 cache: false,
                 processData: false,

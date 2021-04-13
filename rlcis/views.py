@@ -74,9 +74,31 @@ def deleteDocument(request):
 
     return HttpResponse(jsonData, content_type='json')
 
-@permission_required('users.is_reviewer')
-def publish_scenario(request):
-    print("you are a reviewer")
+@already_authenticated_user
+@allowed_users(allowed_roles=['reviewer'])
+def publish_scenario(request, id):
+    
+    is_reviewer = request.user.groups.filter(name='reviewer').exists()
+    is_submitter = request.user.groups.filter(name='submitter').exists()
+    
+    scenario = Scenario.objects.get(pk=id)
+    if request.method == 'POST' and request.is_ajax():
+        if is_reviewer:
+            form = ScenarioFormReviewer(request.POST, instance=scenario)
+        else:
+            form = ScenarioFormSubmitter(request.POST, instance=scenario)
+
+    if form.is_valid():
+           
+
+        savedScenario = form.save(commit=False)
+        if is_reviewer:
+            savedScenario.is_reviewed = True
+        else:
+            print("You are not a reviewer and cannot publish this")
+
+        savedScenario.save()
+
     pass
 
 
