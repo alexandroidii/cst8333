@@ -65,11 +65,3 @@ def mask_column_value(self, value, record):
         return value
     elif record.anonymous:
         return '---'
-
-
-# This is how I can show the reviewer or not depending on the role.
-    #def render_count(self, value):
-    # if self.request.user.is_authenticated():
-    #     return value
-    # else:
-    #     return '---'
