@@ -22,9 +22,10 @@ class ScenarioTable(tables.Table):
             "bribe_facilitator",
             "bribe_recipient",
             "levelOfAuthority",
-            "first_occurence",
-            "email",
             "submitted_date",
+            "first_occurence",
+            "resolution_date",
+            "email",
             "reviewer",
             )
         exclude = (
@@ -37,7 +38,6 @@ class ScenarioTable(tables.Table):
             "bribed_by",
             "bribe_type_other",
             "industry_type_other",
-            "resolution_date",
             "is_reviewed",
             "reviewed_date",
             "submitter",

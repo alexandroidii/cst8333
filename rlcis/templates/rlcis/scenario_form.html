@@ -105,15 +105,15 @@ Date: 2019-12-19
                     var success = response['success'];
                     if(success){
                         console.log("Scenario has been saved");
-                        alert('scenario has been saved.')
                         $("#scenarioForm").replaceWith(response['html']);
                         loadFilePond();
+                        $(window).scrollTop(0);
                     }else{
                         console.log("Response form with validation errors: " + response['html']);
                         $("#scenarioForm").replaceWith(response['html']);
                         loadFilePond();
+                        $(window).scrollTop(0);
                     }
-                    // window.location.href = '{% url "rlcis:scenarios" %}';
                 },
                 error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ":" + xhr.responseText);

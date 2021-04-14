@@ -1,6 +1,6 @@
 import collections
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Row, Column, HTML
+from crispy_forms.layout import Field, Layout, Row, Column, HTML, Submit
 from crispy_forms.bootstrap import Accordion, AccordionGroup
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -24,6 +24,63 @@ Authors: Robert Lange and Alexander Riccio
 Course: CST8333
 Date: 2019-12-19
 """
+
+
+class ScenarioFilterForm(forms.Form):
+    model = Scenario
+    fields = [
+                'country',
+                'region',
+                'location',
+                'company_name',
+                'industry_type',
+                'levelOfAuthority',
+                'bribe_initiator',
+                'bribe_facilitator',
+                'bribe_recipient',
+                'bribe_type',
+                'scenario_summary',
+                'scenario_details',
+            ]
+    
+    def __init__(self, *args, **kwargs):
+        super(ScenarioFilterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.layout = Layout(
+            Accordion(
+                AccordionGroup('Search Criteria',
+                    Row(
+                        Column("bribe_initiator", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_facilitator", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_recipient", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_type", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("scenario_summary", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("scenario_details", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        Column("country", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("region",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("location",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("company_name", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("industry_type", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("levelOfAuthority", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        # Column("submitted_date", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        # Column("reviewer",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column(
+                            Submit('submit', 'Filter', css_class='btn btn-primary'),
+                            ), 
+                        css_class='form-row'
+                        ),
+                        active=False,
+                    ),
+                ),
+            )
+
 
 
 class DateInput(forms.DateInput):

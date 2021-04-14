@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'phone_field',
     'django.contrib.sites',
     'django_tables2',
-    'django_ajax_tables',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
