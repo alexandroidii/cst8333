@@ -21,7 +21,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm, ScenarioFilterForm
+from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm, ReviewerScenarioFilterForm, SubmitterScenarioFilterForm
 from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
@@ -30,7 +30,7 @@ from django_tables2 import RequestConfig, LazyPaginator
 from .tables import ScenarioTable
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
-from .filters import ScenarioFilter
+from .filters import ReviewerScenarioFilter, SubmitterScenarioFilter
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, Row, Column, HTML, Submit
 
@@ -109,15 +109,41 @@ def publish_scenario(request, id):
 
 
 class FilteredScenarioListView(SingleTableMixin, FilterView):
-    table_class = ScenarioTable
-    form_class = ScenarioFilterForm
     model = Scenario
     template_name = "rlcis/scenario_list.html"
-    filterset_class = ScenarioFilter
+    table_class = ScenarioTable
     table_pagination = {'per_page': 5}
 
 
+    # tables = [
+    #     PersonTable(qs),
+    #     PersonTable(qs, exclude=("country", ))
+    # ]
 
+
+
+    # def get(self, request):
+    def get(self, request, *args, **kwargs):
+        is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+        is_submitter = request.user.groups.filter(name='submitter').exists()
+        if is_reviewer:
+            self.form_class = ReviewerScenarioFilterForm
+            self.filterset_class = ReviewerScenarioFilter
+        else:
+            self.form_class = SubmitterScenarioFilterForm
+            self.filterset_class = SubmitterScenarioFilter
+        
+        context = {
+                'form': self.form_class,
+                'table':self.table_class,
+                'table_pagination':self.table_pagination,
+                'filter': self.filterset_class,
+                'activePage': 'scenarios',
+            }
+
+        return super().get(request, *args, **kwargs)
+        # return self.
+        # return render(request, self.template_name, {'table':self.get_context_data})
 
 """
 Save an scenario form using ajax
