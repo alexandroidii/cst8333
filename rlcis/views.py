@@ -28,6 +28,8 @@ from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
 from django_tables2 import RequestConfig, LazyPaginator
 from .tables import ScenarioTable
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
 
 from rlcis.decorator import already_authenticated_user, allowed_users
 
@@ -103,6 +105,15 @@ def publish_scenario(request, id):
 
 
 
+class FilteredPersonListView(SingleTableMixin, FilterView):
+    table_class = ScenarioTable
+    model = Scenario
+    template_name = "scenario_list.html"
+    filterset_class = ScenarioFilter
+
+
+
+
 def ScenariosTableView(request):
 
     is_reviewer = request.user.groups.filter(name='reviewer').exists()
@@ -133,37 +144,23 @@ def scenarios(request):
     template = 'rlcis/scenario_list.html'
     query = request.GET.get('q')
 
-    
-    
-    if not query:
-        # Verify if the user is logged in
-        # if request.user:
-        #     # make sure they are a reviewer
-        #     if request.user.has_perm('users.is_reviewer'):
-        #         # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
-        #         scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
-        #         scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
-        #         scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
-        #     else:
-        scenario_list = Scenario.objects.order_by('-id')
-    else:
-        scenario_list = __search(query).filter(scenario=True)
+    is_reviewer = request.user.groups.filter(name='reviewer').exists()
+    is_submitter = request.user.groups.filter(name='submitter').exists()
 
-    searchForm = SearchForm()
-    paginator = Paginator(scenario_list, 5)
-    page = request.GET.get('page')
-    try:
-        scenarios = paginator.page(page)
-    except PageNotAnInteger:
-        scenarios = paginator.page(1)
-    except EmptyPage:
-        scenarios = paginator.page(paginator.num_pages)
+    scenario_table = None
+    if is_reviewer:
+        scenario_table = ScenarioTable(Scenario.objects.all().order_by("-id"))
+    else:
+        # need to display scenarios that aren't reviewed if it's they belong to the submitter.
+        scenario_table = ScenarioTable(Scenario.objects.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id"))
+    
+    # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
+    RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
+
 
     context = {
-        'scenario_list': scenarios,
+        'scenario_table': scenario_table,
         'activePage': 'scenario',
-        'searchForm': searchForm,
-        'query': query,
     }
     return render(request, template, context)
 
