@@ -119,53 +119,6 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
 
 
 
-def ScenariosTableView(request):
-
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
-    is_submitter = request.user.groups.filter(name='submitter').exists()
-
-    scenario_table = None
-    if is_reviewer:
-        scenario_table = ScenarioTable(Scenario.objects.all().order_by("-id"))
-    else:
-        scenario_table = ScenarioTable(Scenario.objects.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id"))
-    RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
-    return HttpResponse(scenario_table.as_html(request))
-
-
-"""
-
-Return all Scenarios or search based on the returned Query from persistance.
-
-Fields:
-q -- Query returned from the user
-
-"""
-def scenarios(request):
-    template = 'rlcis/scenario_list.html'
-    query = request.GET.get('q')
-
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
-    is_submitter = request.user.groups.filter(name='submitter').exists()
-
-    scenario_table = None
-    if is_reviewer:
-        scenario_table = ScenarioTable(Scenario.objects.all().order_by("-id"))
-    else:
-        # need to display scenarios that aren't reviewed if it's they belong to the submitter.
-        scenario_table = ScenarioTable(Scenario.objects.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id"))
-    
-    # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
-    RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
-
-
-    context = {
-        'scenario_table': scenario_table,
-        'activePage': 'scenario',
-    }
-    return render(request, template, context)
-
-
 """
 Save an scenario form using ajax
 """
@@ -306,7 +259,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'id': id,
                 'reviewer_name': reviewer_name,
                 'submitter_name': submitter_name,
-                'is_author': submitter_name.user_name == request.user.user_name,
+                'is_author': submitter_name.user_name == request.user.user_name if submitter_name else False,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:
