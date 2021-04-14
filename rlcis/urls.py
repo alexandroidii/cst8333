@@ -35,10 +35,5 @@ urlpatterns = [
     # return a list of Scenarios
     path('scenarios/', FilteredScenarioListView.as_view(), name='scenarios'),
     path('publish/<int:id>', views.publish_scenario, name='publish'),
+] + static( settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-   
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
