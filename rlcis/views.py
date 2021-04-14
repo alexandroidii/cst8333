@@ -83,7 +83,7 @@ def deleteDocument(request):
 @allowed_users(allowed_roles=['reviewer'])
 def publish_scenario(request, id):
     
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
     is_submitter = request.user.groups.filter(name='submitter').exists()
     
     scenario = Scenario.objects.get(pk=id)
@@ -113,37 +113,25 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
     template_name = "rlcis/scenario_list.html"
     table_class = ScenarioTable
     table_pagination = {'per_page': 5}
-
-
-    # tables = [
-    #     PersonTable(qs),
-    #     PersonTable(qs, exclude=("country", ))
-    # ]
-
-
-
-    # def get(self, request):
+    
     def get(self, request, *args, **kwargs):
         is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
-        is_submitter = request.user.groups.filter(name='submitter').exists()
+        
         if is_reviewer:
             self.form_class = ReviewerScenarioFilterForm
             self.filterset_class = ReviewerScenarioFilter
         else:
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
-        
-        context = {
-                'form': self.form_class,
-                'table':self.table_class,
-                'table_pagination':self.table_pagination,
-                'filter': self.filterset_class,
-                'activePage': 'scenarios',
-            }
 
         return super().get(request, *args, **kwargs)
-        # return self.
-        # return render(request, self.template_name, {'table':self.get_context_data})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['activePage'] = 'scenarios'
+
+        return context
 
 """
 Save an scenario form using ajax
@@ -153,8 +141,7 @@ Save an scenario form using ajax
 def save_scenario(request, id=0, **kwargs):
     logger.debug("Saving Scenario form")
     
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
-    is_submitter = request.user.groups.filter(name='submitter').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
     
     if request.method == 'POST' and request.is_ajax():
         if is_reviewer:
@@ -248,8 +235,7 @@ If id>0, this scenario is being updated
 @allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
-    is_submitter = request.user.groups.filter(name='submitter').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
 
     if request.method == "GET":
         if id == 0:
