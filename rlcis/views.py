@@ -21,7 +21,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm
+from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm, ScenarioFilterForm
 from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
@@ -30,6 +30,9 @@ from django_tables2 import RequestConfig, LazyPaginator
 from .tables import ScenarioTable
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+from .filters import ScenarioFilter
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Field, Layout, Row, Column, HTML, Submit
 
 from rlcis.decorator import already_authenticated_user, allowed_users
 
@@ -105,11 +108,13 @@ def publish_scenario(request, id):
 
 
 
-class FilteredPersonListView(SingleTableMixin, FilterView):
+class FilteredScenarioListView(SingleTableMixin, FilterView):
     table_class = ScenarioTable
+    form_class = ScenarioFilterForm
     model = Scenario
-    template_name = "scenario_list.html"
+    template_name = "rlcis/scenario_list.html"
     filterset_class = ScenarioFilter
+    table_pagination = {'per_page': 5}
 
 
 
@@ -123,12 +128,8 @@ def ScenariosTableView(request):
     if is_reviewer:
         scenario_table = ScenarioTable(Scenario.objects.all().order_by("-id"))
     else:
-        # need to display scenarios that aren't reviewed if it's they belong to the submitter.
         scenario_table = ScenarioTable(Scenario.objects.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id"))
-    
-    # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
     RequestConfig(request, paginate={"per_page": 5}).configure(scenario_table)
-    # paginator_class = LazyPaginator
     return HttpResponse(scenario_table.as_html(request))
 
 
