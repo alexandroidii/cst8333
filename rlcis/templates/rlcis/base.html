@@ -31,14 +31,7 @@
     <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
 
 <style>
-.my-row {
-  height: 41px;
-  margin-top: -18px;
-      }
-.img {
-  width: 38px;
-  height: 38px;
-    }
+
 </style>
 
 </head>
@@ -51,8 +44,8 @@
           <ul class="navbar-nav mr-auto">
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                        <li class="nav-item {% if activePage == 'scenario' %} active {% endif %}">
-                          <a class="nav-link" href="{% url 'rlcis:scenarios' %}">View or Submit Corruption Scenarios</a>                                                   
+                        <li class="nav-item {% if activePage == 'scenarios' %} active {% endif %}">
+                          <a class="nav-link" href="{% url 'rlcis:scenarios' %}">View Scenarios</a>                                                   
                         </li>        
                         <li class="nav-item {% if activePage == 'home' %} active {% endif %}">
                           <a class="nav-link" href="{% url 'rlcis:home' %}">Home</a>                          
@@ -70,23 +63,21 @@
             <div class="navbar-nav"> 
               {% if user.is_authenticated %}
               <a class="nav-item nav-link disabled text-warning mr-4 font-italic" >Hello, {{request.user}}</a>
-              {% if request.user.is_superuser %}
-                <a class="nav-item nav-link disabled text-info font-weight-bold">Admin</a>
-                <a href="/admin" title="RLCIS Admin">
-                <i class="fas fa-user-cog" style="font-size:28px;" title="RLCIS Admin"></i>
-              {% elif request.user.is_reviewer %}
-                <a class="nav-item nav-link disabled text-info font-weight-bold">Reviewer</a>
-                <a href="/rlcis/scenarios" title="RLCIS Admin">
+              {% if request.user.is_reviewer %}
+                    <a class="nav-item nav-link disabled text-info font-weight-bold">Reviewer</a>
+                    <a href="/rlcis/scenarios" title="RLCIS Admin">
                 <i class="fas fa-book-reader" style="font-size:28px;" title="RLCIS Reviewer"></i>
               {% else %}
-                <a class="nav-item nav-link disabled text-info font-weight-bold">Submitter</a>
-                <a href="/rlcis/scenarios" title="RLCIS Submitter">
-                  <i class="far fa-edit" style="font-size:28px; " title="RLCIS Submitter"></i>
+                    <a class="nav-item nav-link disabled text-info font-weight-bold">Submitter</a>
+                    <a href="/rlcis/scenarios" title="RLCIS Submitter">
+                    <i class="far fa-edit" style="font-size:28px; " title="RLCIS Submitter"></i>
               {% endif %}
-              <!-- {% if request.user.is_reviewer %}
-              <a class="nav-item nav-link disabled text-info font-weight-bold">Reviewer</a>
-              <a href="/rlcis/scenarios"><img alt="Reviewer" src="{% static '/images/settings.png' %}" title="RLCIS Reviewer" class="img"/>
-              {% endif %} -->
+              {% if request.user.is_superuser %}
+                    <a class="nav-item nav-link disabled text-info font-weight-bold">Admin</a>
+                    <a href="/admin" title="RLCIS Admin">
+                    <i class="fas fa-user-cog" style="font-size:28px;" title="RLCIS Admin"></i>
+              {% endif %}
+              
 
               <li class="nav-item {% if activePage == 'profile' %} active {% endif %}"></li>
                   <a class="nav-item nav-link" href="{% url 'users:profile' %}">Profile</a>

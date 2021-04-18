@@ -55,11 +55,10 @@ INSTALLED_APPS = [
     'phone_field',
     'django.contrib.sites',
     'django_tables2',
-    'django_ajax_tables',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -167,7 +166,7 @@ GOOGLE_RECAPTCHA_SECRET_KEY = '6LdWwV8aAAAAAAmPYinqHliRCDFGvQamTEuYbg2n'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = 'users:home'
 LOGIN_URL = 'users:login'
@@ -176,8 +175,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'ns.lange.ca'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
@@ -205,3 +205,5 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'

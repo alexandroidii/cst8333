@@ -22,9 +22,10 @@ class ScenarioTable(tables.Table):
             "bribe_facilitator",
             "bribe_recipient",
             "levelOfAuthority",
-            "first_occurence",
-            "email",
             "submitted_date",
+            "first_occurence",
+            "resolution_date",
+            "email",
             "reviewer",
             )
         exclude = (
@@ -37,17 +38,30 @@ class ScenarioTable(tables.Table):
             "bribed_by",
             "bribe_type_other",
             "industry_type_other",
-            "resolution_date",
             "is_reviewed",
             "reviewed_date",
             "submitter",
             "anonymous",
             "is_training_scenario",
             )
+        company_name = tables.Column()
 
-# This is how I can show the reviewer or not depending on the role.
-    #def render_count(self, value):
-    # if self.request.user.is_authenticated():
-    #     return value
-    # else:
-    #     return '---'
+
+    def render_company_name(self, value, record):
+        return mask_column_value(self, value, record)
+
+    def render_region(self, value, record):
+        return mask_column_value(self, value, record)
+        
+    def render_location(self, value, record):
+        return mask_column_value(self, value, record)
+
+    def render_email(self, value, record):
+        return mask_column_value(self, value, record)
+
+#Used to mask the column values when the Anonymous column is set to True
+def mask_column_value(self, value, record):
+    if self.request.user.groups.filter(name='reviewer' or 'admin').exists():
+        return value
+    elif record.anonymous:
+        return '---'

@@ -1,10 +1,11 @@
 import logging, json
 import calendar
+from datetime import datetime
 from django.contrib.auth.decorators import permission_required
 from django.contrib.postgres.search import SearchVector
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Case, CharField, Value, When
+from django.db.models import Case, CharField, Value, When, Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
@@ -14,19 +15,24 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.decorators import login_required
 from users.models import Users
 from django.db.models import Count
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncDay
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm
+from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm, ReviewerScenarioFilterForm, SubmitterScenarioFilterForm
 from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
 from django_tables2 import RequestConfig, LazyPaginator
 from .tables import ScenarioTable
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
+from .filters import ReviewerScenarioFilter, SubmitterScenarioFilter
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Field, Layout, Row, Column, HTML, Submit
 
 from rlcis.decorator import already_authenticated_user, allowed_users
 
@@ -73,76 +79,69 @@ def deleteDocument(request):
 
     return HttpResponse(jsonData, content_type='json')
 
-@permission_required('users.is_reviewer')
-def publish_scenario(request):
-    print("you are a reviewer")
+@already_authenticated_user
+@allowed_users(allowed_roles=['reviewer'])
+def publish_scenario(request, id):
+    
+    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+    is_submitter = request.user.groups.filter(name='submitter').exists()
+    
+    scenario = Scenario.objects.get(pk=id)
+    if request.method == 'POST' and request.is_ajax():
+        if is_reviewer:
+            form = ScenarioFormReviewer(request.POST, instance=scenario)
+        else:
+            form = ScenarioFormSubmitter(request.POST, instance=scenario)
+
+    if form.is_valid():
+           
+
+        savedScenario = form.save(commit=False)
+        if is_reviewer:
+            savedScenario.is_reviewed = True
+        else:
+            print("You are not a reviewer and cannot publish this")
+
+        savedScenario.save()
+
     pass
 
 
 
-def ScenariosTableView(request):
-    scenario_table = ScenarioTable(Scenario.objects.all())
-    # scenario_table.paginate(page=request.GET.get("page", 1), per_page=25)
-    RequestConfig(request, paginate={"per_page": 25}).configure(scenario_table)
-    # paginator_class = LazyPaginator
-    return HttpResponse(scenario_table.as_html(request))
-
-
-"""
-
-Return all Scenarios or search based on the returned Query from persistance.
-
-Fields:
-q -- Query returned from the user
-
-"""
-def scenarios(request):
-    template = 'rlcis/scenario_list.html'
-    query = request.GET.get('q')
-
+class FilteredScenarioListView(SingleTableMixin, FilterView):
+    model = Scenario
+    template_name = "rlcis/scenario_list.html"
+    table_class = ScenarioTable
+    table_pagination = {'per_page': 5}
     
-    
-    if not query:
-        # Verify if the user is logged in
-        # if request.user:
-        #     # make sure they are a reviewer
-        #     if request.user.has_perm('users.is_reviewer'):
-        #         # Filter the list of scenarios assigned to the reviewer, and order by Assigned to reviewer, then by Null reviewer
-        #         scenario_list = Scenario.objects.filter(reviewer=request.user).order_by('-id')
-        #         scenario_list +=  Scenario.objects.filter(reviewer = not request.user).order_by('-id')
-        #         scenario_list +=  Scenario.objects.filter(reviewer=None).order_by('-id')
-        #     else:
-        scenario_list = Scenario.objects.order_by('-id')
-    else:
-        scenario_list = __search(query).filter(scenario=True)
+    def get(self, request, *args, **kwargs):
+        is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+        
+        if is_reviewer:
+            self.form_class = ReviewerScenarioFilterForm
+            self.filterset_class = ReviewerScenarioFilter
+        else:
+            self.form_class = SubmitterScenarioFilterForm
+            self.filterset_class = SubmitterScenarioFilter
 
-    searchForm = SearchForm()
-    paginator = Paginator(scenario_list, 5)
-    page = request.GET.get('page')
-    try:
-        scenarios = paginator.page(page)
-    except PageNotAnInteger:
-        scenarios = paginator.page(1)
-    except EmptyPage:
-        scenarios = paginator.page(paginator.num_pages)
+        return super().get(request, *args, **kwargs)
 
-    context = {
-        'scenario_list': scenarios,
-        'activePage': 'scenario',
-        'searchForm': searchForm,
-        'query': query,
-    }
-    return render(request, template, context)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['activePage'] = 'scenarios'
+
+        return context
 
 """
 Save an scenario form using ajax
 """
+@already_authenticated_user
+@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def save_scenario(request, id=0, **kwargs):
     logger.debug("Saving Scenario form")
     
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
-    is_submitter = request.user.groups.filter(name='submitter').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
     
     if request.method == 'POST' and request.is_ajax():
         if is_reviewer:
@@ -172,9 +171,17 @@ def save_scenario(request, id=0, **kwargs):
             logger.debug("starting scenario_form - is valid save() POST")
 
             kwargs['domain'] = get_current_site(request)
+            savedScenario = form.save(commit=False)
+            if is_reviewer:
+                savedScenario.reviewer = request.user
+            else:
+                savedScenario.submitter = request.user
+                if savedScenario.is_reviewed:
+                    savedScenario.is_reviewed = False
+
+            savedScenario.save()
 
             # First save the form
-            savedScenario = form.save()
 
             fileLength = request.POST.get('fileLength')
             
@@ -224,12 +231,9 @@ If id=0, this is a new Scenario to be added to the database
 If id>0, this scenario is being updated
 
 """
-@already_authenticated_user
-@allowed_users(allowed_roles=['submitter','reviewer','admin'])
-def scenario_form(request, id=0):
+def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
-    is_reviewer = request.user.groups.filter(name='reviewer').exists()
-    is_submitter = request.user.groups.filter(name='submitter').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
 
     if request.method == "GET":
         if id == 0:
@@ -247,16 +251,25 @@ def scenario_form(request, id=0):
         else:
             logger.debug("starting scenario_form - id exists")
             scenario = Scenario.objects.get(pk=id)
+            reviewer_name = None
+            submitter_name = None
             if is_reviewer:
-                form = ScenarioFormReviewer(instance=scenario)
+                instance = (scenario)
+                form = ScenarioFormReviewer(instance=instance)
+                reviewer_name = scenario.reviewer
+                submitter_name = scenario.submitter
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
+                submitter_name = scenario.submitter
             files = ScenarioDocument.objects.filter(scenario=scenario)
             context = {
                 'form': form,
                 'files': files,
                 'activePage': 'scenarios',
                 'id': id,
+                'reviewer_name': reviewer_name,
+                'submitter_name': submitter_name,
+                'is_author': submitter_name.user_name == request.user.user_name if submitter_name and request.user.is_authenticated else False,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:
@@ -461,27 +474,30 @@ Index method used to render index.html (home page)
 
 """
 def index(request):
-    if Scenario.objects.all().exists():
-        scenarios = Scenario.objects.order_by('-id')[:3]
-        monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by()
-        resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id')).order_by()
-        month = calendar.month_name[monthly_stats[0]['month'].month]
-        year = monthly_stats[0]['month'].year
-        total = monthly_stats[0]['total']
+    tot_subs = Scenario.objects.count()
+    scenarios = Scenario.objects.order_by('id')[:3]
+    current_date = datetime.now()
+    month = calendar.month_name[current_date.month]
+    year = current_date.year
+    if scenarios:
+        resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id'))
         resolved = resolved_stats[0]['total']
-    
-        context = {
-            'scenarios': scenarios,
-            'activePage': 'home',
-            'month': month,
-            'year': year,
-            'total': total,
-            'monthly_stats': monthly_stats,
-            'resolved':resolved,
-        }
+        scenarios_this_month = Scenario.objects.filter(submitted_date__month=current_date.month,submitted_date__year=current_date.year ).count()
     else:
-        context = {}
+        resolved = 0
+        scenarios_this_month = 0
+
+    context = {
+        'scenarios': scenarios,
+        'activePage': 'home',
+        'month': month,
+        'year': year,
+        'total': scenarios_this_month,
+        'resolved':resolved,
+        'tot_subs':tot_subs
+    }
     return render(request, 'rlcis/landing.html', context)
+
 
 def about(request):
     return render(request, 'rlcis/about.html', {'activePage': 'about'})

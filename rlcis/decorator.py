@@ -12,7 +12,9 @@ def already_authenticated_user(view_func):
                 else:
                     request.session['referer_link'] = request.path_info
                     return redirect('users:login')
-        except:
+        except Exception as identifier:
+            # import pdb #setup debugger so you can see what identifier is
+            # pdb.set_trace()
             # request.session['referer_link'] = request.path_info
             return redirect('users:login')
     return wrapper_func

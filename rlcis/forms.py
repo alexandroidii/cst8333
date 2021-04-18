@@ -1,13 +1,12 @@
 import collections
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Row, Column, HTML
+from crispy_forms.layout import Field, Layout, Row, Column, HTML, Submit, Reset
 from crispy_forms.bootstrap import Accordion, AccordionGroup
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import widgets
 from django.utils import formats
-
 from .models import Scenario, ScenarioDocument
 from .models_dropdown import BribedBy
 
@@ -25,6 +24,126 @@ Authors: Robert Lange and Alexander Riccio
 Course: CST8333
 Date: 2019-12-19
 """
+
+
+class ReviewerScenarioFilterForm(forms.Form):
+    model = Scenario
+    fields = [
+                'country',
+                'region',
+                'location',
+                'company_name',
+                'industry_type',
+                'levelOfAuthority',
+                'bribe_initiator',
+                'bribe_facilitator',
+                'bribe_recipient',
+                'bribe_type',
+                'scenario_summary',
+                'scenario_details',
+                'reviewer',
+                'email',
+                'submitted_date',
+            ]
+    
+    def __init__(self, *args, **kwargs):
+        super(ReviewerScenarioFilterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.layout = Layout(
+            Accordion(
+                AccordionGroup('Search Criteria',
+                    Row(
+                        Column("bribe_initiator", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_facilitator", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_recipient", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_type", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("scenario_summary", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("scenario_details", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        Column("country", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("region",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("location",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("company_name", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("industry_type", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("levelOfAuthority", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        Column("submitted_date", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("email",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("reviewer",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        Column(
+                            Submit('submit', 'Filter', css_class='btn btn-primary'),
+                            Reset('reset filter', 'Reset Filter', css_class='btn btn-info'),
+                            ), 
+                        css_class='form-row'
+                        ),
+                        active=False,
+                    ),
+                ),
+            )
+class SubmitterScenarioFilterForm(forms.Form):
+    model = Scenario
+    fields = [
+                'country',
+                'region',
+                'location',
+                'company_name',
+                'industry_type',
+                'levelOfAuthority',
+                'bribe_initiator',
+                'bribe_facilitator',
+                'bribe_recipient',
+                'bribe_type',
+                'scenario_summary',
+                'scenario_details',
+            ]
+    
+    def __init__(self, *args, **kwargs):
+        super(SubmitterScenarioFilterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.layout = Layout(
+            Accordion(
+                AccordionGroup('Search Criteria',
+                    Row(
+                        Column("bribe_initiator", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_facilitator", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_recipient", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("bribe_type", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("scenario_summary", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("scenario_details", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        Column("country", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("region",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("location",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("company_name", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("industry_type", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("levelOfAuthority", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        css_class='form-row'
+                        ),
+                    Row(
+                        # Column("submitted_date", css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        # Column("reviewer",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column(
+                            Submit('submit', 'Filter', css_class='btn btn-primary'),
+                            Reset('reset filter', 'Reset Filter', css_class='btn btn-info'),
+                            ), 
+                        css_class='form-row'
+                        ),
+                        active=False,
+                    ),
+                ),
+            )
+
 
 
 class DateInput(forms.DateInput):
@@ -161,15 +280,12 @@ class ScenarioFormReviewer(forms.ModelForm):
         labels = BaseScenarioLabels()
         widgets = BaseScenarioWidgets()
 
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
-            Row(
-                Column('reviewer',css_class='col-sm-12 col-md-12 text-center'),
-                css_class='form-row'
-            ),
             BaseScenarioLayout()
         )
 
@@ -189,23 +305,6 @@ class ScenarioFormSubmitter(forms.ModelForm):
             BaseScenarioLayout()
         )
 
-
-
-        # set which fields are not required.
-        # # self.fields['bribed_by_other'].required = False
-        # # self.fields['bribe_type_other'].required = False
-        # # self.fields['industry_type_other'].required = False
-        # # self.fields['level'].required = False
-        # self.fields['company_name'].required = False
-        # self.fields['anonymous'].required = False
-        # self.fields['first_occurence'].required = False
-        # self.fields['resolution_date'].required = False
-        # self.fields['reviewer'].required = False
-        # self.fields['email'].required = False
-        # # self.fields['level'].required = False
-        # self.fields['risks'].required = False
-        # self.fields['resolution'].required = False
-
 class ScenarioDocumentForm(forms.ModelForm):
     
     class Meta:
@@ -215,10 +314,6 @@ class ScenarioDocumentForm(forms.ModelForm):
             'document',
         ]
 
-# class CreateUserForm(UserCreationForm):
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email','password1', 'password2']
 
 class ListTextWidget(forms.Select):
     template_name = 'listtxt.html'
@@ -240,30 +335,39 @@ class BaseScenarioLayout(Layout):
 
             Row(
                 Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
+            ),
+            Row(
                 Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCIS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
             Row(
-                Column('anonymous', css_class='form-group col-sm-12 col-md-12'),
+                Column('anonymous', css_class='form-group col-sm-8 col-md-8'),
+                Column(HTML(
+                            '{% if request.user.is_reviewer %}' +
+                                    'Reviewer:  {{ reviewer_name }} <br/>' +
+                                    'Submitter:  {{ submitter_name }}' +
+                            '{% endif %}' 
+                        ), 
+                    css_class='form-group col-sm-4 col-md-4 text-primary font-weight-bold'),
                 css_class='form-row'
             ),
             Accordion(
                 AccordionGroup('Identification',
                     Row(
                         Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-6'),
-                        Column('email', css_class='form-group col-sm-2 col-md-6 anonymous'),
+                        Column('email', css_class='form-group col-sm-2 col-md-6'),
                         css_class='form-row'
                     ),
                     Row(
                         Column('country', css_class='form-group col-sm-2 col-md-4'),
-                        Column('region', css_class='form-group col-sm-2 col-md-4 anonymous'),
-                        Column('location', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('region', css_class='form-group col-sm-2 col-md-4'),
+                        Column('location', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                     Row(
                         Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
                         Column('industry_type_other', css_class='form-group col-sm-2 col-md-4'),
-                        Column('company_name', css_class='form-group col-sm-2 col-md-4 anonymous'),
+                        Column('company_name', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                 )

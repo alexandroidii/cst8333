@@ -1,9 +1,11 @@
+from rlcis.tables import ScenarioTable
 from django.contrib import admin
 from django.urls import (
     include, path, reverse,
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import FilteredScenarioListView
 
 from . import views
 
@@ -31,13 +33,7 @@ urlpatterns = [
     path('save_scenario/', views.save_scenario, name='save_scenario'),
     path('delete_scenario/<int:id>/', views.scenario_delete, name='scenario_delete'),
     # return a list of Scenarios
-    path('scenarios/', views.scenarios, name='scenarios'),
-    path('publish/', views.publish_scenario, name='publish'),
-    path('scenarios_table', views.ScenariosTableView, name='scenarios_table'),
+    path('scenarios/', FilteredScenarioListView.as_view(), name='scenarios'),
+    path('publish/<int:id>', views.publish_scenario, name='publish'),
+] + static( settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-   
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
