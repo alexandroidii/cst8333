@@ -269,7 +269,7 @@ class LoginView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             
-        #check with acc_core.backends.CustomEmailAuthBackend.CaseInsensitiveAuth
+        #check with cst8333.backends.CustomEmailAuthBackend.CaseInsensitiveAuth
             user = authenticate(email=email, password=password)
 
         if user is not None:
