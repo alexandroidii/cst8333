@@ -22,17 +22,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&m+iv9)krc8p4dsf^8s*e+_c702%j$@38rumo_2_rd$6ra%li='
-#SECRET_KEY = os.environ.get("SECRET_KEY")
+#SECRET_KEY = '&m+iv9)krc8p4dsf^8s*e+_c702%j$@38rumo_2_rd$6ra%li='
+SECRET_KEY = os.environ.get("SECRET_KEY",'changeme')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = int(os.environ.get("DEBUG", default=0))
+#DEBUG = True
+DEBUG = bool(int(os.environ.get("DEBUG", 0)))
 
-ALLOWED_HOSTS = [
-    'rlcis-env-dev.us-west-2.elasticbeanstalk.com',
-    '127.0.0.1',
-    ]
+ALLOWED_HOSTS = []
+ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
 
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
@@ -106,10 +106,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'rlcis',
+            'NAME': 'docker-rlcs',
             'USER': 'rlcisadm',
             'PASSWORD': '12345678',
-            'HOST': 'localhost',
+            'HOST': 'pgdb',
             # 'ENGINE': os.environ("PG_ENGINE","django.db.backends.postgresql_psycopg2"),
             # 'NAME': os.environ("PG_DATABASE"),
             # 'USER': os.environ("PG_USERNAME"),

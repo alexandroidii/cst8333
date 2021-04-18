@@ -1,0 +1,23 @@
+#build docker image
+docker-compose build
+
+#bring up docker image
+docker compose up
+
+@get list of ids of containers running
+docker ps
+
+#get ip of containers
+docker inspect 0d9253ce7f8e (from above)
+
+# get inside of container to run commands - i.e python manage.py migrate, python manage.py createsuperuser
+docker exec -it django_rlcs /bin/sh where django_rlcs is the name of the container
+
+#then perform migration using migrate
+python manage.py migrate
+
+#create superuser
+python manage.py createsuperuser
+
+# connect to pgadmin in container
+http://localhost:5555

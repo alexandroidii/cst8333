@@ -461,23 +461,26 @@ Index method used to render index.html (home page)
 
 """
 def index(request):
-    scenarios = Scenario.objects.order_by('-id')[:3]
-    monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by()
-    resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id')).order_by()
-    month = calendar.month_name[monthly_stats[0]['month'].month]
-    year = monthly_stats[0]['month'].year
-    total = monthly_stats[0]['total']
-    resolved = resolved_stats[0]['total']
-
-    context = {
-        'scenarios': scenarios,
-        'activePage': 'home',
-        'month': month,
-        'year': year,
-        'total': total,
-        'monthly_stats': monthly_stats,
-        'resolved':resolved,
-    }
+    if Scenario.objects.all().exists():
+        scenarios = Scenario.objects.order_by('-id')[:3]
+        monthly_stats = Scenario.objects.annotate(month=TruncMonth('submitted_date')).values('month').annotate(total=Count('id')).order_by()
+        resolved_stats = Scenario.objects.annotate(month=TruncMonth('resolution_date')).values('month').annotate(total=Count('id')).order_by()
+        month = calendar.month_name[monthly_stats[0]['month'].month]
+        year = monthly_stats[0]['month'].year
+        total = monthly_stats[0]['total']
+        resolved = resolved_stats[0]['total']
+    
+        context = {
+            'scenarios': scenarios,
+            'activePage': 'home',
+            'month': month,
+            'year': year,
+            'total': total,
+            'monthly_stats': monthly_stats,
+            'resolved':resolved,
+        }
+    else:
+        context = {}
     return render(request, 'rlcis/landing.html', context)
 
 def about(request):
