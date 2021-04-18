@@ -231,8 +231,6 @@ If id=0, this is a new Scenario to be added to the database
 If id>0, this scenario is being updated
 
 """
-@already_authenticated_user
-@allowed_users(allowed_roles=['submitter','reviewer','admin'])
 def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
     is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
@@ -271,7 +269,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'id': id,
                 'reviewer_name': reviewer_name,
                 'submitter_name': submitter_name,
-                'is_author': submitter_name.user_name == request.user.user_name if submitter_name else False,
+                'is_author': submitter_name.user_name == request.user.user_name if submitter_name and request.user.is_authenticated else False,
             }
         return render(request, 'rlcis/scenario_form.html', context)
     else:
