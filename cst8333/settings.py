@@ -97,29 +97,23 @@ WSGI_APPLICATION = 'cst8333.wsgi.application'
 
 if 'PG_DATABASE' in os.environ:
     DATABASES = {
-        # 'default':{
-        #     'ENGINE': os.environ.get("PG_ENGINE","django.db.backends.postgresql_psycopg2"),
-        #     'NAME': os.environ.get("PG_DATABASE"),
-        #     'USER': os.environ.get("PG_USERNAME"),
-        #     'PASSWORD': os.environ.get("PG_PASSWORD"),
-        #     'HOST': os.environ.get("PG_HOSTNAME"),
-        #     'PORT': os.environ.get("PG_PORT"),
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql.postgresql_psycopg2',
-            'NAME': 'rlcis',
-            'USER': 'rlcisadm',
-            'PASSWORD': '12345678',
-            'HOST': 'pgdb',  
+        'default':{
+            'ENGINE': os.environ.get("PG_ENGINE","django.db.backends.postgresql_psycopg2"),
+            'NAME': os.environ.get("PG_DATABASE"),
+            'USER': os.environ.get("PG_USER"),
+            'PASSWORD': os.environ.get("PG_PASSWORD"),
+            'HOST': os.environ.get("PG_HOST"),
+            'PORT': os.environ.get("PG_PORT"),
         }
     }
 else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'docker-rlcs',
+            'NAME': 'rlcs',
             'USER': 'rlcisadm',
             'PASSWORD': '12345678',
-            'HOST': 'pgdb',           
+            'HOST': 'localhost',           
         }
     }
 
