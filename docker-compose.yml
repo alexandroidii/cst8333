@@ -11,6 +11,8 @@ services:
      image: rlcis:rlcs
      container_name: django_rlcs
      command: python manage.py runserver 0.0.0.0:8000
+     environment: 
+       - DEBUG=1
      depends_on:
        - pgdb
   pgdb:

@@ -113,7 +113,8 @@ else:
             'NAME': 'rlcs',
             'USER': 'rlcisadm',
             'PASSWORD': '12345678',
-            'HOST': 'localhost',           
+            'HOST': 'pgdb',   
+            'PORT': '5432',        
         }
     }
 
@@ -156,6 +157,16 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, ". .", "www", "static")
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
+MEDIA_URL = '/media/'
+
+# STATIC_ROOT = '/vol/web/static'
+# MEDIA_ROOT = '/vol/web/media'
+
 AUTH_USER_MODEL = 'users.Users' #tell django to utilize this model for users
 
 AUTHENTICATION_BACKENDS = (
@@ -165,16 +176,8 @@ AUTHENTICATION_BACKENDS = (
 
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LdWwV8aAAAAAAmPYinqHliRCDFGvQamTEuYbg2n'
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
-
-MEDIA_URL = '/media/'
-
 LOGIN_REDIRECT_URL = 'users:home'
 LOGIN_URL = 'users:login'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
