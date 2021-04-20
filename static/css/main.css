@@ -4,6 +4,10 @@ body {
   margin-top: 5rem;
 }
 
+/* h1, h2, h3, h4, h5, h6 {
+  color: #444444;
+} */
+
 ul {
   margin: 0;
 }
@@ -106,74 +110,6 @@ a.article-title:hover {
   background-size: cover;
   opacity: 0.5;
 }
-html, body, .container-table {
-  height: 100%;
-  color: #999;
-}
-body{
-  
-  background-color: #fff;
-  background-size: 20%;
-}
-.profile-main-div{
-  background-color: #cdcdcd;
-  border: 5px solid #ffffff;
-  box-shadow: 0 0 15px #000000;
-  border-radius: 4px;
-  padding: 25px;
-}
-hr{
-  margin: 0 20%;
-  border-top: 1px solid #fff;
-}
-.btn-success{
-  background-color: #17a2b8;
-}
-p.head-msg{
-  text-align: center;
-  font-size: 18px;
-  margin-top: 5px;
-  font-weight: bold;
-  color: #404040;
- 
-}
-.profile-sub-form{
-  padding-right:15px;
-  padding-left:15px;
-}
-.form-group{
-  margin-right: 0px !important;
-}
-.error input, .error select, .error {
-border: 2px red solid;
-}
-
-
-.alert-error {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
-}
-.error > div > p {
-  color: red;
-}
-ul.no-bullets {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-.errorlist {
-  list-style: none;
-}
-.message-row {
-  height: 52px;
-      }
-#id_phone_number_0 {
-width: 150px;
-
-  }
-#id_phone_number_1 {
-width: 55px;  
-   
-  }   
-  
+/* .table td {
+color: white; 
+}  */
