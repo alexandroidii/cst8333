@@ -32,7 +32,5 @@ services:
       - pgdb
     restart: unless-stopped
 
-
-
 volumes:
   postgres_data:
