@@ -110,10 +110,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'rlcs',
+            'NAME': 'rlcis',
             'USER': 'rlcisadm',
             'PASSWORD': '12345678',
-            'HOST': 'pgdb',   
+            'HOST': 'localhost',   
             'PORT': '5432',        
         }
     }
@@ -163,9 +163,6 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 MEDIA_URL = '/media/'
-
-# STATIC_ROOT = '/vol/web/static'
-# MEDIA_ROOT = '/vol/web/media'
 
 AUTH_USER_MODEL = 'users.Users' #tell django to utilize this model for users
 

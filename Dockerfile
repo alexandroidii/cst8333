@@ -12,6 +12,7 @@ RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
 RUN pip3 install -r /requirements.txt
 RUN apk del .build-deps
 
+
 WORKDIR /rlcs_app
 COPY . .
 
