@@ -110,6 +110,7 @@ Date: 2019-12-19
                         $("#scenarioForm").replaceWith(response['html']);
                         loadFilePond();
                         $(window).scrollTop(0);
+                        alert("Scenario has been submitted for review")
                     }else{
                         console.log("Response form with validation errors: " + response['html']);
                         $("#scenarioForm").replaceWith(response['html']);
