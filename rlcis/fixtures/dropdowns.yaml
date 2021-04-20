@@ -1,6 +1,11 @@
 # run the following command to load the data in the database
 # py manage.py loaddata dropdowns.yaml
 
+- model: sites.site
+  pk: 1
+  fields:
+    domain: 127.0.0.1:8000
+    name: localhost
 
 - model: rlcis.bribeinitiator
   pk: 1
