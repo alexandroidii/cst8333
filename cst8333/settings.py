@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY",'changeme')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 if 'DEBUG' in os.environ:
     DEBUG = bool(int(os.environ.get("DEBUG", 0)))
 elif 'PROD' in os.environ: 
@@ -69,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'cst8333.urls'
@@ -153,7 +154,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_ROOT = os.path.join(BASE_DIR, ". .", "www", "static")
 STATIC_URL = '/static/'
 
@@ -163,6 +163,13 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 MEDIA_URL = '/media/'
+
+
+# STATIC_URL = '/static/static/'
+# MEDIA_URL = '/static/media/'
+
+# STATIC_ROOT = '/vol/web/static'
+# MEDIA_ROOT = '/vol/web/media'
 
 AUTH_USER_MODEL = 'users.Users' #tell django to utilize this model for users
 

@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  rlcs:
+    build:
+      context: .
+    volumes:
+      - static_data:/vol/web
+    environment:
+      - SECRET_KEY=samplesecret123
+      - ALLOWED_HOSTS=127.0.0.1,localhost
+
+  proxy:
+    build:
+      context: ./proxy
+    volumes:
+      - static_data:/vol/static
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rlcs
+
+volumes:
+  static_data:
+
+        
