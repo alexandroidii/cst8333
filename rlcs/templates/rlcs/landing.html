@@ -4,7 +4,7 @@
 
 <style>
 
-    .container {
+    .containerl {
         position: absolute;
         bottom:0;
         left:0;
@@ -46,7 +46,7 @@ Date: 2019-12-19
     RLCS
 </p>
 <body style="background-color:#cdcdcd;">
-<div class ="container"></div>
+<div class ="containerl"></div>
     <div id="myCaroursel" class="carousel slide carousel-fade" data-ride="carousel">
         <ol class="carousel-indicators">
             <li data-target="#myCaroursel" data-slide-to="0" class="active"></li>
@@ -57,7 +57,7 @@ Date: 2019-12-19
             {% for scenario in scenarios %}
             <div class="carousel-item {% if forloop.first %} active {% endif %}">
                 <div class="overlay-image" style="background-image:url(/static/images/slide{{forloop.counter}}.jpg);"></div>
-                <div class="container">
+                <div class="containerl">
                 <h2 class="white-text">{{scenario.scenario_summary}}</h2> 
                     <p>{{scenario.scenario_details}}</p>
                     <p>Submitted in {{scenario.country}} on: {{scenario.submitted_date}}</p>
