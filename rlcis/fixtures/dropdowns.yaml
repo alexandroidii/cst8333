@@ -6,6 +6,14 @@
   fields:
     domain: 127.0.0.1:8000
     name: localhost
+- model: auth.group
+  pk: 1
+  fields:
+    name: submitter
+- model: auth.group
+  pk: 2
+  fields:
+    name: reviewer
 
 - model: rlcis.bribeinitiator
   pk: 1
