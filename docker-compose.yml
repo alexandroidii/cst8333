@@ -1,26 +1,21 @@
-version: "3.8"
-
 services:
   pgdb:
     image: postgres:12.0-alpine
-    environment:
-      - POSTGRES_DB=rlcs
-      - POSTGRES_USER=rlcisadm
-      - POSTGRES_PASSWORD=12345678
-      - PGDATA=/tmp
     container_name: postgres_pgdb
     restart: unless-stopped
+    env_file:
+      - ./.env.dev
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+
   pgadmin:
     image: dpage/pgadmin4
     depends_on:
       - pgdb
+    env_file:
+      - ./.env.dev
     ports:
       - "5555:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
     restart: unless-stopped
   rlcs:
     build: .
@@ -33,10 +28,10 @@ services:
       - ./.env.dev
     image: rlcs:1
     container_name: django_rlcs
-    environment: 
-      - DEBUG=1
     depends_on:
       - pgdb
+    restart: unless-stopped
+
 
 
 volumes:
