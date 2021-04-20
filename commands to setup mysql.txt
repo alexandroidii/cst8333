@@ -35,17 +35,17 @@ If the result is not null, you're successful!!!
 -- Connect to mysql with -u(user) root and -p(prompt for password)
 mysql -u root -p
 
--- Create the database called rlcis
-Create database rlcis;
+-- Create the database called rlcs
+Create database rlcs;
 
--- switch to use the rlcis database
-use rlcis;
+-- switch to use the rlcs database
+use rlcs;
 
--- create a new user 'rlcisadm' with password '12345678'
-create user 'rlcisadm'@'localhost' identified with mysql_native_password by '12345678';
+-- create a new user 'rlcsadm' with password '12345678'
+create user 'rlcsadm'@'localhost' identified with mysql_native_password by '12345678';
 
--- Grant all privileges to the rlcisadm user
-grant all privileges on * . * to 'rlcisadm'@'localhost';
+-- Grant all privileges to the rlcsadm user
+grant all privileges on * . * to 'rlcsadm'@'localhost';
 
 -- Flush privileges when you are done to refresh them
 flush privileges;
@@ -54,7 +54,7 @@ flush privileges;
 python manage.py migrate
 
 -- After you add or modify an Model, run this to make a migration to migrate
-python manage.py makemigrations rlcis
+python manage.py makemigrations rlcs
 
 -- Then run this again to migrate the changes
-python manage.py sqlmigrate rlcis 0001
+python manage.py sqlmigrate rlcs 0001

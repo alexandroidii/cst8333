@@ -1,5 +1,5 @@
-# import  rlcis.models
-import rlcis.models_dropdown as dropDowns
+# import  rlcs.models
+import rlcs.models_dropdown as dropDowns
 
 from django.db import models
 from django.utils import timezone
@@ -57,7 +57,7 @@ class CustomAccountManager(BaseUserManager):
 
 class Users(AbstractBaseUser, PermissionsMixin):
 
-    # IndustryType = apps.get_model(app_label='rlcis', model_name='IndustryType')
+    # IndustryType = apps.get_model(app_label='rlcs', model_name='IndustryType')
 
     email = models.EmailField(_('email address'), unique=True)
     user_name = models.CharField(max_length=150, unique=True)
@@ -80,7 +80,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
 
     class Meta: 
-        verbose_name_plural = "RLCIS Users" #define the name of model displayed. Otherwise Users will be displayed
+        verbose_name_plural = "RLCS Users" #define the name of model displayed. Otherwise Users will be displayed
 
     objects = CustomAccountManager()    #define we are using customaccountmanager above 
 

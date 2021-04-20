@@ -18,7 +18,7 @@ import threading
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models.query_utils import Q
 from django.views.generic.edit import FormView
-from rlcis.decorator import already_authenticated_user
+from rlcs.decorator import already_authenticated_user
 
 """
 Speed up email sending
@@ -239,8 +239,8 @@ def landing(request):
         if request.session.get('first_login'):
             return redirect('users:profile')
         else:
-            #return render(request, 'rlcis/landing.html', {'activePage': 'home'})
-            return redirect('rlcis:home')
+            #return render(request, 'rlcs/landing.html', {'activePage': 'home'})
+            return redirect('rlcs:home')
     else:
         return redirect('users:login')
 

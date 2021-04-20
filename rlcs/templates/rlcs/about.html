@@ -1,0 +1,92 @@
+{% extends "rlcs/base.html" %}
+{% comment %}
+RLCS Template used to display Home page.
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+{% endcomment %}
+
+{% block content %}
+
+<style>
+    .float-img{
+        float: left; 
+        margin-right: 10px;
+        margin-bottom: 5px;
+        border:solid black 1px;
+        padding: 2px;
+    }
+</style>
+
+{% load static %} 
+
+    <img src="{% static 'images/splash.jpg' %}" width="540" class="float-img">
+    
+<p>
+    Purpose:
+    Increasingly, companies are implementing
+    robust compliance programmes aimed at preventing
+    bribery and corruption in business
+    transactions. New anticorruption laws, growing
+    enforcement and the rise of corporate
+    responsibility are making a compelling case
+    for enterprises to counter corruption.1
+    Nevertheless, many companies report that
+    they continue to face demands for bribes in
+    the conduct of their business and that these
+    demands sometimes constitute extortion. Bribe
+    solicitation and extortion therefore remain
+    daily challenges for business and they have
+    received minimal attention in the current
+    legal framework against corruption. Leading
+    international anti-bribery instruments, such
+    as the Organization of Economic Cooperation
+    and Development (OECD) Anti-Bribery Convention,
+    do not address this problem.
+    But times are changing. Several explicit
+    provisions in international legal instruments
+    such as the 2005 United Nations Convention
+    against Corruption (UNCAC) prohibit “passive”
+    corruption, extortion or solicitation in
+    either the public or the private sector.2 Recent
+    OECD guidance3 recommends that companies
+    implement measures to address major risk
+    areas, including solicitation and extortion. It
+    also emphasizes the need to provide companies,
+    in particular small and medium enterprises
+    (SMEs), with general advice and support
+    on resisting extortion and solicitation.
+    This is where RESIST (Resisting Extortion
+    and Solicitation in International Transactions)
+    can help. Based on real-life scenarios, RESIST
+    is designed as a training tool to provide
+    practical guidance for company employees on
+    how to prevent and/or respond to an inappropriate
+    demand by a client, business partner
+    or public authority in the most efficient and
+    ethical way, recognizing that such a demand
+    may be accompanied by a threat. RESIST is
+    intended primarily as a training tool to raise
+    employee awareness on the risk of solicitation,
+    including through frank discussion,
+    and to propose practical ethical responses to
+    dilemmas.
+</p>
+<p>
+    Audience
+This tool will be of interest to all companies
+that may be exposed to solicitation risks in
+conducting international business. Solicitation
+is often a key problem for SMEs, which
+are generally more vulnerable to solicitation
+than larger companies and have fewer
+resources to face such situations. Although
+the responses provided can apply to all companies,
+implementation may differ according
+to company size, industry sector, place of
+operation and the specific circumstances of
+the bribe solicitation.
+</p>
+
+{% endblock content %}

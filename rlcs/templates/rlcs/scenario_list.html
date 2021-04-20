@@ -1,0 +1,59 @@
+{% extends "rlcs/base.html" %}
+{% load crispy_forms_tags %}
+{% load django_tables2 %}
+{% load render_table from django_tables2 %}
+
+{% comment %}
+RLCS Template used to display a list of Scenarios in a Table test
+
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+{% endcomment %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 text-center ">
+        <h3>Scenarios</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-1 col-md-3">
+        <a href="{% url 'rlcs:scenario_insert' %}" class="btn btn-outline-success">
+            <i class="fas fa-plus"> Submit a new Scenario</i>
+        </a>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        {% if filter %}
+           
+
+                {% crispy filter.form filter.form.helper %}
+     
+        {% endif %}
+
+        {% render_table table 'django_tables2/bootstrap4.html' %}
+    </div>
+</div>
+
+
+<hr class="md-4">
+
+
+
+
+<script type='text/javascript'>
+
+$(document).ready(function (e) {
+    // jquery used to make each row of the table clickable
+    $(".clickable-row").on("click", function(){
+        window.location = $(this).data("href");
+    });
+});
+
+
+</script>
+{% endblock content %}

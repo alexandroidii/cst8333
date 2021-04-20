@@ -1,4 +1,4 @@
-{% extends "rlcis/base.html" %}
+{% extends "rlcs/base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
@@ -22,7 +22,7 @@
             <div class="col-xs-12 col-sm-4 col-sm-offset-2 profile-main-div">
                     <hr>
                     <div class="row d-flex justify-content-center">
-                        <p class="head-msg col-sm-offset-3">RLCIS Login </p>
+                        <p class="head-msg col-sm-offset-3">RLCS Login </p>
                     </div> 
                 {% csrf_token %}
                 {% crispy form %}

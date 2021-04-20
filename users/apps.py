@@ -13,8 +13,8 @@ class UsersConfig(AppConfig):
         # print(config['DEFAULT']['title'])
         # print(config['domain']['host'])
 
-        # rlcis_site = Sites.objects.all()
-        # rlcis_site.domain = 'lange.ca'
-        # rlcis.save()
+        # rlcs_site = Sites.objects.all()
+        # rlcs_site.domain = 'lange.ca'
+        # rlcs.save()
         import users.signals
 

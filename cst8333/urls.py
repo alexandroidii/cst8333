@@ -6,6 +6,6 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', include('users.urls')),
-    path('rlcis/', include('rlcis.urls',namespace='rlcis')),
+    path('rlcs/', include('rlcs.urls',namespace='rlcs')),
     path('admin/', admin.site.urls),    
 ]

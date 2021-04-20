@@ -69,14 +69,14 @@ You can drop all migrations, create db then restore
 2) for users model:
     py manage.py dumpdata users --format json --indent 4
 
-3) for rlcis models:
-    py manage.py dumpdata rlcis --format json --indent 4
+3) for rlcs models:
+    py manage.py dumpdata rlcs --format json --indent 4
 
-4) for rlcis Incident model:
-    py manage.py dumpdata rlcis.Incident --format json --indent 4
+4) for rlcs Incident model:
+    py manage.py dumpdata rlcs.Incident --format json --indent 4
 
-5) for rlcis IncidentDocument
-    manage.py dumpdata rlcis.IncidentDocument --format json --indent 4
+5) for rlcs IncidentDocument
+    manage.py dumpdata rlcs.IncidentDocument --format json --indent 4
 
 Save (backup) all users in fixture:
     py manage.py dumpdata users --format json --indent 4 >users/fixtures.users.json

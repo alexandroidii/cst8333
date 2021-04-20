@@ -1,0 +1,149 @@
+# run the following command to load the data in the database
+# py manage.py loaddata dropdowns.yaml
+
+- model: sites.site
+  pk: 1
+  fields:
+    domain: 127.0.0.1:8000
+    name: localhost
+- model: auth.group
+  pk: 1
+  fields:
+    name: submitter
+- model: auth.group
+  pk: 2
+  fields:
+    name: reviewer
+
+- model: rlcs.bribeinitiator
+  pk: 1
+  fields:
+    name: President
+- model: rlcs.bribeinitiator
+  pk: 2
+  fields:
+    name: CEO
+- model: rlcs.bribeinitiator
+  pk: 3
+  fields:
+    name: Agent
+- model: rlcs.bribefacilitator
+  pk: 1
+  fields:
+    name: President
+- model: rlcs.bribefacilitator
+  pk: 2
+  fields:
+    name: CEO
+- model: rlcs.bribefacilitator
+  pk: 3
+  fields:
+    name: Agent
+- model: rlcs.briberecipient
+  pk: 1
+  fields:
+    name: Polititian
+- model: rlcs.briberecipient
+  pk: 2
+  fields:
+    name: Public Servent
+- model: rlcs.briberecipient
+  pk: 3
+  fields:
+    name: President
+- model: rlcs.briberecipient
+  pk: 4
+  fields:
+    name: Malitia
+- model: rlcs.briberecipient
+  pk: 5
+  fields:
+    name: Gangs
+- model: rlcs.bribetype
+  pk: 1
+  fields:
+    name: Cash
+- model: rlcs.bribetype
+  pk: 2
+  fields:
+    name: Favors
+- model: rlcs.bribetype
+  pk: 3
+  fields:
+    name: Gratuity
+- model: rlcs.bribetype
+  pk: 4
+  fields:
+    name: Gifts
+- model: rlcs.bribetype
+  pk: 5
+  fields:
+    name: Other Bribe Type
+- model: rlcs.industrytype
+  pk: 1
+  fields:
+    name: Advertising
+- model: rlcs.industrytype
+  pk: 2
+  fields:
+    name: Agriculture
+- model: rlcs.industrytype
+  pk: 3
+  fields:
+    name: Construction
+- model: rlcs.industrytype
+  pk: 4
+  fields:
+    name: Communications
+- model: rlcs.industrytype
+  pk: 5
+  fields:
+    name: Education
+- model: rlcs.industrytype
+  pk: 6
+  fields:
+    name: Entertainment
+- model: rlcs.industrytype
+  pk: 7
+  fields:
+    name: Fashion
+- model: rlcs.industrytype
+  pk: 8
+  fields:
+    name: Finance
+- model: rlcs.industrytype
+  pk: 9
+  fields:
+    name: Information Technology
+- model: rlcs.industrytype
+  pk: 10
+  fields:
+    name: Manufacturing
+- model: rlcs.industrytype
+  pk: 11
+  fields:
+    name: Retail
+- model: rlcs.industrytype
+  pk: 12
+  fields:
+    name: Technology
+- model: rlcs.industrytype
+  pk: 13
+  fields:
+    name: Transportation
+- model: rlcs.industrytype
+  pk: 14
+  fields:
+    name: Other Industry Type
+- model: rlcs.levelofauthority
+  pk: 1
+  fields:
+    name: Local
+- model: rlcs.levelofauthority
+  pk: 2
+  fields:
+    name: State/Provincial
+- model: rlcs.levelofauthority
+  pk: 3
+  fields:
+    name: National

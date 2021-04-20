@@ -43,7 +43,7 @@ if ALLOWED_HOSTS_ENV:
 # Application definition
 
 INSTALLED_APPS = [
-    'rlcis.apps.RlcisConfig',
+    'rlcs.apps.RlcsConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -111,8 +111,8 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'rlcis',
-            'USER': 'rlcisadm',
+            'NAME': 'rlcs',
+            'USER': 'rlcsadm',
             'PASSWORD': '12345678',
             'HOST': 'localhost',   
             'PORT': '5432',        
@@ -203,7 +203,7 @@ CRISPY_CLASS_CONVERTERS = {
 }
 
 SITE_ID=1   #for 127.0.0.1
-#SITE_ID=2  #for rlcis.com
+#SITE_ID=2  #for rlcs.com
 
 
 
