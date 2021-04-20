@@ -107,10 +107,9 @@ Date: 2019-12-19
                     var success = response['success'];
                     if(success){
                         console.log("Scenario has been saved");
-                        $("#scenarioForm").replaceWith(response['html']);
-                        loadFilePond();
-                        $(window).scrollTop(0);
-                        alert("Scenario has been submitted for review")
+
+                        window.location.href = "{% url 'rlcs:scenarios' %}";   
+
                     }else{
                         console.log("Response form with validation errors: " + response['html']);
                         $("#scenarioForm").replaceWith(response['html']);
