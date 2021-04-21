@@ -106,7 +106,9 @@ class SubmitterScenarioTable(tables.Table):
 
 #Used to mask the column values when the Anonymous column is set to True
 def mask_column_value(self, value, record):
-    if self.request.user.groups.filter(name='reviewer' or 'admin').exists():
+    if self.request.user.groups.filter(name='reviewer' or 'admin').exists() or record.submitter == self.request.user:
         return value
     elif record.anonymous:
         return '---'
+    else: 
+        return value
