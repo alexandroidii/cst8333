@@ -284,61 +284,6 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'is_author': submitter_name.user_name == request.user.user_name if submitter_name and request.user.is_authenticated else False,
             }
         return render(request, 'rlcs/scenario_form.html', context)
-    else:
-        fileLength = request.POST.get('fileLength')
-        id = int(request.POST.get('id'))
-        print(fileLength)
-        logger.debug("fileLength = " + fileLength)
-        if id == 0:
-            logger.debug("starting scenario_form - id = 0 POST")
-            if is_reviewer:
-                form = ScenarioFormReviewer(request.POST)
-            else:
-                form = ScenarioFormSubmitter(request.POST)
-        else:
-            logger.debug("starting scenario_form - id exist POST")
-            scenario = Scenario.objects.get(pk=id)
-            if is_reviewer:
-                form = ScenarioFormReviewer(request.POST, instance=scenario)
-            else:
-                form = ScenarioFormSubmitter(request.POST, instance=scenario)
-        print(form.errors)
-        logger.debug(form.errors)
-        if form.is_valid():
-            logger.debug("starting scenario_form - is valid save() POST")
-            print('test')
-            messages.info(request, f'New scenario from was submitted successfully')
-            # First save the form
-            savedScenario = form.save()
-            
-            # Then loop through any files and save them with a link to the scenario.
-            for file_num in range(0, int(fileLength)):
-                ScenarioDocument.objects.create(
-                    scenario=savedScenario,
-                    document=request.FILES.get(f'document{file_num}')
-                )
-        else:
-            print(form.errors)
-            logger.debug(form.errors)
-            logger.debug("form.is_valid() failed")
-            # Need to return the cleaned data back to the form but it doesn't exist in the DB yet.
-            scenario = Scenario.objects.get(pk=id)
-
-            if is_reviewer:
-                form = ScenarioFormReviewer(instance=scenario)
-            else:
-                form = ScenarioFormSubmitter(instance=scenario)
-            files = ScenarioDocument.objects.filter(scenario=scenario)
-            context = {
-                'form': form,
-                'files': request.FILES,
-                'activePage': 'scenarios',
-                'id': id,
-            }
-            return render(request, 'rlcs/scenario_form.html', context)
-
-        # ToDo: Maybe we don't redirect but show a successfully saved message and just reload the form?   
-        return redirect('rlcs:scenarios')
 
 
 """
