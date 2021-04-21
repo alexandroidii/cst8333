@@ -122,15 +122,16 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
         
         if is_reviewer:
             self.table_class = ReviewerScenarioTable
+            self.table_data = Scenario.objects.order_by("-id")
             self.form_class = ReviewerScenarioFilterForm
             self.filterset_class = ReviewerScenarioFilter
         else:
             self.table_class = SubmitterScenarioTable
+            self.table_data = Scenario.objects.filter(is_reviewed=True).order_by("-id")
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
 
         return super().get(request, *args, **kwargs)
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
