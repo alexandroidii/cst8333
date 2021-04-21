@@ -182,6 +182,15 @@ def BaseScenarioFields():
         ]
     return fields
 
+def PublicScenarioFields():
+    fields=[
+            'company_name',
+            'region',
+            'location',
+            'email',
+        ]
+    return fields
+
 def BaseScenarioLabels():
     labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
@@ -280,7 +289,7 @@ class ScenarioFormReviewer(forms.ModelForm):
     
     class Meta:
         model = Scenario
-        fields = BaseScenarioFields()
+        fields = BaseScenarioFields() + PublicScenarioFields() + ['reviewer']
         labels = BaseScenarioLabels()
         widgets = BaseScenarioWidgets()
 
@@ -297,7 +306,7 @@ class ScenarioFormSubmitter(forms.ModelForm):
     
     class Meta:
         model = Scenario
-        fields = BaseScenarioFields()
+        fields = BaseScenarioFields() + PublicScenarioFields()
         labels = BaseScenarioLabels()
         widgets = BaseScenarioWidgets()
 
@@ -307,6 +316,22 @@ class ScenarioFormSubmitter(forms.ModelForm):
         self.helper.form_id = 'scenarioForm'
         self.helper.layout = Layout(
             BaseScenarioLayout()
+        )
+
+class AnonymousScenarioFormSubmitter(forms.ModelForm):
+    
+    class Meta:
+        model = Scenario
+        fields = BaseScenarioFields()
+        labels = BaseScenarioLabels()
+        widgets = BaseScenarioWidgets()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'scenarioForm'
+        self.helper.layout = Layout(
+            AnonymousScenarioLayout()
         )
 
 class ScenarioDocumentForm(forms.ModelForm):
@@ -373,6 +398,114 @@ class BaseScenarioLayout(Layout):
                         Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
                         Column('industry_type_other', css_class='form-group col-sm-2 col-md-4'),
                         Column('company_name', css_class='form-group col-sm-2 col-md-4'),
+                        css_class='form-row'
+                    ),
+                )
+            ),
+            Accordion(
+                AccordionGroup('Summary',
+                    Row(
+                        Column('scenario_summary', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('bribe_initiator', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_facilitator', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_recipient', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_type', css_class='form-group col-sm-2 col-md-3'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('bribe_initiator_other', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_facilitator_other', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_recipient_other', css_class='form-group col-sm-2 col-md-3'),
+                        Column('bribe_type_other', css_class='form-group col-sm-2 col-md-3'),
+                        css_class='form-row'
+                    ),
+                )
+            ),
+            Accordion(
+                AccordionGroup('Scenario Details',
+                    Row(
+                        Column('scenario_details', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('risks', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('resolution', css_class='form-group col-sm-4 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('first_occurence', css_class='form-group col-sm-4 col-md-6'),
+                        Column('resolution_date', css_class='form-group col-sm-4 col-md-6'),
+                        css_class='form-row'
+                    ),
+                )
+            ),
+            Accordion(
+                AccordionGroup('Supporting Documents',
+                    Row(
+                        Column(HTML('<input type="file" multiple>'),css_class='col-sm-12 col-md-12'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column(
+                            HTML(
+                                '{% for f in files %}'
+                                + '<div class="card card-body d-block" id="file-{{ f.pk }}">'
+                                + '<button class="btn deleteFileBtn" type="button" data-docid="{{ f.pk }}" data-filename="{{ f.filename }}">'
+                                + '<i class="fas fa-trash-alt"></i>'
+                                + '</button>'
+                                + '<a href="{{f.document.url}}" target="_blank">{{ f.filename }}</a>'
+                                + '</div>'
+                                + '{% endfor %}"'
+                            )    
+                        )
+                    )
+                )
+            )
+        )
+
+
+class AnonymousScenarioLayout(Layout):
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+
+            Row(
+                Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
+            ),
+            Row(
+                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('anonymous', css_class='form-group col-sm-8 col-md-8'),
+                Column(HTML(
+                            '{% if request.user.is_reviewer %}' +
+                                    'Review Status:  {{ review_status }} <br/>' +
+                                    'Reviewer:  {{ reviewer_name }} <br/>' +
+                                    'Submitter:  {{ submitter_name }}' +
+                            '{% endif %}' 
+                        ), 
+                    css_class='form-group col-sm-4 col-md-4 text-primary font-weight-bold'),
+                css_class='form-row'
+            ),
+            Accordion(
+                AccordionGroup('Identification',
+                    Row(
+                        Column('levelOfAuthority', css_class='form-group col-sm-2 col-md-6'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('country', css_class='form-group col-sm-2 col-md-4'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('industry_type', css_class='form-group col-sm-2 col-md-4'),
+                        Column('industry_type_other', css_class='form-group col-sm-2 col-md-4'),
                         css_class='form-row'
                     ),
                 )

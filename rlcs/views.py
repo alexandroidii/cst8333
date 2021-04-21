@@ -21,7 +21,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm, ReviewerScenarioFilterForm, SubmitterScenarioFilterForm
+from .forms import AnonymousScenarioFormSubmitter, ScenarioFormReviewer, ScenarioFormSubmitter, SearchForm, ScenarioDocumentForm, ReviewerScenarioFilterForm, SubmitterScenarioFilterForm
 from .models import Scenario, ScenarioDocument
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
@@ -269,6 +269,9 @@ def scenario_form(request, id=0, *args, **kwargs):
                 reviewer_name = scenario.reviewer
                 submitter_name = scenario.submitter
                 review_status = "Published" if scenario.is_reviewed else "Under Review"
+            elif scenario.anonymous and scenario.submitter != request.user:
+                form = AnonymousScenarioFormSubmitter(instance=scenario)
+                submitter_name = None
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
                 submitter_name = scenario.submitter
