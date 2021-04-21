@@ -1,4 +1,4 @@
-from rlcs.tables import ScenarioTable
+from rlcs.tables import ReviewerScenarioTable
 from django.contrib import admin
 from django.urls import (
     include, path, reverse,

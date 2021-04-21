@@ -44,6 +44,6 @@ def notify_reviewer(sender, instance, created, **kwargs):
 
     for reviewer in recipients:
         email = EmailMessage(email_subject, message, to=[reviewer])
-        EmailThread(email).start()
+        # EmailThread(email).start()
 
   

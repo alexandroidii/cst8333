@@ -27,7 +27,7 @@ from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
 from django.http import HttpResponse
 from django_tables2 import RequestConfig, LazyPaginator
-from .tables import ScenarioTable
+from .tables import ReviewerScenarioTable, SubmitterScenarioTable
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from .filters import ReviewerScenarioFilter, SubmitterScenarioFilter
@@ -85,7 +85,8 @@ def publish_scenario(request, id):
     
     is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
     is_submitter = request.user.groups.filter(name='submitter').exists()
-    
+    response = {}
+    response['success'] = False
     scenario = Scenario.objects.get(pk=id)
     if request.method == 'POST' and request.is_ajax():
         if is_reviewer:
@@ -104,23 +105,27 @@ def publish_scenario(request, id):
 
         savedScenario.save()
 
-    pass
+        messages.success(request, 'Scenario has been published.')  
+        response['success'] = True
+
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 
 
 class FilteredScenarioListView(SingleTableMixin, FilterView):
     model = Scenario
     template_name = "rlcs/scenario_list.html"
-    table_class = ScenarioTable
     table_pagination = {'per_page': 5}
     
     def get(self, request, *args, **kwargs):
         is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
         
         if is_reviewer:
+            self.table_class = ReviewerScenarioTable
             self.form_class = ReviewerScenarioFilterForm
             self.filterset_class = ReviewerScenarioFilter
         else:
+            self.table_class = SubmitterScenarioTable
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
 
@@ -192,8 +197,11 @@ def save_scenario(request, id=0, **kwargs):
                     scenario=savedScenario,
                     document=request.FILES.get(f'document{file_num}')
                 )
+            if is_reviewer:
+                messages.success(request, 'Scenario has been saved.')  
+            else:
+                messages.success(request, 'Scenario has been sent for review')  
 
-            messages.success(request, 'Submission has been accepted for review')  
             context = {}
             context.update(csrf(request))
             files = ScenarioDocument.objects.filter(scenario=savedScenario)
@@ -202,7 +210,6 @@ def save_scenario(request, id=0, **kwargs):
             response['activePage'] = 'scenarios'
             response['html'] = scenarioForm_html
             response['success'] = True
-
         else:
             logger.debug("form.is_valid() failed")
             logger.debug(form.errors)
@@ -253,11 +260,13 @@ def scenario_form(request, id=0, *args, **kwargs):
             scenario = Scenario.objects.get(pk=id)
             reviewer_name = None
             submitter_name = None
+            review_status = None
             if is_reviewer:
                 instance = (scenario)
                 form = ScenarioFormReviewer(instance=instance)
                 reviewer_name = scenario.reviewer
                 submitter_name = scenario.submitter
+                review_status = "Published" if scenario.is_reviewed else "Under Review"
             else:
                 form = ScenarioFormSubmitter(instance=scenario)
                 submitter_name = scenario.submitter
@@ -269,6 +278,7 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'id': id,
                 'reviewer_name': reviewer_name,
                 'submitter_name': submitter_name,
+                'review_status': review_status,
                 'is_author': submitter_name.user_name == request.user.user_name if submitter_name and request.user.is_authenticated else False,
             }
         return render(request, 'rlcs/scenario_form.html', context)

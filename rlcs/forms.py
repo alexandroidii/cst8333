@@ -44,6 +44,7 @@ class ReviewerScenarioFilterForm(forms.Form):
                 'reviewer',
                 'email',
                 'submitted_date',
+                'is_reviewed',
             ]
     
     def __init__(self, *args, **kwargs):
@@ -75,6 +76,7 @@ class ReviewerScenarioFilterForm(forms.Form):
                         Column("submitted_date", css_class='col-sm-2 col-md-2', autocomplete="off"),
                         Column("email",css_class='col-sm-2 col-md-2', autocomplete="off"),
                         Column("reviewer",css_class='col-sm-2 col-md-2', autocomplete="off"),
+                        Column("is_reviewed",css_class='col-sm-2 col-md-2', autocomplete="off"),
                         css_class='form-row'
                         ),
                     Row(
@@ -176,6 +178,7 @@ def BaseScenarioFields():
             'email',
             'risks',
             'resolution',
+            'is_reviewed',
         ]
     return fields
 
@@ -205,7 +208,8 @@ def BaseScenarioLabels():
             'email':'Public Email',
             'risks':'What where the risks?',
             'resolution':'How was this resolved?',
-            'anonymous':'Would you like to keep your Company Name, Region and Location, and Public Email address private?'
+            'anonymous':'Would you like to keep your Company Name, Region and Location, and Public Email address private?',
+            'is_reviewed':"Has been reviewed",
         }
     return labels
 
@@ -344,6 +348,7 @@ class BaseScenarioLayout(Layout):
                 Column('anonymous', css_class='form-group col-sm-8 col-md-8'),
                 Column(HTML(
                             '{% if request.user.is_reviewer %}' +
+                                    'Review Status:  {{ review_status }} <br/>' +
                                     'Reviewer:  {{ reviewer_name }} <br/>' +
                                     'Submitter:  {{ submitter_name }}' +
                             '{% endif %}' 

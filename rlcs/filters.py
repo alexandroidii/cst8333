@@ -22,9 +22,12 @@ class ReviewerScenarioFilter(django_filters.FilterSet):
                     'reviewer',
                     'email',
                     'submitted_date',
+                    'is_reviewed',
                 ]
+
                 
 class SubmitterScenarioFilter(django_filters.FilterSet):
+    is_reviewed = django_filters.BooleanFilter(field_name='is_reviewed', lookup_expr='True')
     class Meta:
         model = Scenario
         form = SubmitterScenarioFilterForm
@@ -42,3 +45,4 @@ class SubmitterScenarioFilter(django_filters.FilterSet):
                     'scenario_summary',
                     'scenario_details',
                 ]
+        
