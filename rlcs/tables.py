@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django.utils.safestring import mark_safe
 
 from .models import Scenario
 
@@ -90,7 +91,6 @@ class SubmitterScenarioTable(tables.Table):
             "is_training_scenario",
             )
 
-
     def render_company_name(self, value, record):
         return mask_column_value(self, value, record)
 
@@ -100,8 +100,18 @@ class SubmitterScenarioTable(tables.Table):
     def render_location(self, value, record):
         return mask_column_value(self, value, record)
 
+    # Render the email address but hide it if record is marked anonymous.  
+    # Had to use this method so the hover over email link wasn't displaying the public email.
     def render_email(self, value, record):
-        return mask_column_value(self, value, record)
+        email = None
+        if self.request.user.groups.filter(name='reviewer' or 'admin').exists() or record.submitter == self.request.user:
+            email = record.email
+        elif record.anonymous:
+            email = '---'
+        else: 
+            email = record.email
+        email_link = "<a href='mailto:" + email + "'>" + email + "</a>"
+        return mark_safe(email_link)
 
 #Used to mask the column values when the Anonymous column is set to True
 def mask_column_value(self, value, record):
