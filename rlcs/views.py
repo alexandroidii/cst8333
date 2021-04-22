@@ -127,14 +127,10 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
             self.filterset_class = ReviewerScenarioFilter
         elif request.user.is_authenticated:
             self.table_class = SubmitterScenarioTable
-            # only show scenarios that have been reviewed and published, or scenarios that the user submitted.
-            # self.table_data = self.filt.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id")
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
         else:
             self.table_class = SubmitterScenarioTable
-            # only show scenarios that have been reviewed and published
-            # self.table_data = self.table_data.filter(is_reviewed=True).order_by("-id")
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
 

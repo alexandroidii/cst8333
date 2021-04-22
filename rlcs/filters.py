@@ -15,6 +15,7 @@ class ReviewerScenarioFilter(django_filters.FilterSet):
     bribe_type = ModelChoiceFilter(queryset=BribeType.objects.all(), empty_label=(''))
     levelOfAuthority = ModelChoiceFilter(queryset=LevelOfAuthority.objects.all(), empty_label=(''))
     reviewer = ModelChoiceFilter(queryset=User.objects.all().filter(is_reviewer=True), empty_label=(''))
+    is_reviewed = django_filters.BooleanFilter(field_name='is_reviewed')
 
     class Meta:
         model = Scenario
@@ -68,7 +69,7 @@ class SubmitterScenarioFilter(django_filters.FilterSet):
     bribe_recipient = ModelChoiceFilter(queryset=BribeRecipient.objects.all(), empty_label=(''))
     bribe_type = ModelChoiceFilter(queryset=BribeType.objects.all(), empty_label=(''))
     levelOfAuthority = ModelChoiceFilter(queryset=LevelOfAuthority.objects.all(), empty_label=(''))
-    
+    reviewer = ModelChoiceFilter(queryset=User.objects.all().filter(is_reviewer=True), empty_label=(''))
     class Meta:
         model = Scenario
         form = SubmitterScenarioFilterForm
