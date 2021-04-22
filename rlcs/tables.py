@@ -89,7 +89,6 @@ class SubmitterScenarioTable(tables.Table):
             "anonymous",
             "is_training_scenario",
             )
-        company_name = tables.Column()
 
 
     def render_company_name(self, value, record):
