@@ -110,3 +110,18 @@ a.article-title:hover {
   background-size: cover;
   opacity: 0.5;
 }
+.card-body {
+  box-shadow: 0 0 10px 1px;
+}
+.card {
+  margin:20px 10px;
+}
+
+
+.card-title {
+  color:#eb4717;
+}
+
+h5,h6 {
+  color:#b58c13;  
+}

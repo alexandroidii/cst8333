@@ -164,13 +164,6 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 MEDIA_URL = '/media/'
 
-
-# STATIC_URL = '/static/static/'
-# MEDIA_URL = '/static/media/'
-
-# STATIC_ROOT = '/vol/web/static'
-# MEDIA_ROOT = '/vol/web/media'
-
 AUTH_USER_MODEL = 'users.Users' #tell django to utilize this model for users
 
 AUTHENTICATION_BACKENDS = (
@@ -203,7 +196,6 @@ CRISPY_CLASS_CONVERTERS = {
 }
 
 SITE_ID=1   #for 127.0.0.1
-#SITE_ID=2  #for rlcs.com
 
 
 
