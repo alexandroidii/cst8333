@@ -138,17 +138,21 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        is_reviewer = self.request.user.groups.filter(name='reviewer').exists() or self.request.user.is_superuser
         context = super().get_context_data(**kwargs)
         context['activePage'] = 'scenarios'
-
+        
+        # Filter the list on is_reviewed True is they are only submitters.
+        if is_reviewer:
+            filter = ReviewerScenarioFilter(self.request.GET, queryset=self.get_queryset())
+            table = ReviewerScenarioTable(filter.qs)
+        else:
+            filter = SubmitterScenarioFilter(self.request.GET, queryset=self.get_queryset())
+            table = SubmitterScenarioTable(filter.qs.filter(is_reviewed = True))
+        RequestConfig(self.request).configure(table)
+        context['filter'] = filter
+        context['table'] = table
         return context
-
-    # def get_filterset(self, *args, **kwargs):
-    #     filterset = super().get_filterset(*args, **kwargs)
-    #     # is_reviewer = self.request.user.groups.filter(name='reviewer').exists() or self.request.user.is_superuser
-    #     # qs = Scenario.objects.filter(invoice_owner__username=self.request.user).order_by('invoice_due_date')
-    #     filterset.filters['is_reviewed'].field.queryset = filterset.filters['is_reviewed'].field.queryset.filter(Q(is_reviewed=True) | Q(submitter = self.request.user))
-    #     return filterset
 
 """
 Save an scenario form using ajax
