@@ -145,9 +145,13 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
         if is_reviewer:
             filter = ReviewerScenarioFilter(self.request.GET, queryset=self.get_queryset())
             table = ReviewerScenarioTable(filter.qs)
+        elif self.request.user.is_authenticated:
+            filter = SubmitterScenarioFilter(self.request.GET, queryset=self.get_queryset())
+            table = SubmitterScenarioTable(filter.qs.filter(Q(is_reviewed = True)|Q(submitter = self.request.user)))
         else:
             filter = SubmitterScenarioFilter(self.request.GET, queryset=self.get_queryset())
             table = SubmitterScenarioTable(filter.qs.filter(is_reviewed = True))
+      
         RequestConfig(self.request,paginate={"per_page": 5}).configure(table)
         context['filter'] = filter
         context['table'] = table
@@ -199,6 +203,9 @@ def save_scenario(request, id=0, **kwargs):
                 if savedScenario.is_reviewed:
                     savedScenario.is_reviewed = False
 
+            if id == 0:
+                savedScenario.submitted_date = datetime.now().strftime("%Y-%m-%d") 
+            
             savedScenario.save()
 
             # First save the form
@@ -308,8 +315,8 @@ Scenario delete method used to remove an Scenario from persisted store.
 Fields:
 id = scenario id,  pk of scenario to delete
 """
-
 @login_required #login required decorator
+@allowed_users(allowed_roles=['reviewer'])
 def scenario_delete(request, id):
     logger.debug("trying to delete ")
 
@@ -323,124 +330,6 @@ def scenario_delete(request, id):
     scenario.delete()
     return redirect('rlcs:scenarios')
 
-
-"""
-Return all scenarios or search based on the returned Query from persistance.
-
-Fields:
-
-q -- Query returned from the user
-"""
-
-def scenarios_old(request):
-    template = 'rlcs/scenario_list.html'
-    query = request.GET.get('q')
-
-    if not query:
-        scenario_list = Scenario.objects.filter(scenario=True).order_by('-id')
-    else:
-        scenario_list = __search(query).filter(scenario=True)
-    searchForm = SearchForm()
-    paginator = Paginator(scenario_list, 2)
-    page = request.GET.get('page')
-    try:
-        scenarios = paginator.page(page)
-    except PageNotAnInteger:
-        scenarios = paginator.page(1)
-    except EmptyPage:
-        scenarios = paginator.page(paginator.num_pages)
-
-    context = {
-        'scenario_list': scenarios,
-        'activePage': 'scenarios',
-        'searchForm': searchForm,
-        'query': query,
-    }
-    return render(request, template, context)
-
-
-"""
-Scenario method used to display specified scenario from persisted store
-
-Fields:
-id = scenario id,  pk of scenario to display
-
-"""
-@login_required #login required decorator
-def scenario_form_old(request, id=0):
-    logger.debug("starting scenario_form")
-    if request.method == "GET":
-        if id == 0:
-            logger.debug("starting scenario_form - id = 0")
-            form = ScenarioFormReviewer()
-        else:
-            logger.debug("starting scenario_form - id exists")
-            scenario = Scenario.objects.get(pk=id)
-            form = ScenarioFormReviewer(instance=scenario)
-        return render(request, 'rlcs/scenario_form.html', {'form': form, 'activePage': 'scenarios'})
-    else:
-        if id == 0:
-            logger.debug("starting scenario_form - id = 0 POST")
-            form = ScenarioFormReviewer(request.POST)
-        else:
-            logger.debug("starting scenario_form - id exist POST")
-            scenario = Scenario.objects.get(pk=id)
-            form = ScenarioFormReviewer(request.POST, instance=scenario)
-        if form.is_valid():
-            tempObj = form.save(commit=False)
-            tempObj.scenario = True
-            tempObj.save()
-            logger.debug("starting scenario_form - is valid save() POST")
-            form.save()
-        else:
-            logger.debug(form.errors)
-            logger.debug("form.is_valid() failed")
-        return redirect('rlcs:scenarios')
-
-
-"""
-private method used to search multiple Scenario columns utilizing postgres SearchVector.
-
-fields:
-
-query -- contains the query to search Scenarios against
-
-"""
-def __search(query):
-
-    logger.debug("Query = " + query)
-    scenario_list = Scenario.objects.annotate(
-        industry_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
-            *[When(industry_type=i, then=Value(v))
-                   for i, v in Scenario.INDUSTRY_TYPE_CHOICES],
-            default=Value(''),
-            output_field=CharField()
-        ),
-        bribed_by_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
-            *[When(bribed_by=bb, then=Value(v))
-                   for bb, v in Scenario.BRIBED_BY_CHOICES],
-            default=Value(''),
-            output_field=CharField()
-        ),
-        bribe_type_text=Case(  # used to search on the text values instead of the 2 character code stored in the database.
-            *[When(bribe_type=bt, then=Value(v))
-                   for bt, v in Scenario.BRIBE_TYPE_CHOICES],
-            default=Value(''),
-            output_field=CharField()
-        ),
-        search=SearchVector(
-            'scenario_summary',
-            'scenario_details',
-            'country',
-            'region',
-            'location',
-            'company_name',
-            'industry_type_text',
-            'bribed_by_text',
-            'bribe_type_text',
-        ),
-    ).filter(search=query).order_by('-id')
-    return scenario_list
 
 """
 Index method used to render index.html (home page)

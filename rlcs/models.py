@@ -102,7 +102,7 @@ class Scenario(models.Model):
     submitter = models.ForeignKey(Users.Users,on_delete=models.SET_NULL,null=True,blank=True,related_name="submitter")
 
     # resolution_date attribute in scenario table as defined
-    submitted_date = models.DateField(auto_now=True,null=True,blank=True,)
+    submitted_date = models.DateField(null=True,blank=True,)
 
     # anonymous attribute in scenario table as defined
     anonymous = models.BooleanField(null=True,default=False)
