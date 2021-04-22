@@ -13,6 +13,11 @@ def update_supervisor_handler(sender, instance, created, **kwargs):
     if hasattr(instance,'_dirty'): #prevent recursion
         return
 
+    if not instance.groups.filter(name='submitter').exists():
+            # Add submitter group to all users.
+            submitter_group = Group.objects.get(name='submitter')       
+            instance.groups.add(submitter_group)
+
     if created:
         instance.is_staff = True
     else:    

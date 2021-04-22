@@ -52,9 +52,6 @@ def register(request):
                 messages.error(request, 'This email address is already in use.e')
                 return render(request, 'users/register.html', {'form': form, 'activePage': 'register'})
             user.save()
-            # By default add all new registered users to the submitter group
-            submitter_group = Group.objects.get(name='submitter')       
-            user.groups.add(submitter_group)
             current_site = get_current_site(request)
             email_subject = 'Activate Your Account'
             uid = urlsafe_base64_encode(force_bytes(user.pk))

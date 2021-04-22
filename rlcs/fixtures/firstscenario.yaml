@@ -1,0 +1,33 @@
+-   model: rlcs.scenario
+    pk: 1
+    fields:
+        company_name: null
+        scenario_summary: This is your first Scenario
+        scenario_details: Enter all the details of the scenario here
+        risks: Enter the risks of this scenario here
+        resolution: Enter your resolution data here
+        country: Canada
+        region: 'ON'
+        location: Home Town
+        bribe_initiator: 1
+        bribe_initiator_other: null
+        bribe_facilitator: 1
+        bribe_facilitator_other: null
+        bribe_recipient: 1
+        bribe_recipient_other: null
+        bribed_by: null
+        bribe_type: 1
+        bribe_type_other: null
+        industry_type: 1
+        industry_type_other: null
+        levelOfAuthority: 1
+        first_occurence: 2021-04-21
+        resolution_date: 2021-04-21
+        reviewer: null
+        is_reviewed: true
+        reviewed_date: null
+        submitter: null
+        submitted_date: 2021-04-21
+        anonymous: false
+        is_training_scenario: false
+        email: first@scenario.com
