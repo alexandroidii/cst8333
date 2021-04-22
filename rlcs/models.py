@@ -90,7 +90,7 @@ class Scenario(models.Model):
     resolution_date = models.DateField(null=True,blank=True,)
 
     # reviewer attribute in scenario table as defined
-    reviewer = models.ForeignKey(Users.Users,on_delete=models.CASCADE,null=True,blank=True,related_name="reviewer",limit_choices_to={'is_reviewer': True},)
+    reviewer = models.ForeignKey(Users.Users,on_delete=models.SET_NULL,null=True,blank=True,related_name="reviewer",limit_choices_to={'is_reviewer': True},)
 
     # This will be used to determine if a scenario has been reviewed and can be public
     is_reviewed = models.BooleanField(null=True,default=False,help_text="Has this been reviewed?",)
@@ -99,7 +99,7 @@ class Scenario(models.Model):
     reviewed_date = models.DateField(null=True,blank=True,)
 
     # submitter of the scenario
-    submitter = models.ForeignKey(Users.Users,on_delete=models.CASCADE,null=True,blank=True,related_name="submitter")
+    submitter = models.ForeignKey(Users.Users,on_delete=models.SET_NULL,null=True,blank=True,related_name="submitter")
 
     # resolution_date attribute in scenario table as defined
     submitted_date = models.DateField(auto_now=True,null=True,blank=True,)
