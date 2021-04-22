@@ -26,20 +26,19 @@ def update_supervisor_handler(sender, instance, created, **kwargs):
         else:
             instance.is_staff = False
 
-    if not created:
-        if instance.is_reviewer:
-            if not instance.groups.filter(name='reviewer').exists():
-                try:
-                    # If user is selected as reviewer, set their group to reviewer
-                    submitter_group = Group.objects.get(name='reviewer')       
-                    instance.groups.add(submitter_group)
-                except Group.DoesNotExist:
-                    instance.is_reviewer = False
-        else:
-             if instance.groups.filter(name='reviewer').exists():
-                    # If user is removed as reviewer and the group exists, remove from group
-                    submitter_group = Group.objects.get(name='reviewer')       
-                    instance.groups.remove(submitter_group)
+    if instance.is_reviewer:
+        if not instance.groups.filter(name='reviewer').exists():
+            try:
+                # If user is selected as reviewer, set their group to reviewer
+                submitter_group = Group.objects.get(name='reviewer')       
+                instance.groups.add(submitter_group)
+            except Group.DoesNotExist:
+                instance.is_reviewer = False
+    else:
+            if instance.groups.filter(name='reviewer').exists():
+                # If user is removed as reviewer and the group exists, remove from group
+                submitter_group = Group.objects.get(name='reviewer')       
+                instance.groups.remove(submitter_group)
 
     try:
         instance._dirty = True
