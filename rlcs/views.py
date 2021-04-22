@@ -100,6 +100,7 @@ def publish_scenario(request, id):
         savedScenario = form.save(commit=False)
         if is_reviewer:
             savedScenario.is_reviewed = True
+            savedScenario.reviewer = request.user
         else:
             print("You are not a reviewer and cannot publish this")
 
