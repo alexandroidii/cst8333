@@ -442,7 +442,7 @@ Index method used to render index.html (home page)
 """
 def index(request):
     tot_subs = Scenario.objects.count()
-    scenarios = Scenario.objects.order_by('id')[:3]
+    scenarios = Scenario.objects.order_by('-id')[:3]
     current_date = datetime.now()
     month = calendar.month_name[current_date.month]
     year = current_date.year
