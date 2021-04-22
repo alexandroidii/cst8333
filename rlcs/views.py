@@ -115,26 +115,21 @@ def publish_scenario(request, id):
 class FilteredScenarioListView(SingleTableMixin, FilterView):
     model = Scenario
     template_name = "rlcs/scenario_list.html"
-    table_pagination = {'per_page': 5}
+    ordering = '-id'
     
     def get(self, request, *args, **kwargs):
         is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
         
         if is_reviewer:
             self.table_class = ReviewerScenarioTable
-            self.table_data = Scenario.objects.order_by("-id")
             self.form_class = ReviewerScenarioFilterForm
             self.filterset_class = ReviewerScenarioFilter
         elif request.user.is_authenticated:
             self.table_class = SubmitterScenarioTable
-            # only show scenarios that have been reviewed and published, or scenarios that the user submitted.
-            self.table_data = Scenario.objects.filter(Q(is_reviewed=True) | Q(submitter = request.user)).order_by("-id")
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
         else:
             self.table_class = SubmitterScenarioTable
-            # only show scenarios that have been reviewed and published
-            self.table_data = Scenario.objects.filter(is_reviewed=True).order_by("-id")
             self.form_class = SubmitterScenarioFilterForm
             self.filterset_class = SubmitterScenarioFilter
 
@@ -142,9 +137,20 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        is_reviewer = self.request.user.groups.filter(name='reviewer').exists() or self.request.user.is_superuser
         context = super().get_context_data(**kwargs)
         context['activePage'] = 'scenarios'
-
+        
+        # Filter the list on is_reviewed True is they are only submitters.
+        if is_reviewer:
+            filter = ReviewerScenarioFilter(self.request.GET, queryset=self.get_queryset())
+            table = ReviewerScenarioTable(filter.qs)
+        else:
+            filter = SubmitterScenarioFilter(self.request.GET, queryset=self.get_queryset())
+            table = SubmitterScenarioTable(filter.qs.filter(is_reviewed = True))
+        RequestConfig(self.request,paginate={"per_page": 5}).configure(table)
+        context['filter'] = filter
+        context['table'] = table
         return context
 
 """
