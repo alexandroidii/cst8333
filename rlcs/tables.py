@@ -12,7 +12,7 @@ class ReviewerScenarioTable(tables.Table):
             'data-href': lambda record: record.get_absolute_url,
             'class': 'clickable-row',
         }
-        sequence = (
+        fields = (
             "id",
             "country",
             "company_name", 
@@ -45,8 +45,6 @@ class ReviewerScenarioTable(tables.Table):
             "anonymous",
             "is_training_scenario",
             )
-
-
 
 class SubmitterScenarioTable(tables.Table):
     class Meta:
@@ -57,7 +55,7 @@ class SubmitterScenarioTable(tables.Table):
             'data-href': lambda record: record.get_absolute_url,
             'class': 'clickable-row',
         }
-        sequence = (
+        fields = (
             "id",
             "country",
             "company_name", 
@@ -90,6 +88,7 @@ class SubmitterScenarioTable(tables.Table):
             "anonymous",
             "is_training_scenario",
             )
+
 
     def render_company_name(self, value, record):
         return mask_column_value(self, value, record)

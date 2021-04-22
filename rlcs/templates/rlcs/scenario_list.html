@@ -18,13 +18,23 @@ Date: 2019-12-19
         <h3>Scenarios</h3>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-1 col-md-3">
-        <a href="{% url 'rlcs:scenario_insert' %}" class="btn btn-outline-success">
-            <i class="fas fa-plus"> Submit a new Scenario</i>
-        </a>
+{% if request.user.is_authenticated %}
+    <div class="row">
+        <div class="col-sm-1 col-md-3">
+            <a href="{% url 'rlcs:scenario_insert' %}" class="btn btn-outline-success">
+                <i class="fas fa-plus"> Submit a new Scenario</i>
+            </a>
+        </div>
     </div>
-</div>
+{% else %}
+    <div class="row">
+        <div class="col-sm-1 col-md-3">
+            <a href="{% url 'users:login' %}" class="btn btn-outline-success">
+                <i class="fas fa-plus"> Login to Submit a new Scenario</i>
+            </a>
+        </div>
+    </div>
+{% endif %}
 <br/>
 <div class="row">
     <div class="col-sm-12 col-md-12">
