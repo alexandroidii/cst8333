@@ -115,7 +115,6 @@ def publish_scenario(request, id):
 class FilteredScenarioListView(SingleTableMixin, FilterView):
     model = Scenario
     template_name = "rlcs/scenario_list.html"
-    table_pagination = {'per_page': 5}
     ordering = '-id'
     
     def get(self, request, *args, **kwargs):
@@ -149,7 +148,7 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
         else:
             filter = SubmitterScenarioFilter(self.request.GET, queryset=self.get_queryset())
             table = SubmitterScenarioTable(filter.qs.filter(is_reviewed = True))
-        RequestConfig(self.request).configure(table)
+        RequestConfig(self.request,paginate={"per_page": 5}).configure(table)
         context['filter'] = filter
         context['table'] = table
         return context
