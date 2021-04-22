@@ -83,7 +83,7 @@ def deleteDocument(request):
 @allowed_users(allowed_roles=['reviewer'])
 def publish_scenario(request, id):
     
-    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
     is_submitter = request.user.groups.filter(name='submitter').exists()
     response = {}
     response['success'] = False
@@ -118,7 +118,7 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
     table_pagination = {'per_page': 5}
     
     def get(self, request, *args, **kwargs):
-        is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+        is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
         
         if is_reviewer:
             self.table_class = ReviewerScenarioTable
@@ -151,11 +151,11 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
 Save an scenario form using ajax
 """
 @already_authenticated_user
-@allowed_users(allowed_roles=['submitter','reviewer','admin'])
+@allowed_users(allowed_roles=['submitter','reviewer'])
 def save_scenario(request, id=0, **kwargs):
     logger.debug("Saving Scenario form")
     
-    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
     
     if request.method == 'POST' and request.is_ajax():
         if is_reviewer:
@@ -249,7 +249,7 @@ If id>0, this scenario is being updated
 """
 def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
-    is_reviewer = request.user.groups.filter(name='reviewer' or 'admin').exists()
+    is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
 
     if request.method == "GET":
         if id == 0:
