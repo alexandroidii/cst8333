@@ -52,11 +52,11 @@ User = get_user_model()
 User.objects.all()
 
 >>> User.objects.all()
-<QuerySet [<Users: sammy>, <Users: langenet>, <Users: homenet>]>
+<QuerySet [<Users: user1>, <Users: user2>, <Users: email>]>
 >>>
->>> user=User.objects.get(user_name='homenet')
+>>> user=User.objects.get(user_name='email')
 >>> user.email
-'homenet@lange.ca'
+'email@domain.com'
 >>> user.is_active
 True
 
