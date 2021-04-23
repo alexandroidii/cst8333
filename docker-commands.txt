@@ -40,9 +40,6 @@ docker images
 #push the image up to docker hub
 docker push alexandroidii/cst8333-rlcs:1
 
-
-#It seems like we might have to do this for the 3 images.
-
 #pull the docker images ready to load
 docker pull alexandroidii/cst8333-rlcs:1
 
