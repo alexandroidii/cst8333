@@ -21,3 +21,13 @@ python manage.py createsuperuser
 
 # connect to pgadmin in container
 http://localhost:5555
+
+#Export each docker container seperately
+docker container export --output="cst8333-django-rlcs.tar" django_rlcs 
+docker container export --output="cst8333-pgadmin-1.tar" cst8333_pgadmin_1 
+docker container export --output="cst8333-postgres-pgdb.tar" postgres_pgdb  
+
+#Import images
+docker import cst8333-django-rlcs.tar
+docker import cst8333-pgadmin-1.tar
+docker import cst8333-postgres-pgdb.tar

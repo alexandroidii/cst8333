@@ -27,7 +27,7 @@ def notify_reviewer(sender, instance, created, **kwargs):
     scenSum = scenario.scenario_summary
     current_site = get_current_site(request=None)
     domain = current_site.domain
-    link = domain + '/rlcs/scenarios/' + scenNum
+    link = domain + '/rlcs/scenarios/' + scenNum + "?login=true"
     if settings.DEBUG:
         if created:     
             print("New Scenario created")
