@@ -54,11 +54,11 @@ Date: 2019-12-19
                     
                     {% if request.user.is_authenticated %}
                       <a href="{% url 'rlcs:scenario_insert' %}" class="btn btn-lg btn-primary">
-                        Submit a scenario today
+                        Submit a Case today
                       </a>
                     {% else %}
                       <a href="{% url 'users:login' %}" class="btn btn-lg btn-primary">
-                         Login to Submit a new Scenario
+                         Login to Submit a new Case
                       </a>
                     {% endif %}
                 </div>
@@ -80,27 +80,27 @@ Date: 2019-12-19
     <div class="col-sm-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Total Submissions Received</h5>
-                <p><h6>{{tot_subs}} Scenario cases submitted </p></h6>
-            <a href="{% url 'rlcs:scenarios' %}" class="btn btn-primary">Scenario cases submitted</a>
+            <h5 class="card-title">Total Cases Received</h5>
+                <p><h6>{{tot_subs}} Cases submitted </p></h6>
+            <a href="{% url 'rlcs:scenarios' %}" class="btn btn-primary">Cases submitted</a>
           </div>
         </div>
     </div>
     <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Submissions for {{month}} {{year}}</h5>
-            <p><h6>{{total}} Scenario cases submitted </p></h6>
-          <a href="{% url 'rlcs:scenarios' %}" class="btn btn-primary">Review Submissions</a>
+          <h5 class="card-title">Cases for {{month}} {{year}}</h5>
+            <p><h6>{{total}} Cases submitted </p></h6>
+          <a href="{% url 'rlcs:scenarios' %}" class="btn btn-primary">Review Cases</a>
         </div>
       </div>
     </div>
     <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Submissions resolved for {{month}} {{year}}</h5>
-            <p><h6>{{resolved}} Scenario cases resolved </p></h6>
-          <a href="{% url 'rlcs:scenarios' %}" class="btn btn-primary">Review Resolved</a>
+          <h5 class="card-title">Cases resolved for {{month}} {{year}}</h5>
+            <p><h6>{{resolved}} Cases resolved </p></h6>
+          <a href="{% url 'rlcs:scenarios' %}" class="btn btn-primary">Review Resolved Cases</a>
         </div>
       </div>
     </div>

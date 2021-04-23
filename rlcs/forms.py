@@ -194,7 +194,7 @@ def PublicScenarioFields():
 def BaseScenarioLabels():
     labels = { # assign all the labels for the fields used in the template automatically
             'company_name': 'Company Name',
-            'scenario_summary': 'Scenario Summary',
+            'scenario_summary': 'Case Summary',
             'scenario_details': 'How did it start?',
             'country': 'Country',
             'region': 'Region',
@@ -363,10 +363,10 @@ class BaseScenarioLayout(Layout):
         super().__init__(
 
             Row(
-                Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
+                Column(HTML('<h1>Case</h1>'),css_class='col-sm-12 col-md-12 text-center'),
             ),
             Row(
-                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by CCS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
+                Column(HTML('<p>Fill in the details of the corruption case as best as you can. Once submitted, it will be reviewed by CCS, who will contact you to confirm any details.  Once the case is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
             Row(

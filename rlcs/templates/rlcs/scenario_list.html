@@ -15,14 +15,14 @@ Date: 2019-12-19
 
 <div class="row">
     <div class="col-md-12 text-center ">
-        <h3>Scenarios</h3>
+        <h3>Cases</h3>
     </div>
 </div>
 {% if request.user.is_authenticated %}
     <div class="row">
         <div class="col-sm-1 col-md-3">
             <a href="{% url 'rlcs:scenario_insert' %}" class="btn btn-outline-success">
-                <i class="fas fa-plus"> Submit a new Scenario</i>
+                <i class="fas fa-plus"> Submit a new Case</i>
             </a>
         </div>
     </div>
@@ -30,7 +30,7 @@ Date: 2019-12-19
     <div class="row">
         <div class="col-sm-1 col-md-3">
             <a href="{% url 'users:login' %}" class="btn btn-outline-success">
-                <i class="fas fa-plus"> Login to Submit a new Scenario</i>
+                <i class="fas fa-plus"> Login to Submit a new Case</i>
             </a>
         </div>
     </div>
