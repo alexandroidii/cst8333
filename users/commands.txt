@@ -1,0 +1,85 @@
+
+mkdir acc_core
+cd acc_core
+workon acc
+
+1) django-admin startproject acc_core . #create acc_core project
+2) py manage.py startapp users	#create am app
+3) py -m venv acc
+4) setup user/database using pgadmin
+5) ensure DATABASES are set:
+
+DATABASES = {
+ 'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'AccCore',
+        'USER': 'accadm',
+        'PASSWORD': '12345678',
+        'HOST': 'localhost'      
+
+    }
+        
+}
+
+6) py manage.py makemigrations
+7) py manage.py migrate
+8) create superuser: py manage.py createsuperuser
+
+
+
+workon acc
+pip install django
+django-admin startproject core .
+py manage.py startapp users
+py manage.py makemigrations --dry-run (optional --verbosity 1,2,3)
+py manage.py makemigrations
+py manage.py migrate
+
+To totally remove existing model and start fresh
+1) delete database
+2) delete migration file
+3) python manage.py migrate --fake users zero (users=appname)
+
+py manage.py createsuperuser
+
+pip install coverage
+coverage run --omit='*/venv/*' manage.py test
+coverage html
+
+*Working with custom model
+from django.contrib.auth import get_user_model
+User = get_user_model()
+User.objects.all()
+
+>>> User.objects.all()
+<QuerySet [<Users: user1>, <Users: user2>, <Users: email>]>
+>>>
+>>> user=User.objects.get(user_name='email')
+>>> user.email
+'email@domain.com'
+>>> user.is_active
+True
+
+Fixtures folder is a backup of the user model
+You can drop all migrations, create db then restore
+
+1) for every model:
+    manage.py dumpdata  --format json --indent 4 (indent 4 makes it easier to read)
+
+2) for users model:
+    py manage.py dumpdata users --format json --indent 4
+
+3) for rlcs models:
+    py manage.py dumpdata rlcs --format json --indent 4
+
+4) for rlcs Incident model:
+    py manage.py dumpdata rlcs.Incident --format json --indent 4
+
+5) for rlcs IncidentDocument
+    manage.py dumpdata rlcs.IncidentDocument --format json --indent 4
+
+Save (backup) all users in fixture:
+    py manage.py dumpdata users --format json --indent 4 >users/fixtures.users.json
+
+Restore data 
+    py.manage.py loaddata users/fixtures/users.json
