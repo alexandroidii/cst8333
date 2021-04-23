@@ -178,7 +178,7 @@ Methods: GET
 Inputs: <uidb64>/<token>
 Output: Successful banner message for account activation completion.
 
-This class is called through the url mapping which also passes via the url, the encoded uid base 64 token. The user is retrived from the model 
+This class is called through the url mapping which also passes via the url, the encoded uid base 64 token. The user is retrieved from the model 
 after the token is decoded and checked (via primary key). If the current user is not activated - as it should be for a new user, the is_active 
 boolean is set in the users model which then via the Django authentication mechanism, enables the user to log into the application while being
 routed via the login screen. A banner message appears between the login template and the banner for 3 seconds notifying to the user that
@@ -211,6 +211,19 @@ class VerificationView(View):
 
 
 """
+Forms/templates: NewPassResetform, set-new-password.html
+Methods: GET/POST
+Inputs: <uidb64>/<token>
+Output: Successful banner message stating a password reset was sent to the user's email inbox
+
+This class is called through the url mapping which also passes via the url, the encoded uid base 64 token. The user is retrieved from the model 
+after the token is decoded and checked (via primary key). The user then initiate the password reset by clicking on the link which contains the token
+string then gets directed to the to the form class in forms.py - NewPassResetform which then gets rendered in the set-new-password.html template via
+Crispyforms tag along with some local styling added
+ A banner message appears between the login template and the banner for 3 seconds notifying to the user that
+the account was activated. The sites framework provides the domain information - configurable via sites properties 
+in the admin page.
+
 https://youtu.be/a2Rom1nfHRs
 https://simpleisbetterthancomplex.com/tutorial/2016/08/24/how-to-create-one-time-link.html
 
