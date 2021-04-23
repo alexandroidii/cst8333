@@ -27,17 +27,12 @@ class NewPassResetForm(forms.ModelForm):
             self.helper.add_input(Submit('submit', 'Submit', css_class='btn btn-success accept-btn'))
             self.helper.layout = Layout(
                   Row(
-                       Column('password1', css_class='col-sm-10 container-fluid  justify-content-center'), 
-     
+                       Column('password1', css_class='col-sm-10 container-fluid  justify-content-center'),     
                   ),
                   Row(
                        Column('password2', css_class='col-sm-10 container-fluid  justify-content-center'),  
-                         HTML('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),   
-                                                        
-                                                    
-                  ),
-             
-                       
+                         HTML('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),                                                                                                              
+                  ),                       
             )
 
 class MyPasswordResetForm(forms.Form):
@@ -95,13 +90,7 @@ class LoginForm(forms.Form):
 
                        Column('password', css_class='col-sm-10 container-fluid  justify-content-center'),  
                          HTML('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),                                                                                                       
-                  ),
-                  #test
-                  # Field('email', css_class='col-sm-10 container-fluid  justify-content-center'),
-                  # Field(AppendedText('password',
-                  #       mark_safe('<my-span class="fa fa-eye" aria-hidden="true" id="eye" onclick="toggle()"</my-span>'),
-                  #       css_class='col-sm-10 container-fluid  justify-content-center')
-                  # )                                 
+                  ),                          
             )
 
       def clean(self, *args,**kwargs):
@@ -150,22 +139,6 @@ class ProfileUpdateForm(forms.ModelForm):
          model = get_user_model() #this is the "Users" model that you imported at the top of the file  
          fields = ('email', 'user_name', 'first_name', 'last_name', 'phone_number','company_name', 'industry_type',
                   'position', 'website', 'address', 'city', 'province_state', 'country') #etc, other fields you want displayed on the form)
-  
-      # widgets = {
-      #     'email': forms.EmailInput(attrs={'class': 'form-control custom-class'}),
-      #     'user_name':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'first_name':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'last_name':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'phone_number':forms.NumberInput(attrs={'class': 'form-control custom-class'}),
-      #     'company_name':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'position':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'website':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'industry_type':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'address':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'city':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'province_state':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #     'country':forms.TextInput(attrs={'class': 'form-control custom-class'}),
-      #       }
       
       def __init__(self, *args, **kwargs):
             super(ProfileUpdateForm, self).__init__(*args, **kwargs)        
