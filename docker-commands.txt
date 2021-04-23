@@ -22,15 +22,6 @@ python manage.py createsuperuser
 # connect to pgadmin in container
 http://localhost:5555
 
-#Export each docker container seperately
-docker container export --output="cst8333-django-rlcs.tar" django_rlcs 
-docker container export --output="cst8333-pgadmin-1.tar" cst8333_pgadmin_1 
-docker container export --output="cst8333-postgres-pgdb.tar" postgres_pgdb  
-
-#Import images
-docker import cst8333-django-rlcs.tar
-docker import cst8333-pgadmin-1.tar
-docker import cst8333-postgres-pgdb.tar
 
 #Push an image to Docker Hub:
 #List all containers
@@ -41,28 +32,22 @@ docker login
 
 #commit image where b317f7acf873 is the container id you found when running "docker ps -a"
 docker commit b317f7acf873 alexandroidii/cst8333-rlcs:1
-docker commit a7df1fd5f5b6 alexandroidii/cst8333-pgadmin4:1
-docker commit 63d911edd841 alexandroidii/cst8333-pgdb:1
+
 
 #Confirm you see the new image:
 docker images
 
 #push the image up to docker hub
 docker push alexandroidii/cst8333-rlcs:1
-docker push alexandroidii/cst8333-pgadmin4:1
-docker push alexandroidii/cst8333-pgdb:1
+
 
 #It seems like we might have to do this for the 3 images.
 
 #pull the docker images ready to load
 docker pull alexandroidii/cst8333-rlcs:1
-docker pull alexandroidii/cst8333-pgadmin4:1
-docker pull alexandroidii/cst8333-pgdb:1
 
 #run the pulled images
 docker run -it alexandroidii/cst8333-rlcs:1
-docker run -it alexandroidii/cst8333-pgadmin4:1
-docker run -it alexandroidii/cst8333-pgdb:1
 
 #Remove all docker images
 docker rmi $(docker images -a -q)
