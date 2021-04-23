@@ -264,7 +264,7 @@ If id>0, this scenario is being updated
 def scenario_form(request, id=0, *args, **kwargs):
     logger.debug("starting scenario_form")
     is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
-
+    
     if request.method == "GET":
         if id == 0:
             logger.debug("starting scenario_form - id = 0")
@@ -279,35 +279,42 @@ def scenario_form(request, id=0, *args, **kwargs):
                 'id': id,
             }
         else:
-            logger.debug("starting scenario_form - id exists")
-            scenario = Scenario.objects.get(pk=id)
-            reviewer_name = None
-            submitter_name = None
-            review_status = None
-            if is_reviewer:
-                instance = (scenario)
-                form = ScenarioFormReviewer(instance=instance)
-                reviewer_name = scenario.reviewer
-                submitter_name = scenario.submitter
-                review_status = "Published" if scenario.is_reviewed else "Under Review"
-            elif scenario.anonymous and scenario.submitter != request.user:
-                form = AnonymousScenarioFormSubmitter(instance=scenario)
-                submitter_name = None
+
+            login = request.GET.get('login',False)
+            if login:
+                request.session['referer_link'] = request.path_info
+                return redirect('users:login')
             else:
-                form = ScenarioFormSubmitter(instance=scenario)
-                submitter_name = scenario.submitter
-            files = ScenarioDocument.objects.filter(scenario=scenario)
-            context = {
-                'form': form,
-                'files': files,
-                'activePage': 'scenarios',
-                'id': id,
-                'reviewer_name': reviewer_name,
-                'submitter_name': submitter_name,
-                'review_status': review_status,
-                'is_author': submitter_name.user_name == request.user.user_name if submitter_name and request.user.is_authenticated else False,
-            }
-        return render(request, 'rlcs/scenario_form.html', context)
+
+                logger.debug("starting scenario_form - id exists")
+                scenario = Scenario.objects.get(pk=id)
+                reviewer_name = None
+                submitter_name = None
+                review_status = None
+                if is_reviewer:
+                    instance = (scenario)
+                    form = ScenarioFormReviewer(instance=instance)
+                    reviewer_name = scenario.reviewer
+                    submitter_name = scenario.submitter
+                    review_status = "Published" if scenario.is_reviewed else "Under Review"
+                elif scenario.anonymous and scenario.submitter != request.user:
+                    form = AnonymousScenarioFormSubmitter(instance=scenario)
+                    submitter_name = None
+                else:
+                    form = ScenarioFormSubmitter(instance=scenario)
+                    submitter_name = scenario.submitter
+                files = ScenarioDocument.objects.filter(scenario=scenario)
+                context = {
+                    'form': form,
+                    'files': files,
+                    'activePage': 'scenarios',
+                    'id': id,
+                    'reviewer_name': reviewer_name,
+                    'submitter_name': submitter_name,
+                    'review_status': review_status,
+                    'is_author': submitter_name.user_name == request.user.user_name if submitter_name and request.user.is_authenticated else False,
+                }
+    return render(request, 'rlcs/scenario_form.html', context)
 
 
 """
