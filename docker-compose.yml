@@ -18,7 +18,8 @@ services:
       - "5555:80"
     restart: unless-stopped
   rlcs:
-    build: .
+    # build: .
+    image: alexandroidii/cst8333-rlcs:1
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/rlcs
@@ -26,7 +27,6 @@ services:
       - 8000:8000
     env_file:
       - ./.env.dev
-    image: rlcs:1
     container_name: django_rlcs
     depends_on:
       - pgdb
