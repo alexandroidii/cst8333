@@ -13,7 +13,7 @@ from .models_dropdown import BribedBy
 
 
 """ 
-RLCS forms used when populating the template fields.  
+CCS forms used when populating the template fields.  
 
 Functions:
 DateInput -- Used to set the input type of a field to 'date'
@@ -201,9 +201,9 @@ def BaseScenarioLabels():
             'bribe_initiator': 'Bribe Initiator',
             'bribe_facilitator': 'Bribe Facilitator',
             'bribe_recipient': 'Bribe Receipient',
-            'bribe_initiator': 'Bribe Initiator Other',
-            'bribe_facilitator': 'Bribe Facilitator Other',
-            'bribe_recipient': 'Bribe Receipient Other',
+            'bribe_initiator_other': 'Bribe Initiator Other',
+            'bribe_facilitator_other': 'Bribe Facilitator Other',
+            'bribe_recipient_other': 'Bribe Receipient Other',
             'bribed_by_other': 'Bribed By Other',
             'bribe_type': 'Bribe Type',
             'bribe_type_other': 'Bribe Type Other',
@@ -366,7 +366,7 @@ class BaseScenarioLayout(Layout):
                 Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
             ),
             Row(
-                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
+                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by CCS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
             Row(
@@ -478,7 +478,7 @@ class AnonymousScenarioLayout(Layout):
                 Column(HTML('<h1>Scenario</h1>'),css_class='col-sm-12 col-md-12 text-center'),
             ),
             Row(
-                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by RLCS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
+                Column(HTML('<p>Fill in the details of the corruption scenario as best as you can. Once submitted, it will be reviewed by CCS, who will contact you to confirm any details.  Once the scenario is reviewed and approved, it will be posted publicly.'),css_class='col-sm-12 col-md-12'),
                 css_class='form-row'
             ),
             Row(

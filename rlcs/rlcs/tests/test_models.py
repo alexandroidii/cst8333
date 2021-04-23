@@ -3,7 +3,7 @@ from django.test import TestCase
 from rlcs.models import Reviewer
 
 """ 
-RLCS test_models defines the unittests for the Reviewer model.
+CCS test_models defines the unittests for the Reviewer model.
 Following the setUpTestData, 6 defined tests are  used to valiadate
 the Reviewer model.
 

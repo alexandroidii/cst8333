@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import  Scenario,  ScenarioDocument
 from .models_dropdown import BribeFacilitator, BribeInitiator, BribeRecipient, BribeType, BribedBy,IndustryType, LevelOfAuthority
 """ 
-RLCS admin.py - used to display models for admin pannel.
+CCS admin.py - used to display models for admin pannel.
 
 Models Scenario, Reviewer defined as input.
 
@@ -17,9 +17,9 @@ Course: CST8333
 Date: 2019-12-19
 """
 
-admin.site.site_header = "RLCS Admin"
-admin.site.site_title = "RLCS Admin Area"
-admin.site.index_title = "Welcome to the RLCS Admin area"
+admin.site.site_header = "CCS Admin"
+admin.site.site_title = "CCS Admin Area"
+admin.site.index_title = "Welcome to the CCS Admin area"
 
 # admin.site.register(Scenario)
 admin.site.register(BribeType)

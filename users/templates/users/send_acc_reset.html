@@ -3,13 +3,13 @@
 {% autoescape off %}  
 Hi {{ user.user_name }},  
 
-Please click on the link to reset your RLCS account password,
+Please click on the link to reset your CCS account password,
 
 http://{{ domain }}{% url 'users:set-new-password' uidb64=uid token=token %} 
 
 If you think, it's not you, then just ignore this email.  
 
-The RLCS team...
+The CCS team...
 
 {% endautoescape %}
 

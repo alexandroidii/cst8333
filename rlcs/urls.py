@@ -10,7 +10,7 @@ from .views import FilteredScenarioListView
 from . import views
 
 """ 
-RLCS Urls to direct navigation through the app - all application views 
+CCS Urls to direct navigation through the app - all application views 
 are imported.
 
 App Namespace: 'rlcs'

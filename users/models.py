@@ -80,7 +80,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
 
     class Meta: 
-        verbose_name_plural = "RLCS Users" #define the name of model displayed. Otherwise Users will be displayed
+        verbose_name_plural = "CCS Users" #define the name of model displayed. Otherwise Users will be displayed
 
     objects = CustomAccountManager()    #define we are using customaccountmanager above 
 

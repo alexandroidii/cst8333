@@ -23,7 +23,7 @@ from rlcs.decorator import already_authenticated_user
 
 
 """
-RLCS Views that handle all users information contained in Db model
+CCS Views that handle all users information contained in Db model
 with a custom user model authentication framework. Summarization list below:
 
 Functions and classes:
@@ -33,7 +33,7 @@ RequestPasswordResetEmail - Provision for user passwored reset (Class)
 VerificationView - Handles verification of newly registered user (Class)
 CompletePasswordReset - Validates user on password reset (Class)
 profile - Provides access to personal profile (Function)
-landing - Simple function for redirecting to the RLCS application home page (Function)
+landing - Simple function for redirecting to the CCS application home page (Function)
 LoginView - Provide login credential checking, authentication and redirection to index - landing page (Class)
 LogoutView - Calls logout within Djano to log user out (Class)
 
