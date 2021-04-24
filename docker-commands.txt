@@ -33,7 +33,6 @@ docker login
 #commit image where b317f7acf873 is the container id you found when running "docker ps -a"
 docker commit b317f7acf873 alexandroidii/cst8333-rlcs:1
 
-
 #Confirm you see the new image:
 docker images
 
