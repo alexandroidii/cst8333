@@ -10,6 +10,45 @@ from crispy_forms.layout import Layout, Field, Submit, Row, Column, HTML, Div
 from crispy_forms.bootstrap import FormActions, AppendedText
 from django.utils.safestring import mark_safe
 
+"""
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+
+Both the users app and rlcs app utilize Django forms classes. Form classes facilitate the vehicle for creating dynamic forms on the fly.
+A significant advantage of using form classes being the ability to perform form validations.
+Two form classes used include forms.ModelForm gets its field definition from a specified model class, and also has methods that deal with 
+saving of the underlying model to the database. For a form.From are helper for HTML forms.
+The clases list:
+
+NewPassResetForm: (ModelForm)Provides Formfields password1, password2. Form fields, submit button with row/column are displayed via helper layout.
+                  Model for is used since it interacts/subnmits directly with the model. Font awesome fa-eye used by way of form helper
+                  in the template via JavaScipt to view/hide password fields.
+
+
+MyPasswordResetForm: Provides formfield for email address for the request password reset function. Form validation is provided on
+                  email field via query to the model if email address exists.
+
+LoginForm: Provides loging interface. Formfields include email and password for authentication with user model. Validation includes - checking
+                  if user email account exists, whether password is correct and if the user account is active.
+
+UserRegisterForm: Utilizes UserCreationForm class (part of Djano Auth) for registration process. Validation is provided by UserCreationForm class.
+                  Form fields include: email, user_name, first_name, last_name, password1, password2. 
+
+
+ProfileUpdateForm: (ModelForm) used for generating Profile form and registering input to the model.
+                  Form fields include: email, user_name, first_name, last_name, phone_number,company_name, industry_type,'position', 
+                  website, address, city, province_state, country. Submit button with row/column are displayed via helper. Field attributes
+                  used for marking mandatory fields and immutable fields (user's - User Name, First name, Last name). Email address is
+                  mutable since the user may change email providers and this provides the ability to update.
+
+clean_email(function): As part of ProfileUpdateForm performs validation against disposble email address in the form. These are often used
+                  by spammers as fake accounts. This validation reads a disposible email address list and validates user email entry against
+                  the list.
+
+
+
+"""
 
 class NewPassResetForm(forms.ModelForm):
     
@@ -208,15 +247,6 @@ class ProfileUpdateForm(forms.ModelForm):
                    )
             )
 
-      # def clean_phone_number(self):
-      #       phone_number = self.cleaned_data.get('phone_number', None)
-      #       try:
-      #             int(phone_number)
-      #       except (ValueError, TypeError):
-      #             raise forms.ValidationError('Please enter a valid phone number')
-      #       return phone_number
-
-
       
       def clean_email(self):
             email = self.cleaned_data.get('email')
@@ -230,23 +260,3 @@ class ProfileUpdateForm(forms.ModelForm):
             return email
             
 
-      def clean_last_name(self):
-            name = self.cleaned_data.get("last_name")
-            if '@' in name or '-' in name or '|' in name:
-                  raise forms.ValidationError("Names should not have special characters.")
-            return name
-
-            
-      # def clean_phone_number(self):
-      #       phone = self.cleaned_data.get("phone_number")
-      #       phone_req = "6137624063"
-      #       print(phone)
-      #       if not(str(phone).isalpha()):
-      #       #if phone_req != phone:
-      #            # print(phone)
-      #             raise forms.ValidationError("Phone number doesn't match")
-      #       # if not re.sub("['^\+?1?\d{9,15}$']", " ", str(phone)):
-      #       #       raise forms.ValidationError("Only numbers accepted")
-      #       return phone     
-       
-    

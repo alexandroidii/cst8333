@@ -1,5 +1,0 @@
-Things to fix
-
-Done* scenario_search not filtering on scenario=True
-highlight incident list row before clicking
-pagination first/last and ... in the middle

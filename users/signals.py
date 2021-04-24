@@ -3,12 +3,38 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from .models import Users as user
-    
+
+
+"""
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+
+Django signals are utilized with the users application to handle all post_save activities. That includes all db related commits or save 
+activities relating to the Users model. 
+
+The instance of the Users model is tested against:
+1) If the user is added - they are done so and added to the default group submitter. All users are submitters by default since when they 
+   register then cannot submit a CCS Case unless they belong to the submitters group.
+
+2) Should a user become a superuser, the signal is triggered which sets them to superuser. Note that the method to do so encompasses
+   setting them to hidden is_staff boolean entity since by Django design, it is required to be is_staff.  The default PermissionMixin 
+   includes is_superuser in the auth.models framework.
+
+3) Should a user superuser status get change to no longer be superuser, the signal is triggered which clears them as superuser 
+   and clears is_staff.  The default PermissionMixin permissions includes is_superuser in the auth.models framework. This is why
+   is is not specifically defined in the users model.
+
+Created: Handles new user signal entity activities added to the model
+
+Updated: Handles modified or updated entity activities within the model
+
+"""   
 
 User = get_user_model()
 
-@receiver(post_save, sender=User, dispatch_uid="update_superuser")
-def update_supervisor_handler(sender, instance, created, **kwargs):
+@receiver(post_save, sender=User, dispatch_uid="update_superuser_submitter")
+def update_supervisor_submitter_handler(sender, instance, created, **kwargs):
     
     if hasattr(instance,'_dirty'): #prevent recursion
         return
