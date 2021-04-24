@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import resolve
 
+"""
+Annotations for views which check if the user is already authenticated, and which roles
+are allowed in a certain view.
+"""
 def already_authenticated_user(view_func):
     def wrapper_func(request, *args, **kwargs):
         try:

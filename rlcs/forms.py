@@ -358,6 +358,11 @@ class ChoiceTextField(forms.ModelChoiceField):
     widget=ListTextWidget()      
 
 
+"""
+This is a crispy forms Layout class that is used to generate both the submitter and reviewer version of the 
+scenario form.  This dynamically creates Row/Col divs as well as other bootstrap style layouts like
+accordion and rendering buttons.
+"""
 class BaseScenarioLayout(Layout):
     def __init__(self, *args, **kwargs):
         super().__init__(

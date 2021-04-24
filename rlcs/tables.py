@@ -3,6 +3,12 @@ from django.utils.safestring import mark_safe
 
 from .models import Scenario
 
+"""
+These table classes are used to render scenario tables which includes
+pagination, sorting, and styling following a modelForm pattern.
+
+There are different ones for Submitters and Reviewers with different fields being displayed.
+"""
 class ReviewerScenarioTable(tables.Table):
     class Meta:
         model = Scenario

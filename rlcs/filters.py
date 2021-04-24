@@ -7,6 +7,12 @@ from rlcs.forms import ReviewerScenarioFilterForm, SubmitterScenarioFilterForm
 import django_filters
 from .models import Scenario
 
+
+"""
+These filters are applied to the Tables.py classes in order to filter the data before returning it.
+
+It also generates the filter form on the page that will allow users to filter columns manually.
+"""
 class ReviewerScenarioFilter(django_filters.FilterSet):
     industry_type = ModelChoiceFilter(queryset=IndustryType.objects.all(), empty_label=(''))
     bribe_initiator = ModelChoiceFilter(queryset=BribeInitiator.objects.all(), empty_label=(''))

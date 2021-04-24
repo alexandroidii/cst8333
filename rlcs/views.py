@@ -79,12 +79,14 @@ def deleteDocument(request):
 
     return HttpResponse(jsonData, content_type='json')
 
+"""
+Used to switch the is_reviewed flag to true after a reviewer has completed a review of the case.
+"""
 @already_authenticated_user
 @allowed_users(allowed_roles=['reviewer'])
 def publish_scenario(request, id):
     
     is_reviewer = request.user.groups.filter(name='reviewer').exists() or request.user.is_superuser
-    is_submitter = request.user.groups.filter(name='submitter').exists()
     response = {}
     response['success'] = False
     scenario = Scenario.objects.get(pk=id)
@@ -112,7 +114,12 @@ def publish_scenario(request, id):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
+"""
+Generates a table of cases that can be filtered.  
+Using django-tables2 and django-filters
 
+
+"""
 class FilteredScenarioListView(SingleTableMixin, FilterView):
     model = Scenario
     template_name = "rlcs/scenario_list.html"
@@ -137,6 +144,9 @@ class FilteredScenarioListView(SingleTableMixin, FilterView):
 
         return super().get(request, *args, **kwargs)
 
+    # This is how you can manipulate the queryset that is being filtered. 
+    # Used to filter the cases by is_reviewed only as well as allowing
+    # submmiters to view their own cases.
     def get_context_data(self, **kwargs):
         is_reviewer = self.request.user.groups.filter(name='reviewer').exists() or self.request.user.is_superuser
         context = super().get_context_data(**kwargs)
@@ -189,7 +199,6 @@ def save_scenario(request, id=0, **kwargs):
                 form = ScenarioFormReviewer(request.POST, instance=scenario)
             else:
                 form = ScenarioFormSubmitter(request.POST, instance=scenario)
-        print(form.errors)
         logger.debug(form.errors)
         if form.is_valid():
            
@@ -225,6 +234,7 @@ def save_scenario(request, id=0, **kwargs):
             else:
                 messages.success(request, 'Scenario has been sent for review')  
 
+            #manually prepare the form by rerender it.
             context = {}
             context.update(csrf(request))
             files = ScenarioDocument.objects.filter(scenario=savedScenario)

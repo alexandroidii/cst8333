@@ -20,6 +20,9 @@ class EmailThread(threading.Thread):
 
 UserModel = get_user_model()
 
+
+# This will send an email to all reviewers when a scenario is saved to the database.
+# The email includes a link to the scenario that will prompt for the login.
 @receiver(post_save, sender=Scenario)
 def notify_reviewer(sender, instance, created, **kwargs):
     scenario = instance

@@ -13,7 +13,7 @@ from . import views
 CCS Urls to direct navigation through the app - all application views 
 are imported.
 
-App Namespace: 'rlcs'
+App Namespace: 'rlcs' even though the app is now renamed to CCS.
 
 Authors: Robert Lange and Alexander Riccio
 Course: CST8333
