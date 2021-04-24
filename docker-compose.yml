@@ -19,7 +19,9 @@ services:
     restart: unless-stopped
   rlcs:
     # if building locally, uncomment line 22 and 23 and comment line 24
-    # build: .
+    # don't do a build but just do an up image: alexandroidii/cst8333-rlcs:1
+    build: .
+    # below is local
     # image: rlcs:1
     image: alexandroidii/cst8333-rlcs:1
     command: python manage.py runserver 0.0.0.0:8000
