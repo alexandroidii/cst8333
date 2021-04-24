@@ -1,6 +1,15 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+"""
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+
+This class utilizes Django testing framework along with Coverage.
+Is is used to test the Users model specifcally along with validation testing of the model enties.
+
+"""
 
 class UserAccountTests(TestCase):
 

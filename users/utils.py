@@ -15,6 +15,7 @@ This Helper class is used to manage the intricacies of the token used in the use
 token when called.
 
 """
+
 class AppTokenGenerator(PasswordResetTokenGenerator):
 
     def _make_hash_value(self, user, timestamp):

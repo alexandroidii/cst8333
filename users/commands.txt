@@ -1,3 +1,10 @@
+Authors: Robert Lange and Alexander Riccio
+Course: CST8333
+Date: 2019-12-19
+
+This file include hints and commands used during the project evolution.
+Provides a quick reference to commond commands used.
+
 
 mkdir acc_core
 cd acc_core
