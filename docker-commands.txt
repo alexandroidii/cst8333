@@ -31,16 +31,16 @@ docker ps -a
 docker login
 
 #commit image where b317f7acf873 is the container id you found when running "docker ps -a"
-docker commit b317f7acf873 alexandroidii/cst8333-rlcs:1
+docker commit b317f7acf873 alexandroidii/cst8333-rlcs:2
 
 #Confirm you see the new image:
 docker images
 
 #push the image up to docker hub
-docker push alexandroidii/cst8333-rlcs:1
+docker push alexandroidii/cst8333-rlcs:2
 
 #pull the docker images ready to load
-docker pull alexandroidii/cst8333-rlcs:1
+docker pull alexandroidii/cst8333-rlcs:2
 
 #run the pulled images
 docker run -it alexandroidii/cst8333-rlcs:1
