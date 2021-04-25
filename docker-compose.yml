@@ -23,7 +23,7 @@ services:
     build: .
     # below is local
     # image: rlcs:1
-    image: alexandroidii/cst8333-rlcs:1
+    image: alexandroidii/cst8333-rlcs:2
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/rlcs
