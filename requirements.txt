@@ -28,7 +28,7 @@ pytest==6.1.2
 pytz==2019.3
 PyYAML==5.4.1
 six==1.13.0
-sqlparse==0.4.1
+sqlparse==0.4.2
 toml==0.10.2
 wcwidth==0.1.7
 wrapt==1.11.2
